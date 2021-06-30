@@ -29,3 +29,6 @@ Route::get('/hello', function () {
 Route::get('users/{id}', function ($id) {
     return "Your id id $id";
 });
+
+Route::get('/createuser', 'App\Http\Controllers\user@create');
+Route::post('/createuser', 'App\Http\Controllers\user@store');
