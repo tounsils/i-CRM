@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Route;
 | Here is where you can register web routes for your application. These
 | routes are loaded by the RouteServiceProvider within a group which
 | contains the "web" middleware group. Now create something great!
+| in laravel Route there is two parameters url and call back 
 |
 */
 /*
@@ -30,5 +31,5 @@ Route::get('users/{id}', function ($id) {
     return "Your id id $id";
 });
 
-Route::get('/createuser', 'App\Http\Controllers\user@create');
-Route::post('/createuser', 'App\Http\Controllers\user@store');
+Route::get('/users', 'App\Http\Controllers\appusers@index')->name('home');
+Route::get('/createuser', 'App\Http\Controllers\appusers@create')->name('create');
