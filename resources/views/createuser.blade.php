@@ -5,29 +5,17 @@
 @section('content')
 
 <main id="main">
-    <!-- ======= About Section ======= -->
-    <section id="about" class="about">
-    <div class="container" data-aos="fade-up">
+<hr>
+
+    <!-- ======= user Section ======= -->
+    <section id="contact" class="contact">
+
+      <div class="container" data-aos="fade-up">
 
         <header class="section-header">
           <h2>Users</h2>
           <p>Add new user</p>
         </header>
-
-
-        <div class="col-xl-12 d-flex content">
-            <div class="row align-self-center gy-4">
-
-                <div class="col-md-6 icon-box" data-aos="fade-up">
-                  <i class="ri-line-chart-line"></i>
-                  <div>
-                    <h4>Corporis voluptates sit</h4>
-                    <p>Consequuntur sunt aut quasi enim aliquam quae harum pariatur laboris nisi ut aliquip</p>
-                  </div>
-                </div>
-            </div>
-        </div>
-
 
 
 
@@ -69,13 +57,10 @@
 
       </div>
 
-    </section><!-- End Contact Section -->
+    </section><!-- End user Section -->
 
 
-<div><h1>Create new user </h1> </div>
-</div></div>
 
-    </section><!-- End About Section -->
 </main><!-- End #main -->
 
 @endsection

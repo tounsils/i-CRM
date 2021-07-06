@@ -57,7 +57,7 @@
           <li><a class="nav-link scrollto" href="{{ asset('blog') }}">Blog</a></li>
           <li class="dropdown"><a href="#"><span>Users</span> <i class="bi bi-chevron-down"></i></a>
             <ul>
-              <li><a href="/hello">Add new user</a></li>
+              <li><a href="/createuser">Add new user</a></li>
               <li class="dropdown"><a href="#"><span>Deep Drop Down</span> <i class="bi bi-chevron-right"></i></a>
                 <ul>
                   <li><a href="#">Drop Down 1</a></li>
