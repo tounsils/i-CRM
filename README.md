@@ -65,3 +65,6 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 git add .
 git commit -m "Commit tn76.com"
 git push -u origin main
+
+# USeful vscode plugins 
+Wijmo Designer Extension
