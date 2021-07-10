@@ -5,13 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class appusers extends Model
+class company extends Model
 {
     use HasFactory;
     public $fillable = [
-        'first_name',
-        'last_name',
-        'email',     
-        'phone',
+        'company_name',
+        'email',
+        'phone',     
     ];    
+
 }
+
+

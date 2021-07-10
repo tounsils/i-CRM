@@ -21,6 +21,9 @@ Route::get('/', function () {
 
 Route::get('/', 'App\Http\Controllers\PresentationController@index');
 Route::get('/about', 'App\Http\Controllers\PresentationController@about');
+Route::get('/LaravelQuestions', 'App\Http\Controllers\PresentationController@LaravelQuestions');
+Route::get('/LaravelDatabaseSeeding', 'App\Http\Controllers\PresentationController@LaravelDatabaseSeeding');
+
 Route::get('/blog', 'App\Http\Controllers\BlogController@index');
 
 Route::get('/hello', function () {

@@ -14,6 +14,12 @@ class PresentationController extends Controller
         return view('about');
     }
 
-
+    public function LaravelQuestions(){
+        return view('LaravelQuestions');
+    }
+    
+    public function LaravelDatabaseSeeding(){
+        return view('LaravelDatabaseSeeding');
+    }
 }
 
