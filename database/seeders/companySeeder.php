@@ -16,7 +16,7 @@ class companySeeder extends Seeder
     {
       // \App\Models\User::factory(10)->create();
       company::factory()
-      ->count(8)
+      ->count(3)
       ->create();
     }
 }

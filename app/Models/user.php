@@ -5,8 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class appusers extends Model
+class user extends Model
 {
+    protected $table = 'appusers';
     use HasFactory;
     public $fillable = [
         'first_name',
