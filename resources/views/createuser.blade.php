@@ -19,7 +19,7 @@
 
 
           <div class="col-lg-12">
-            <form action="forms/contact.php" method="post" class="php-email-form">
+            <form action="{{ storeuser }}" method="post" class="php-email-form">
               <div class="row gy-4">
 
               <div class="col-md-6">

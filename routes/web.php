@@ -34,5 +34,7 @@ Route::get('users/{id}', function ($id) {
     return "Your id id $id";
 });
 
-Route::get('/users', 'App\Http\Controllers\appusers@index')->name('home');
-Route::get('/createuser', 'App\Http\Controllers\appusers@create')->name('create');
+Route::get('/users', 'App\Http\Controllers\usersController@index')->name('home');
+Route::get('/createuser', 'App\Http\Controllers\usersController@create')->name('create');
+Route::POST('/createuser', 'App\Http\Controllers\usersController@store')->name('storeuser');
+
