@@ -6,7 +6,7 @@
         <div class="row gy-4">
           <div class="col-lg-5 col-md-12 footer-info">
             <a href="{{ asset('') }}" class="logo d-flex align-items-center">
-              <img src="assets/img/logo.png" alt="">
+            <img src="{{ asset('/assets/img/logo.png') }}" alt="">
               <span>Dev</span>
             </a>
             <p>Cras fermentum odio eu feugiat lide par naso tierra. Justo eget nada terra videa magna derita valies darta donna mare fermentum iaculis eu non diam phasellus.</p>
@@ -75,9 +75,17 @@
   <script src="{{ asset('assets/vendor/isotope-layout/isotope.pkgd.min.js') }}"></script>
   <script src="{{ asset('assets/vendor/glightbox/js/glightbox.min.js') }}"></script>
 
+  <script src="{{ asset('assets/vendor/others/js/jquery.js') }}"></script>
+  <script src="{{ asset('assets/vendor/others/js/jquery.validate.js') }}"></script>
+ <script src="{{ asset('assets/vendor/others/js/jquery.dataTables.min.js') }}"></script>
+  <script src="{{ asset('assets/vendor/others/js/dataTables.bootstrap4.min.js') }}"></script>
+<!-- -->
+  
   <!-- Template Main JS File -->
   <script src="{{ asset('assets/js/main.js') }}"></script>
 
 </body>
+
+@yield('footer-scripts')
 
 </html>

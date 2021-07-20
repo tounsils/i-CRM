@@ -1,5 +1,5 @@
 <?php
-
+// database\factories\userFactor.php
 namespace Database\Factories;
 
 use App\Models\user;

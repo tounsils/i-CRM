@@ -17,6 +17,33 @@ body {
   color: #444444;
 }
 
+.container table {
+  width: 100%;
+  border: #0b198f 1px solid;
+  border-color: #0b198f;
+	padding: 10px;
+}
+
+
+.container table tr {
+  border: #240909;
+}
+
+.container table th {
+	padding: 10px;
+  border-color: #0b198f;
+  color: #ffffff;
+  background-color: #000000;
+  text-align: left;
+}
+
+.container table td {
+	padding: 10px;
+  border-color: #0b198f;
+  background-color: #ffffff;
+}
+
+
 a {
   color: #4154f1;
   text-decoration: none;

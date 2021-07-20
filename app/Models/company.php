@@ -12,9 +12,7 @@ class company extends Model
     public $fillable = [
         'company_name',
         'email',
-        'phone',     
+        'phone'
     ];    
 
 }
-
-

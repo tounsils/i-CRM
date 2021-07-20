@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\usersModel;  // use user model
+use App\Models\user;  // use user model
 
-class appusers extends Controller
+class usersController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,7 +14,8 @@ class appusers extends Controller
      */
     public function index()
     {
-        return view('welcome');
+        $users = user::all();
+        return view('usershome',compact('users'));
     }
 
     /**
@@ -35,20 +36,14 @@ class appusers extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request,[
-            'first_name' => required,
-            'last_name' => required,
-            'email' => required,
-            'phone' => required
-        ]) ;
 
-        $user = new appusers;
-        $user -> first_name = $request -> first_name;
-        $user -> last_name = $request -> last_name;
-        $user -> email = $request -> email;
-        $user -> phone = $request -> phone;
+        $user = new user;
+        $user -> first_name = $request -> input('first_name');
+        $user -> last_name = $request -> input('last_name');
+        $user -> email = $request -> input('email');
+        $user -> phone = $request -> input('phone');
         $user -> save();
-        return redirect(rtoute('usershome')) -> with('successMsg','User sucessfull added');
+        return redirect(route('usershome')) -> with('successMsg','User sucessfull added');
 
     }
 
@@ -73,7 +68,8 @@ class appusers extends Controller
      */
     public function edit($id)
     {
-        //
+        $user = user::find($id);
+        return view('users.edit', compact('user'));        
     }
 
     /**
