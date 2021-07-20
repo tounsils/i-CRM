@@ -9,7 +9,7 @@
   <meta content="" name="description">
 
   <meta content="" name="keywords">
-
+  <meta name="csrf-token" content="">
   <!-- Favicons -->
   <link href="{{ asset('assets/img/favicon.png') }}" rel="icon">
   <link href="{{ asset('assets/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
@@ -24,6 +24,10 @@
   <link href="{{ asset('assets/vendor/remixicon/remixicon.css') }}" rel="stylesheet">
   <link href="{{ asset('assets/vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
   <link href="{{ asset('assets/vendor/glightbox/css/glightbox.min.css') }}" rel="stylesheet">
+
+  <link href="{{ asset('assets/vendor/others/css/bootstrap.min.css') }}" rel="stylesheet">
+  <link href="{{ asset('assets/vendor/others/css/jquery.dataTables.min.css') }}" rel="stylesheet">
+  <link href="{{ asset('assets/vendor/others/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
 
   <!-- Template Main CSS File -->
   <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
@@ -43,7 +47,7 @@
     <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
 
       <a href="{{ asset('') }}" class="logo d-flex align-items-center">
-        <img src="{{ asset('assets/img/logo.png') }}" alt="">
+        <img src="{{ asset('/assets/img/logo.png') }}" alt="">
         <span>Dev</span>
       </a>
 
@@ -72,9 +76,10 @@
               <li><a href="#">Drop Down 4</a></li>
             </ul>
           </li>
-          <li class="dropdown"><a href="#"><span>Users</span> <i class="bi bi-chevron-down"></i></a>
+          <li><a class="nav-link scrollto" href="{{ asset('company') }}">Company</a></li>
+          <li class="dropdown"><a href="{{ asset('users') }}"><span>Users</span> <i class="bi bi-chevron-down"></i></a>
             <ul>
-              <li><a href="{{ asset('createuser') }}">Add new user</a></li>
+              <li><a href="{{ asset('usercreate') }}">Add new user</a></li>
               <li class="dropdown"><a href="#"><span>Deep Drop Down</span> <i class="bi bi-chevron-right"></i></a>
                 <ul>
                   <li><a href="#">Drop Down 1</a></li>

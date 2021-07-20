@@ -5,46 +5,55 @@
 @section('content')
 
 <main id="main">
-<hr>
+
+      @if($errors->any())
+      @foreach ($errors->all() as $error)
+      <div class="alert alert-danger" role="alert">
+        {{ $error }}
+      </div>
+      @endforeach
+      @endif
+
 
     <!-- ======= user Section ======= -->
     <section id="user" class="user">
 
       <div class="container" data-aos="fade-up">
 
+
+
+
+
         <header class="section-header">
           <h2>Users</h2>
-          <p>Add new user</p>
+          <p>Create page</p>
         </header>
 
 
           <div class="col-lg-12">
-            <form action="{{ storeuser }}" method="post" class="php-email-form">
-              <div class="row gy-4">
+            <form action="{{ Route('users') }}" method="post"> class="php-email-form"
+            {{ csrf_field() }}  
+            <div class="row gy-4">
 
-              <div class="col-md-6">
-                  <input type="text" name="first_name" class="form-control" placeholder="Name" required>
+                <div class="col-md-6">
+                  <input type="text" name="first_name" class="form-control" placeholder="Name" >
                 </div>
 
                 <div class="col-md-6">
-                  <input type="text" name="last_name" class="form-control" placeholder="Last Name" required>
+                  <input type="text" name="last_name" class="form-control" placeholder="Last Name" >
                 </div>
 
                 <div class="col-md-12 ">
-                  <input type="email" class="form-control" name="email" placeholder="Email" required>
+                  <input type="email" class="form-control" name="email" placeholder="Email" >
                 </div>
 
                 <div class="col-md-12">
-                  <input type="text" class="form-control" name="phone" placeholder="Phone" required>
+                  <input type="text" class="form-control" name="phone" placeholder="Phone" >
                 </div>
 
-
                 <div class="col-md-12 text-center">
-                  <div class="loading">Loading</div>
-                  <div class="error-message"></div>
-                  <div class="sent-message">Your message has been sent. Thank you!</div>
-
                   <button type="submit">Add User</button>
+
                 </div>
                 
               </div>

@@ -34,7 +34,16 @@ Route::get('users/{id}', function ($id) {
     return "Your id id $id";
 });
 
-Route::get('/users', 'App\Http\Controllers\usersController@index')->name('home');
-Route::get('/createuser', 'App\Http\Controllers\usersController@create')->name('create');
-Route::POST('/createuser', 'App\Http\Controllers\usersController@store')->name('storeuser');
+/*
+Route::get('/usershome', 'App\Http\Controllers\usersController@index')->name('usershome');
+Route::get('/usercreate', 'App\Http\Controllers\usersController@create')->name('usercreate');
+Route::post('/usercreate', 'App\Http\Controllers\usersController@store')->name('store');
+*/
+Route::resource('users', 'App\Http\Controllers\usersController');
 
+//Route::get('/companyhome', 'App\Http\Controllers\companyController@index')->name('companyhome');
+//Route::resource('companyhome', 'App\Http\Controllers\companyController');
+//Route::resource('customers','CustomerController');
+//Route::resource('companyhome','companyController');
+Route::resource('company', 'App\Http\Controllers\companyController');
+Route::get('company', [App\Http\Controllers\companyController::class, 'getData']);
