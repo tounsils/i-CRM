@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use DataTables;
 use App\Models\company;  // use user model
 use Illuminate\Support\Facades\DB;
+Use Redirect;
 
 class companyController extends Controller
 {
@@ -86,8 +87,10 @@ class companyController extends Controller
      */
     public function show($id)
     {
-        //
-    }
+        $company = company::find($id);
+
+        return view('companyhome', compact('company'));
+        }
 
     /**
      * Show the form for editing the specified resource.
@@ -141,9 +144,13 @@ class companyController extends Controller
     public function destroy($id)
     {
         company::find($id)->delete();
-        //return response()->json(['success'=>'company deleted!']);
-        $companies = company::all();
-        return view('companyhome', compact('companies'));
+        $notification = array(
+            'message' => "Company deleted!",
+            'alert-type' => 'success'
+        );
+        
+        return Redirect::back()->with($notification);
+
     }
 
 
