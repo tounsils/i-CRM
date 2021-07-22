@@ -18,6 +18,12 @@
         </header>
 
         <div class="container">
+        
+        @if (session('message'))
+        <div class="alert session('alert-type')">
+         {!! session('message') !!}
+        </div>
+        @endif
 
     <a class="btn btn-success" href="javascript:void(0)" id="createNewcompany"> Create New company</a>
     <table class="table table-bordered data-table">
