@@ -11,10 +11,11 @@
       <div class="row">
         <div class="col-lg-6 d-flex flex-column justify-content-center">
           <h1 data-aos="fade-up">We offer modern solutions for growing your business</h1>
-          <h2 data-aos="fade-up" data-aos-delay="400">We are team of talented designers making websites with Bootstrap</h2>
+          <h2 data-aos="fade-up" data-aos-delay="400">We are team of talented designers 
+            making websites and web applications.</h2>
           <div data-aos="fade-up" data-aos-delay="600">
             <div class="text-center text-lg-start">
-              <a href="#about" class="btn-get-started scrollto d-inline-flex align-items-center justify-content-center align-self-center">
+              <a href="mailto:tn76contact@gmail.com?subject=Contacting throu tn76.com&body=I need you to ..." class="btn-get-started scrollto d-inline-flex align-items-center justify-content-center align-self-center">
                 <span>Get Started</span>
                 <i class="bi bi-arrow-right"></i>
               </a>
@@ -39,13 +40,18 @@
           <div class="col-lg-6 d-flex flex-column justify-content-center" data-aos="fade-up" data-aos-delay="200">
             <div class="content">
               <h3>Who We Are</h3>
-              <h2>Expedita voluptas omnis cupiditate totam eveniet nobis sint iste. Dolores est repellat corrupti reprehenderit.</h2>
+              <h2> The best of web design and web design inspiration.</h2>
               <p>
-                Quisquam vel ut sint cum eos hic dolores aperiam. Sed deserunt et. Inventore et et dolor consequatur itaque ut voluptate sed et. Magnam nam ipsum tenetur suscipit voluptatum nam et est corrupti.
-              </p>
+                Providing new designs and web development, and offering the best web solutions for 
+                small to medium business. For the design and development of any tailored website 
+                contact us.<br>
+                The best of web design and web design inspiration 
+                - Providing new designs and web development, and offering the best web 
+                solutions for small to medium business. <br>
+                For the design and development of any tailored website contact us.              </p>
               <div class="text-center text-lg-start">
-                <a href="#" class="btn-read-more d-inline-flex align-items-center justify-content-center align-self-center">
-                  <span>Read More</span>
+                <a href="mailto:tn76contact@gmail.com?subject=Contacting throu tn76.com&body=I need you to ..." class="btn-read-more d-inline-flex align-items-center justify-content-center align-self-center">
+                  <span>Contact us</span>
                   <i class="bi bi-arrow-right"></i>
                 </a>
               </div>
@@ -62,13 +68,13 @@
     </section><!-- End About Section -->
 
     <!-- ======= Values Section ======= -->
-    <section id="values" class="values">
+    <section id="values" class="values" name="Our Web Design Company’s Values">
 
       <div class="container" data-aos="fade-up">
 
         <header class="section-header">
           <h2>Our Values</h2>
-          <p>Odit est perspiciatis laborum et dicta</p>
+          <p>Our Web Design Company’s Values </p>
         </header>
 
         <div class="row">
@@ -76,24 +82,26 @@
           <div class="col-lg-4">
             <div class="box" data-aos="fade-up" data-aos-delay="200">
               <img src="assets/img/values-1.png" class="img-fluid" alt="">
-              <h3>Ad cupiditate sed est odio</h3>
-              <p>Eum ad dolor et. Autem aut fugiat debitis voluptatem consequuntur sit. Et veritatis id.</p>
+              <h3>Friendly</h3>
+              <p>Our approach is down-to-earth and just plain friendly. We love our clients, we love seeing you succeed, and we’re here to help..</p>
             </div>
           </div>
 
           <div class="col-lg-4 mt-4 mt-lg-0">
             <div class="box" data-aos="fade-up" data-aos-delay="400">
               <img src="assets/img/values-2.png" class="img-fluid" alt="">
-              <h3>Voluptatem voluptatum alias</h3>
-              <p>Repudiandae amet nihil natus in distinctio suscipit id. Doloremque ducimus ea sit non.</p>
+              <h3>Thoughtful</h3>
+              <p>We take an inquisitive, methodical approach to every project to ensure that we find the best solution possible. 
+                Keeping our clients’ best interests at heart is a way of life for us..</p>
             </div>
           </div>
 
           <div class="col-lg-4 mt-4 mt-lg-0">
             <div class="box" data-aos="fade-up" data-aos-delay="600">
               <img src="assets/img/values-3.png" class="img-fluid" alt="">
-              <h3>Fugit cupiditate alias nobis.</h3>
-              <p>Quam rem vitae est autem molestias explicabo debitis sint. Vero aliquid quidem commodi.</p>
+              <h3>Intuitive</h3>
+              <p>Technology can be frustratingly complex. We aim to keep things as painless as possible. 
+                Our goal is that your experience will be simple and enjoyable..</p>
             </div>
           </div>
 
@@ -143,7 +151,7 @@
             <div class="count-box">
               <i class="bi bi-people" style="color: #bb0852;"></i>
               <div>
-                <span data-purecounter-start="0" data-purecounter-end="15" data-purecounter-duration="1" class="purecounter"></span>
+                <span data-purecounter-start="0" data-purecounter-end="5" data-purecounter-duration="1" class="purecounter"></span>
                 <p>Hard Workers</p>
               </div>
             </div>
@@ -161,7 +169,7 @@
 
         <header class="section-header">
           <h2>Features</h2>
-          <p>Laboriosam et omnis fuga quis dolor direda fara</p>
+          <p>Fully Responsive Eye-Catching Solutions</p>
         </header>
 
         <div class="row">
@@ -176,42 +184,42 @@
               <div class="col-md-6" data-aos="zoom-out" data-aos-delay="200">
                 <div class="feature-box d-flex align-items-center">
                   <i class="bi bi-check"></i>
-                  <h3>Eos aspernatur rem</h3>
+                  <h3>WordPress Divi Theme</h3>
                 </div>
               </div>
 
               <div class="col-md-6" data-aos="zoom-out" data-aos-delay="300">
                 <div class="feature-box d-flex align-items-center">
                   <i class="bi bi-check"></i>
-                  <h3>Facilis neque ipsa</h3>
+                  <h3>Laravel Framework 8.x</h3>
                 </div>
               </div>
 
               <div class="col-md-6" data-aos="zoom-out" data-aos-delay="400">
                 <div class="feature-box d-flex align-items-center">
                   <i class="bi bi-check"></i>
-                  <h3>Volup amet voluptas</h3>
+                  <h3>Bootstrap / HTML5 / CSS3</h3>
                 </div>
               </div>
 
               <div class="col-md-6" data-aos="zoom-out" data-aos-delay="500">
                 <div class="feature-box d-flex align-items-center">
                   <i class="bi bi-check"></i>
-                  <h3>Rerum omnis sint</h3>
+                  <h3>PHP 7.x</h3>
                 </div>
               </div>
 
               <div class="col-md-6" data-aos="zoom-out" data-aos-delay="600">
                 <div class="feature-box d-flex align-items-center">
                   <i class="bi bi-check"></i>
-                  <h3>Alias possimus</h3>
+                  <h3>MySQL / PostgreSQL</h3>
                 </div>
               </div>
 
               <div class="col-md-6" data-aos="zoom-out" data-aos-delay="700">
                 <div class="feature-box d-flex align-items-center">
                   <i class="bi bi-check"></i>
-                  <h3>Repellendus mollitia</h3>
+                  <h3>JavaScript</h3>
                 </div>
               </div>
 
@@ -372,7 +380,7 @@
 
         <header class="section-header">
           <h2>Services</h2>
-          <p>Veritatis et dolores facere numquam et praesentium</p>
+          <p>Website Design and Development</p>
         </header>
 
         <div class="row gy-4">
@@ -380,8 +388,10 @@
           <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
             <div class="service-box blue">
               <i class="ri-discuss-line icon"></i>
-              <h3>Nesciunt Mete</h3>
-              <p>Provident nihil minus qui consequatur non omnis maiores. Eos accusantium minus dolores iure perferendis tempore et consequatur.</p>
+              <h3>Responsive Design</h3>
+              <p>
+
+                Client-focused, customer-centric solutions.</p>
               <a href="#" class="read-more"><span>Read More</span> <i class="bi bi-arrow-right"></i></a>
             </div>
           </div>
@@ -389,8 +399,8 @@
           <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
             <div class="service-box orange">
               <i class="ri-discuss-line icon"></i>
-              <h3>Eosle Commodi</h3>
-              <p>Ut autem aut autem non a. Sint sint sit facilis nam iusto sint. Libero corrupti neque eum hic non ut nesciunt dolorem.</p>
+              <h3>E-Commerce</h3>
+              <p>Start selling right away!</p>
               <a href="#" class="read-more"><span>Read More</span> <i class="bi bi-arrow-right"></i></a>
             </div>
           </div>
@@ -398,8 +408,8 @@
           <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="400">
             <div class="service-box green">
               <i class="ri-discuss-line icon"></i>
-              <h3>Ledo Markt</h3>
-              <p>Ut excepturi voluptatem nisi sed. Quidem fuga consequatur. Minus ea aut. Vel qui id voluptas adipisci eos earum corrupti.</p>
+              <h3>User Experience</h3>
+              <p>Your customer will love it!</p>
               <a href="#" class="read-more"><span>Read More</span> <i class="bi bi-arrow-right"></i></a>
             </div>
           </div>
@@ -407,8 +417,8 @@
           <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="500">
             <div class="service-box red">
               <i class="ri-discuss-line icon"></i>
-              <h3>Asperiores Commodi</h3>
-              <p>Non et temporibus minus omnis sed dolor esse consequatur. Cupiditate sed error ea fuga sit provident adipisci neque.</p>
+              <h3>Fast Page Loading</h3>
+              <p>We don’t make our customers wait.</p>
               <a href="#" class="read-more"><span>Read More</span> <i class="bi bi-arrow-right"></i></a>
             </div>
           </div>
@@ -451,66 +461,66 @@
 
           <div class="col-lg-3 col-md-6" data-aos="zoom-in" data-aos-delay="100">
             <div class="box">
-              <h3 style="color: #07d5c0;">Free Plan</h3>
+              <h3 style="color: #07d5c0;">Free Quote</h3>
               <div class="price"><sup>$</sup>0<span> / mo</span></div>
               <img src="assets/img/pricing-free.png" class="img-fluid" alt="">
               <ul>
-                <li>Aida dere</li>
-                <li>Nec feugiat nisl</li>
-                <li>Nulla at volutpat dola</li>
-                <li class="na">Pharetra massa</li>
-                <li class="na">Massa ultricies mi</li>
+                <li>Web site app quote</li>
+                <li>Revisions</li>
+                <li class="na">Installation</li>
+                <li class="na">Database design</li>
+                <li class="na">Web Design</li>
               </ul>
-              <a href="#" class="btn-buy">Buy Now</a>
+              <a href="mailto:tn76contact@gmail.com?subject=Contacting throu tn76.com (Free Quote)&body=I need you to ..." class="btn-buy">Contact Us</a>
             </div>
           </div>
 
           <div class="col-lg-3 col-md-6" data-aos="zoom-in" data-aos-delay="200">
             <div class="box">
-              <span class="featured">Featured</span>
-              <h3 style="color: #65c600;">Starter Plan</h3>
-              <div class="price"><sup>$</sup>19<span> / mo</span></div>
+              <h3 style="color: #65c600;">Software Installation</h3>
+              <div class="price">From <sup>$</sup>1<span></span></div>
               <img src="assets/img/pricing-starter.png" class="img-fluid" alt="">
               <ul>
-                <li>Aida dere</li>
-                <li>Nec feugiat nisl</li>
-                <li>Nulla at volutpat dola</li>
-                <li>Pharetra massa</li>
-                <li class="na">Massa ultricies mi</li>
+                <li>Software Upload</li>
+                <li>Installation</li>
+                <li>Database setup + migr</li>
+                <li class="na">Upgrades</li>
+                <li class="na">Bug fixes</li>
               </ul>
-              <a href="#" class="btn-buy">Buy Now</a>
+              <a href="mailto:tn76contact@gmail.com?subject=Contacting throu tn76.com (Installation)&body=I need you to ..." class="btn-buy">Contact Us</a>
             </div>
           </div>
 
           <div class="col-lg-3 col-md-6" data-aos="zoom-in" data-aos-delay="300">
             <div class="box">
-              <h3 style="color: #ff901c;">Business Plan</h3>
-              <div class="price"><sup>$</sup>29<span> / mo</span></div>
+              <span class="featured">Featured</span>
+              <h3 style="color: #ff901c;">Website/ app Creation</h3>
+              <div class="price">From <sup>$</sup>10<span> +</span></div>
               <img src="assets/img/pricing-business.png" class="img-fluid" alt="">
               <ul>
-                <li>Aida dere</li>
-                <li>Nec feugiat nisl</li>
-                <li>Nulla at volutpat dola</li>
-                <li>Pharetra massa</li>
-                <li>Massa ultricies mi</li>
+                <li>Home page</li>
+                <li>3 pages</li>
+                <li>Contact form</li>
+                <li>10 revisions</li>
+                <li>Installation</li>
               </ul>
-              <a href="#" class="btn-buy">Buy Now</a>
+              <a href="mailto:tn76contact@gmail.com?subject=Contacting throu tn76.com (Featured)&body=I need you to ..." class="btn-buy">Contact Us</a>
             </div>
           </div>
 
           <div class="col-lg-3 col-md-6" data-aos="zoom-in" data-aos-delay="400">
             <div class="box">
-              <h3 style="color: #ff0071;">Ultimate Plan</h3>
-              <div class="price"><sup>$</sup>49<span> / mo</span></div>
+              <h3 style="color: #ff0071;">Full Stack service</h3>
+              <div class="price"><sup>$</sup>70<span> / h</span></div>
               <img src="assets/img/pricing-ultimate.png" class="img-fluid" alt="">
               <ul>
-                <li>Aida dere</li>
-                <li>Nec feugiat nisl</li>
-                <li>Nulla at volutpat dola</li>
-                <li>Pharetra massa</li>
-                <li>Massa ultricies mi</li>
+                <li>Website/ app Creation</li>
+                <li>Hosting/Cloud/ installation</li>
+                <li>Unlimited ugrades</li>
+                <li>Unlimited upadtes</li>
+                <li>Unlimited revisions</li>
               </ul>
-              <a href="#" class="btn-buy">Buy Now</a>
+              <a href="mailto:tn76contact@gmail.com?subject=Contacting throu tn76.com (Full Stack service)&body=I need you to ..." class="btn-buy">Contact Us</a>
             </div>
           </div>
 
@@ -534,28 +544,44 @@
           <div class="col-lg-6">
             <!-- F.A.Q List 1-->
             <div class="accordion accordion-flush" id="faqlist1">
-              <div class="accordion-item">
-                <h2 class="accordion-header">
-                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq-content-1">
-                    Non consectetur a erat nam at lectus urna duis?
-                  </button>
-                </h2>
-                <div id="faq-content-1" class="accordion-collapse collapse" data-bs-parent="#faqlist1">
-                  <div class="accordion-body">
-                    Feugiat pretium nibh ipsum consequat. Tempus iaculis urna id volutpat lacus laoreet non curabitur gravida. Venenatis lectus magna fringilla urna porttitor rhoncus dolor purus non.
-                  </div>
-                </div>
-              </div>
 
               <div class="accordion-item">
                 <h2 class="accordion-header">
                   <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq-content-2">
-                    Feugiat scelerisque varius morbi enim nunc faucibus a pellentesque?
+                    How much does a new website cost? 
                   </button>
                 </h2>
                 <div id="faq-content-2" class="accordion-collapse collapse" data-bs-parent="#faqlist1">
                   <div class="accordion-body">
-                    Dolor sit amet consectetur adipiscing elit pellentesque habitant morbi. Id interdum velit laoreet id donec ultrices. Fringilla phasellus faucibus scelerisque eleifend donec pretium. Est pellentesque elit ullamcorper dignissim. Mauris ultrices eros in cursus turpis massa tincidunt dui.
+                    There’s not one single answer to this question. 
+                    A website design is quoted based on the needs of each 
+                    individual project. Every website is unique and requires
+                     different components; we design and develop custom websites 
+                     specifically for your small business. We’ll ask a lot of questions, 
+                     assess your needs, and give you a quote based on that assessment.
+                      Most of our sites run in the $3,000 – $5,000 range, but can be more or 
+                      less depending on needs.
+                  </div>
+                </div>
+              </div>
+
+
+
+
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq-content-1">
+                    How long will it take to get a new website?
+                  </button>
+                </h2>
+                <div id="faq-content-1" class="accordion-collapse collapse" data-bs-parent="#faqlist1">
+                  <div class="accordion-body">
+                    On average, we shoot for a six to eight week turnaround, 
+                    but the pace of any project is set by each client. 
+                    How much input you can provide during the initial stages, 
+                    your availability with feedback, how soon the content is ready 
+                    – all this affects the speed of completion. The functionality 
+                    needs may also play a role – more complex sites will take more time to develop.
                   </div>
                 </div>
               </div>
@@ -563,12 +589,15 @@
               <div class="accordion-item">
                 <h2 class="accordion-header">
                   <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq-content-3">
-                    Dolor sit amet consectetur adipiscing elit pellentesque habitant morbi?
+                    Do you only create WordPress websites? 
                   </button>
                 </h2>
                 <div id="faq-content-3" class="accordion-collapse collapse" data-bs-parent="#faqlist1">
                   <div class="accordion-body">
-                    Eleifend mi in nulla posuere sollicitudin aliquam ultrices sagittis orci. Faucibus pulvinar elementum integer enim. Sem nulla pharetra diam sit amet nisl suscipit. Rutrum tellus pellentesque eu tincidunt. Lectus urna duis convallis convallis tellus. Urna molestie at elementum eu facilisis sed odio morbi quis
+                    Yes. WordPress is a great content management system that now powers 
+                    more than 30% of the web. Its huge market share is due to 
+                    it’s flexibility and ease of use. Don’t worry, we’ll teach you 
+                    how to manage it and help you along the way.
                   </div>
                 </div>
               </div>
@@ -584,12 +613,12 @@
               <div class="accordion-item">
                 <h2 class="accordion-header">
                   <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2-content-1">
-                    Ac odio tempor orci dapibus. Aliquam eleifend mi in nulla?
+                    What if I need help on my site down the road? 
                   </button>
                 </h2>
                 <div id="faq2-content-1" class="accordion-collapse collapse" data-bs-parent="#faqlist2">
                   <div class="accordion-body">
-                    Dolor sit amet consectetur adipiscing elit pellentesque habitant morbi. Id interdum velit laoreet id donec ultrices. Fringilla phasellus faucibus scelerisque eleifend donec pretium. Est pellentesque elit ullamcorper dignissim. Mauris ultrices eros in cursus turpis massa tincidunt dui.
+                    We are only an email away! We’re here to help you as much or as little as you need, and we won’t disappear once the site is launched. We’ve been doing this for many years, so we aren’t going anywhere anytime soon.
                   </div>
                 </div>
               </div>
@@ -597,12 +626,17 @@
               <div class="accordion-item">
                 <h2 class="accordion-header">
                   <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2-content-2">
-                    Tempus quam pellentesque nec nam aliquam sem et tortor consequat?
+                    When do I pay?  
                   </button>
                 </h2>
                 <div id="faq2-content-2" class="accordion-collapse collapse" data-bs-parent="#faqlist2">
                   <div class="accordion-body">
-                    Molestie a iaculis at erat pellentesque adipiscing commodo. Dignissim suspendisse in est ante in. Nunc vel risus commodo viverra maecenas accumsan. Sit amet nisl suscipit adipiscing bibendum est. Purus gravida quis blandit turpis cursus in
+                    For most projects, equal payments are made at the start, 
+                    midway, and the end of the project, but we can work with you 
+                    to set up a schedule that meets your needs. We understand that 
+                    this is a big investment and want to help you 
+                    budget for the expense in whatever way possible.<br>
+                    We accept checks, PayPal, and all major credit cards.        
                   </div>
                 </div>
               </div>
@@ -610,12 +644,13 @@
               <div class="accordion-item">
                 <h2 class="accordion-header">
                   <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2-content-3">
-                    Varius vel pharetra vel turpis nunc eget lorem dolor?
+                    Will my website be mobile-friendly? 
                   </button>
                 </h2>
                 <div id="faq2-content-3" class="accordion-collapse collapse" data-bs-parent="#faqlist2">
                   <div class="accordion-body">
-                    Laoreet sit amet cursus sit amet dictum sit amet justo. Mauris vitae ultricies leo integer malesuada nunc vel. Tincidunt eget nullam non nisi est sit amet. Turpis nunc eget lorem dolor sed. Ut venenatis tellus in metus vulputate eu scelerisque. Pellentesque diam volutpat commodo sed egestas egestas fringilla phasellus faucibus. Nibh tellus molestie nunc non blandit massa enim nec.
+                  Absolutely! Having a mobile-friendly website is more important than ever! 
+                  We work hard to ensure your website looks great on a variety of devices.
                   </div>
                 </div>
               </div>
@@ -652,15 +687,15 @@
 
         <div class="row gy-4 portfolio-container" data-aos="fade-up" data-aos-delay="200">
 
-          <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+          <div class="col-lg-4 col-md-6 portfolio-item filter-web">
             <div class="portfolio-wrap">
-              <img src="assets/img/portfolio/portfolio-1.jpg" class="img-fluid" alt="">
+              <img src="Portfolio/img/Medilab-bootstrap-website-template.png" class="img-fluid" alt="">
               <div class="portfolio-info">
-                <h4>App 1</h4>
-                <p>App</p>
+                <h4>Medilab</h4>
+                <p>Web</p>
                 <div class="portfolio-links">
-                  <a href="assets/img/portfolio/portfolio-1.jpg" data-gallery="portfolioGallery" class="portfokio-lightbox" title="App 1"><i class="bi bi-plus"></i></a>
-                  <a href="portfolio-details.html" title="More Details"><i class="bi bi-link"></i></a>
+                  <a href="Portfolio/img/Medilab-bootstrap-website-template.png" data-gallery="portfolioGallery" class="portfokio-lightbox" title="Medilab"><i class="bi bi-plus"></i></a>
+                  <a href="Portfolio/medilab.html" title="Demo"  target="_Blank"><i class="bi bi-link"></i></a>
                 </div>
               </div>
             </div>
@@ -668,13 +703,13 @@
 
           <div class="col-lg-4 col-md-6 portfolio-item filter-web">
             <div class="portfolio-wrap">
-              <img src="assets/img/portfolio/portfolio-2.jpg" class="img-fluid" alt="">
+              <img src="Portfolio/img/OnePage-bootstrap-website-template.png" class="img-fluid" alt="">
               <div class="portfolio-info">
-                <h4>Web 3</h4>
+                <h4>OnePage</h4>
                 <p>Web</p>
                 <div class="portfolio-links">
-                  <a href="assets/img/portfolio/portfolio-2.jpg" data-gallery="portfolioGallery" class="portfokio-lightbox" title="Web 3"><i class="bi bi-plus"></i></a>
-                  <a href="portfolio-details.html" title="More Details"><i class="bi bi-link"></i></a>
+                  <a href="Portfolio/OnePage-bootstrap-website-template.png" data-gallery="portfolioGallery" class="portfokio-lightbox" title="One Page"><i class="bi bi-plus"></i></a>
+                  <a href="https://bootstrapmade.com/demo/templates/OnePage/" title="Demo"  target="_Blank"><i class="bi bi-link"></i></a>
                 </div>
               </div>
             </div>
@@ -710,13 +745,13 @@
 
           <div class="col-lg-4 col-md-6 portfolio-item filter-web">
             <div class="portfolio-wrap">
-              <img src="assets/img/portfolio/portfolio-5.jpg" class="img-fluid" alt="">
+              <img src="Portfolio/img/Company-bootstrap-website-template.png" class="img-fluid" alt="">
               <div class="portfolio-info">
-                <h4>Web 2</h4>
+                <h4>Company</h4>
                 <p>Web</p>
                 <div class="portfolio-links">
-                  <a href="assets/img/portfolio/portfolio-5.jpg" data-gallery="portfolioGallery" class="portfokio-lightbox" title="Web 2"><i class="bi bi-plus"></i></a>
-                  <a href="portfolio-details.html" title="More Details"><i class="bi bi-link"></i></a>
+                  <a href="Portfolio/Company-bootstrap-website-template.png" data-gallery="portfolioGallery" class="portfokio-lightbox" title="Company"><i class="bi bi-plus"></i></a>
+                  <a href="https://bootstrapmade.com/demo/templates/Company/index.html" title="Demo" target="_Blank"><i class="bi bi-link"></i></a>
                 </div>
               </div>
             </div>
@@ -986,7 +1021,7 @@
 
         <header class="section-header">
           <h2>Our Clients</h2>
-          <p>Temporibus omnis officia</p>
+          <p>Committed to reshaping their organizations and driving lasting value</p>
         </header>
 
         <div class="clients-slider swiper-container">
@@ -1013,39 +1048,52 @@
 
         <header class="section-header">
           <h2>Blog</h2>
-          <p>Recent posts form our Blog</p>
+          <p>Recent posts from our Blog</p>
         </header>
 
         <div class="row">
 
+          
+            
           <div class="col-lg-4">
             <div class="post-box">
               <div class="post-img"><img src="assets/img/blog/blog-1.jpg" class="img-fluid" alt=""></div>
-              <span class="post-date">Tue, September 15</span>
+              <span id="date1" name="date1" ></span>
               <h3 class="post-title">Eum ad dolor et. Autem aut fugiat debitis voluptatem consequuntur sit</h3>
-              <a href="blog-singe.html" class="readmore stretched-link mt-auto"><span>Read More</span><i class="bi bi-arrow-right"></i></a>
+              <a href="#" class="readmore stretched-link mt-auto"><span>Read More</span><i class="bi bi-arrow-right"></i></a>
             </div>
           </div>
-
           <div class="col-lg-4">
             <div class="post-box">
               <div class="post-img"><img src="assets/img/blog/blog-2.jpg" class="img-fluid" alt=""></div>
-              <span class="post-date">Fri, August 28</span>
+              <span id="date2" name="date2" ></span>
               <h3 class="post-title">Et repellendus molestiae qui est sed omnis voluptates magnam</h3>
-              <a href="blog-singe.html" class="readmore stretched-link mt-auto"><span>Read More</span><i class="bi bi-arrow-right"></i></a>
+              <a href="#" class="readmore stretched-link mt-auto"><span>Read More</span><i class="bi bi-arrow-right"></i></a>
             </div>
           </div>
 
           <div class="col-lg-4">
             <div class="post-box">
               <div class="post-img"><img src="assets/img/blog/blog-3.jpg" class="img-fluid" alt=""></div>
-              <span class="post-date">Mon, July 11</span>
+              <span id="date3" name="date3" ></span>
               <h3 class="post-title">Quia assumenda est et veritatis aut quae</h3>
-              <a href="blog-singe.html" class="readmore stretched-link mt-auto"><span>Read More</span><i class="bi bi-arrow-right"></i></a>
+              <a href="#" class="readmore stretched-link mt-auto"><span>Read More</span><i class="bi bi-arrow-right"></i></a>
             </div>
           </div>
 
         </div>
+<script>
+            const today = new Date()
+            const date1 = new Date(today)
+            const date2 = new Date(today)
+            const date3 = new Date(today)
+            date1.setDate(date1.getDate() - 1)
+            date2.setDate(date2.getDate() - 1)
+            date3.setDate(date3.getDate() - 2)
+            document.getElementById("date1").innerHTML = date1.toDateString();
+            document.getElementById("date2").innerHTML = date2.toDateString();
+            document.getElementById("date3").innerHTML = date3.toDateString();
+</script>
 
       </div>
 
@@ -1063,28 +1111,36 @@
 
         <div class="row gy-4">
 
-          <div class="col-lg-6">
+          <div class="col-lg-12">
 
             <div class="row gy-4">
               <div class="col-md-6">
                 <div class="info-box">
                   <i class="bi bi-geo-alt"></i>
                   <h3>Address</h3>
-                  <p>A108 Adam Street,<br>New York, NY 535022</p>
+                  <p>A201 Res Chaabane,<br>New York, NY 532045</p>
                 </div>
               </div>
               <div class="col-md-6">
                 <div class="info-box">
-                  <i class="bi bi-telephone"></i>
-                  <h3>Call Us</h3>
-                  <p>+1 5589 55488 55<br>+1 6678 254445 41</p>
+                  <i class="bi bi-chat-text"></i>
+                  
+                  <h3>Text Us</h3>
+                  <p>
+                    <a href="https://wa.me/+21697538607/?text=Hello, Please ">WhatsApp</a>
+                  </p>
+                  <p>                   
+                    <a href="tel:+18312045509">+1 831 2045509</a>
+                  </p>
+                  
                 </div>
               </div>
               <div class="col-md-6">
                 <div class="info-box">
                   <i class="bi bi-envelope"></i>
                   <h3>Email Us</h3>
-                  <p>info@example.com<br>contact@example.com</p>
+                  <p><a href="mailto:tn76contact@gmail.com?subject=Contacting throu tn76.com&body=I need you to ...">tn76contact@gmail.com</a>
+				  </p>
                 </div>
               </div>
               <div class="col-md-6">
@@ -1098,36 +1154,7 @@
 
           </div>
 
-          <div class="col-lg-6">
-            <form action="forms/contact.php" method="post" class="php-email-form">
-              <div class="row gy-4">
 
-                <div class="col-md-6">
-                  <input type="text" name="name" class="form-control" placeholder="Your Name" required>
-                </div>
-
-                <div class="col-md-6 ">
-                  <input type="email" class="form-control" name="email" placeholder="Your Email" required>
-                </div>
-
-                <div class="col-md-12">
-                  <input type="text" class="form-control" name="subject" placeholder="Subject" required>
-                </div>
-
-                <div class="col-md-12">
-                  <textarea class="form-control" name="message" rows="6" placeholder="Message" required></textarea>
-                </div>
-
-                <div class="col-md-12 text-center">
-                  <div class="loading">Loading</div>
-                  <div class="error-message"></div>
-                  <div class="sent-message">Your message has been sent. Thank you!</div>
-
-                  <button type="submit">Send Message</button>
-                </div>
-
-              </div>
-            </form>
 
           </div>
 
