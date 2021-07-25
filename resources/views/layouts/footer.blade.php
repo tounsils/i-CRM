@@ -1,22 +1,24 @@
-  <!-- ======= Footer ======= -->
+ 
+ 
+ <!-- ======= Footer ======= -->
   <footer id="footer" class="footer">
 
-
-  <div class="footer-newsletter">
+    <div class="footer-newsletter">
       <div class="container">
         <div class="row justify-content-center">
           <div class="col-lg-12 text-center">
-            <h4>Our Newsletter</h4>
-            <p>Tamen quem nulla quae legam multos aute sint culpa legam noster magna</p>
+            <h4>Solution</h4>
+            <p>Got a problem that needs a solution? <br>We can help! Our clients love us because we're friendly, 
+              enthusiastic, accommodating, and we listen to your needs. 
+              <br>We'll work with you to help you find the solutions you've been looking for!</p>
           </div>
-          <div class="col-lg-6">
-            <form action="mailto:tn76contact@gmail.com?subject=Contacting throu tn76.com&body=I need you to ..." method="post">
-              <input type="email" name="email"><input type="submit" value="Subscribe">
-            </form>
+          <div class="col-lg-12 text-center">
+          <a class="getstarted scrollto" href="mailto:tn76contact@gmail.com?subject=Contacting throu tn76.com&body=I need you to ...">Get Started</a>
           </div>
         </div>
       </div>
     </div>
+
 
     <div class="footer-top">
       <div class="container">
@@ -26,7 +28,11 @@
               <img src="assets/img/logo.png" alt="">
               <span>eBusinessDev</span>
             </a>
-            <p>Cras fermentum odio eu feugiat lide par naso tierra. Justo eget nada terra videa magna derita valies darta donna mare fermentum iaculis eu non diam phasellus.</p>
+            <p>
+              Don't be afraid! We'll walk you through the entire process, 
+              hold your hand as much as you need, and help you through all the technical aspects that may seem scary.
+               We work best with clients who leave the heavy lifting to us.
+               </p>
             <div class="social-links mt-3">
               <a href="#" class="twitter">
                 <i class="bi bi-twitter"></i></a>
@@ -80,9 +86,9 @@
           <div class="col-lg-3 col-md-12 footer-contact text-center text-md-start">
             <h4>Contact Us</h4>
             <p>
-              A201 Res Chaabane <br>
-              New York, NY 532045<br>
-              United States <br><br>
+              A201 Res Shopping <br>
+              New Tn, TN 532045<br>
+              Tunisia <br><br>
               <strong>Phone:</strong> +1 831 2045509<br>
               <strong>Email:</strong> <a href="mailto:tn76contact@gmail.com?subject=Contacting throu tn76.com&body=I need you to ...">tn76contact@gmail.com</a><br>
             </p>
@@ -94,6 +100,7 @@
     </div>
 
     <div class="container">
+
       <div class="copyright">
         &copy; Copyright <strong><span>FlexStart</span></strong>. All Rights Reserved
         <br><span>eBusinessDev tn76.com</span>

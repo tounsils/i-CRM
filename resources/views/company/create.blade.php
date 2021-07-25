@@ -1,52 +1,36 @@
-@extends('base')
+<div class="modal-header">
+                <h4 class="modal-title" id="modelHeading"></h4>
+            </div>
+            <div class="modal-body">
+                <form id="companyForm" name="companyForm" class="form-horizontal">
+                   <input type="hidden" name="company_id" id="company_id">
+                    <div class="form-group">
+                        <label for="company_name" class="col-sm-2 control-label">Name</label>
+                        <div class="col-sm-12">
+                            * <input type="text" class="form-control" id="company_name" name="company_name" placeholder="Enter Name" value="" maxlength="50" required="">
+                        </div>
+                    </div>
 
-@section('main')
-<div class="row">
- <div class="col-sm-8 offset-sm-2">
-    <h1 class="display-3">Add a user</h1>
-  <div>
-    @if ($errors->any())
-      <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-              <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-      </div><br />
-    @endif
-      <form method="post" action="{{ route('users.store') }}">
-          @csrf
-          <div class="form-group">    
-              <label for="first_name">First Name:</label>
-              <input type="text" class="form-control" name="first_name"/>
-          </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Email</label>
+                        <div class="col-sm-12">
+                            <input type="text" class="form-control" id="email" name="email" placeholder="Enter email" value="" maxlength="50" >
+                        </div>
+                    </div>
 
-          <div class="form-group">
-              <label for="last_name">Last Name:</label>
-              <input type="text" class="form-control" name="last_name"/>
-          </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Phone</label>
+                        <div class="col-sm-12">
+                            <input type="text" class="form-control" id="phone" name="phone" placeholder="Enter phone" value="" maxlength="50">
+                        </div>
+                    </div>
 
-          <div class="form-group">
-              <label for="email">Email:</label>
-              <input type="text" class="form-control" name="email"/>
-          </div>
-          <div class="form-group">
-              <label for="city">City:</label>
-              <input type="text" class="form-control" name="city"/>
-          </div>
-          <div class="form-group">
-              <label for="country">Country:</label>
-              <input type="text" class="form-control" name="country"/>
-          </div>
-          <div class="form-group">
-              <label for="job_title">Job Title:</label>
-              <input type="text" class="form-control" name="job_title"/>
-          </div>                         
-          <button type="submit" class="btn btn-primary-outline">Add user</button>
-      </form>
-  </div>
+                    <div class="col-sm-offset-2 col-sm-10">
+                     <button type="submit" class="btn btn-primary" id="saveBtn" value="create">Save changes
+                     </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
-</div>
-
-    
-@endsection

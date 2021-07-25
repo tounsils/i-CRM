@@ -7,9 +7,21 @@ use DataTables;
 use App\Models\company;  // use user model
 use Illuminate\Support\Facades\DB;
 Use Redirect;
+use Illuminate\Support\Facades\Auth;
+use Session;
 
 class companyController extends Controller
 {
+    public function welcome()
+    {
+        if(Auth::check()){
+            return view('welcome');
+        }
+  
+        return redirect("login")->withSuccess('You are not allowed to access');
+    }
+
+
     /**
      * Display a listing of the resource.
      *
@@ -17,38 +29,13 @@ class companyController extends Controller
      */
     public function index(Request $request)
     {
-        $companies = company::all();
-        return view('companyhome', compact('companies'));
-        /*
-        return view('companyhome', compact('companies'), [
-            'compan' => DB::table('companies')->paginate(5)
-        ]);
-        */
-        /*
-        return view('user.index', [
-            'users' => DB::table('users')->paginate(15)
-        ]);
-        */
-
-/*
-        if ($request->ajax()) {
-            $data = company::latest()->get();
-            return Datatables::of($data)
-                    ->addIndexColumn()
-                    ->addColumn('action', function($row){
-
-                           $btn = '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$row->id.'" data-original-title="Edit" class="edit btn btn-primary btn-sm editcompany">Edit</a>';
-
-                           $btn = $btn.' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$row->id.'" data-original-title="Delete" class="btn btn-danger btn-sm deletecompany">Delete</a>';
-
-                            return $btn;
-                    })
-                    ->rawColumns(['action'])
-                    ->make(true);
+        // See getData() function
+        if(Auth::check()){
+            $companies = company::all();
+            return view('company.index', compact('companies'));
         }
-
-        return view('companyhome');
-        */
+  
+        return redirect("welcome")->withSuccess('You are not allowed to access');
     }
 
     /**
@@ -69,14 +56,25 @@ class companyController extends Controller
      */
     public function store(Request $request)
     {
-        company::updateOrCreate(['id' => $request->company_id],
+        $company = new company();
+        $company->company_name = $request->company_name; 
+        $company->email = $request->email;
+        $company->phone = $request->phone;
+
+    /*
+        $company = company::updateOrCreate(['id' => $request->company_id],
                 [
                     'company_name' => $request->company_name, 
                     'email' => $request->email,
                     'phone' => $request->phone
-                ]);        
+                ]); 
+                */
+                $company->save();       
+                
+                $companies = company::all();
+                return view('company.index', compact('companies'))->with('success', 'company updated!');
 
-        return response()->json(['success'=>'company saved successfully!']);
+        //return response()->json(['success'=>'company saved successfully!']);
     }
 
     /**
@@ -89,7 +87,7 @@ class companyController extends Controller
     {
         $company = company::find($id);
 
-        return view('companyhome', compact('company'));
+        return view('company.index', compact('company'));
         }
 
     /**
@@ -127,7 +125,7 @@ class companyController extends Controller
         $company->save();
 
         $companies = company::all();
-        return view('companyhome', compact('companies'))->with('success', 'company updated!');
+        return view('company.index', compact('companies'))->with('success', 'company updated!');
     }
 /*
             $table->string('company_name');
@@ -156,9 +154,14 @@ class companyController extends Controller
 
     public function getData()
     {
-    $companies = company::paginate(5);
-    return view('companyhome', compact('companies'));
+    if(Auth::check()){
+        $companies = company::paginate(5);
+        return view('company.index', compact('companies'));
     }
+
+    return redirect("welcome")->with('message', 'You are not allowed to access Company data!');
+
+}
  
 }
 

@@ -4,6 +4,8 @@
 
 @section('content')
 
+    <!-- start reusable part -->
+
   <!-- ======= Hero Section ======= -->
   <section id="hero" class="hero d-flex align-items-center">
 
@@ -23,7 +25,7 @@
           </div>
         </div>
         <div class="col-lg-6 hero-img" data-aos="zoom-out" data-aos-delay="200">
-          <img src="assets/img/hero-img.png" class="img-fluid" alt="">
+          <img src="{{ asset('/assets/img/hero-img.png') }}" class="img-fluid" alt="">
         </div>
       </div>
     </div>
@@ -59,7 +61,7 @@
           </div>
 
           <div class="col-lg-6 d-flex align-items-center" data-aos="zoom-out" data-aos-delay="200">
-            <img src="assets/img/about.jpg" class="img-fluid" alt="">
+            <img src="{{ asset('/assets/img/about.jpg') }}" class="img-fluid" alt="">
           </div>
 
         </div>
@@ -81,7 +83,7 @@
 
           <div class="col-lg-4">
             <div class="box" data-aos="fade-up" data-aos-delay="200">
-              <img src="assets/img/values-1.png" class="img-fluid" alt="">
+              <img src="{{ asset('/assets/img/values-1.png') }}" class="img-fluid" alt="">
               <h3>Friendly</h3>
               <p>Our approach is down-to-earth and just plain friendly. We love our clients, we love seeing you succeed, and we’re here to help..</p>
             </div>
@@ -89,7 +91,7 @@
 
           <div class="col-lg-4 mt-4 mt-lg-0">
             <div class="box" data-aos="fade-up" data-aos-delay="400">
-              <img src="assets/img/values-2.png" class="img-fluid" alt="">
+              <img src="{{ asset('/assets/img/values-2.png') }}" class="img-fluid" alt="">
               <h3>Thoughtful</h3>
               <p>We take an inquisitive, methodical approach to every project to ensure that we find the best solution possible. 
                 Keeping our clients’ best interests at heart is a way of life for us..</p>
@@ -98,7 +100,7 @@
 
           <div class="col-lg-4 mt-4 mt-lg-0">
             <div class="box" data-aos="fade-up" data-aos-delay="600">
-              <img src="assets/img/values-3.png" class="img-fluid" alt="">
+              <img src="{{ asset('/assets/img/values-3.png') }}" class="img-fluid" alt="">
               <h3>Intuitive</h3>
               <p>Technology can be frustratingly complex. We aim to keep things as painless as possible. 
                 Our goal is that your experience will be simple and enjoyable..</p>
@@ -175,7 +177,7 @@
         <div class="row">
 
           <div class="col-lg-6">
-            <img src="assets/img/features.png" class="img-fluid" alt="">
+            <img src="{{ asset('/assets/img/features.png') }}" class="img-fluid" alt="">
           </div>
 
           <div class="col-lg-6 mt-5 mt-lg-0 d-flex">
@@ -231,18 +233,18 @@
         <!-- Feature Tabs -->
         <div class="row feture-tabs" data-aos="fade-up">
           <div class="col-lg-6">
-            <h3>Neque officiis dolore maiores et exercitationem quae est seda lidera pat claero</h3>
+            <h3>Business Software & Web Application </h3>
 
             <!-- Tabs -->
             <ul class="nav nav-pills mb-3">
               <li>
-                <a class="nav-link active" data-bs-toggle="pill" href="#tab1">Saepe fuga</a>
+                <a class="nav-link active" data-bs-toggle="pill" href="#tab1">Business Software</a>
               </li>
               <li>
-                <a class="nav-link" data-bs-toggle="pill" href="#tab2">Voluptates</a>
+                <a class="nav-link" data-bs-toggle="pill" href="#tab2">Web Application</a>
               </li>
               <li>
-                <a class="nav-link" data-bs-toggle="pill" href="#tab3">Corrupti</a>
+                <a class="nav-link" data-bs-toggle="pill" href="#tab3">Available Apps </a>
               </li>
             </ul><!-- End Tabs -->
 
@@ -250,45 +252,60 @@
             <div class="tab-content">
 
               <div class="tab-pane fade show active" id="tab1">
-                <p>Consequuntur inventore voluptates consequatur aut vel et. Eos doloribus expedita. Sapiente atque consequatur minima nihil quae aspernatur quo suscipit voluptatem.</p>
+                <p> There are many different types of business software. 
+                  Deciding which one is best for your business is not always
+                   easy and will often depend on:</p>
                 <div class="d-flex align-items-center mb-2">
                   <i class="bi bi-check2"></i>
-                  <h4>Repudiandae rerum velit modi et officia quasi facilis</h4>
+                  <h4>Common types of business software</h4>
                 </div>
-                <p>Laborum omnis voluptates voluptas qui sit aliquam blanditiis. Sapiente minima commodi dolorum non eveniet magni quaerat nemo et.</p>
+                <p>Common types of software used in business are:</p>
+                <div class="d-flex align-items-center mb-2">
+
+                  Accounts Software<br>
+                  Billing Software<br>
+                  Payroll Software<br>
+                  Database Software<br>
+                  Business Software<br>
+                  Asset Management Software<br>
+                  Desktop Publishing Programs<br>
+              
+                </div>
                 <div class="d-flex align-items-center mb-2">
                   <i class="bi bi-check2"></i>
-                  <h4>Incidunt non veritatis illum ea ut nisi</h4>
+                  <h4>These usually come as bespoke products or off-the-shelf software.</h4>
                 </div>
-                <p>Non quod totam minus repellendus autem sint velit. Rerum debitis facere soluta tenetur. Iure molestiae assumenda sunt qui inventore eligendi voluptates nisi at. Dolorem quo tempora. Quia et perferendis.</p>
               </div><!-- End Tab 1 Content -->
 
               <div class="tab-pane fade show" id="tab2">
-                <p>Consequuntur inventore voluptates consequatur aut vel et. Eos doloribus expedita. Sapiente atque consequatur minima nihil quae aspernatur quo suscipit voluptatem.</p>
-                <div class="d-flex align-items-center mb-2">
-                  <i class="bi bi-check2"></i>
-                  <h4>Repudiandae rerum velit modi et officia quasi facilis</h4>
-                </div>
-                <p>Laborum omnis voluptates voluptas qui sit aliquam blanditiis. Sapiente minima commodi dolorum non eveniet magni quaerat nemo et.</p>
-                <div class="d-flex align-items-center mb-2">
-                  <i class="bi bi-check2"></i>
-                  <h4>Incidunt non veritatis illum ea ut nisi</h4>
-                </div>
-                <p>Non quod totam minus repellendus autem sint velit. Rerum debitis facere soluta tenetur. Iure molestiae assumenda sunt qui inventore eligendi voluptates nisi at. Dolorem quo tempora. Quia et perferendis.</p>
+                <p>
+                  Business web application systems for web and mobile will set your company apart from competition and increase business productivity. 
+                 </p>
+                <p>
+                  A web application or "web app" is a software program that runs on a web server. 
+                  Unlike traditional desktop applications, which are launched by your operating system, 
+                  web apps must be accessed through a web browser...</p> 
+                  <p>
+                  Developers do not need to distribute software updates to users when the web app is updated.             
+
+                </p>
+
               </div><!-- End Tab 2 Content -->
 
               <div class="tab-pane fade show" id="tab3">
-                <p>Consequuntur inventore voluptates consequatur aut vel et. Eos doloribus expedita. Sapiente atque consequatur minima nihil quae aspernatur quo suscipit voluptatem.</p>
-                <div class="d-flex align-items-center mb-2">
-                  <i class="bi bi-check2"></i>
-                  <h4>Repudiandae rerum velit modi et officia quasi facilis</h4>
-                </div>
-                <p>Laborum omnis voluptates voluptas qui sit aliquam blanditiis. Sapiente minima commodi dolorum non eveniet magni quaerat nemo et.</p>
-                <div class="d-flex align-items-center mb-2">
-                  <i class="bi bi-check2"></i>
-                  <h4>Incidunt non veritatis illum ea ut nisi</h4>
-                </div>
-                <p>Non quod totam minus repellendus autem sint velit. Rerum debitis facere soluta tenetur. Iure molestiae assumenda sunt qui inventore eligendi voluptates nisi at. Dolorem quo tempora. Quia et perferendis.</p>
+                <p>
+                  Business web application systems for web and mobile will set your company apart from competition and increase business productivity. 
+                 </p>
+
+                <p>Online Stores</p> 
+                <p>Billing Application</p> 
+                <p>Real Estate Application</p> 
+                <p>Financial Institutions & Organizations</p> 
+                <p>Schools and Higher Education</p> 
+                <p>Corporations and Creative Agencies</p> 
+            
+              
+              
               </div><!-- End Tab 3 Content -->
 
             </div>
@@ -296,69 +313,71 @@
           </div>
 
           <div class="col-lg-6">
-            <img src="assets/img/features-2.png" class="img-fluid" alt="">
+            <img src="{{ asset('/assets/img/features-2.png') }}" class="img-fluid" alt="">
           </div>
 
         </div><!-- End Feature Tabs -->
 
         <!-- Feature Icons -->
         <div class="row feature-icons" data-aos="fade-up">
-          <h3>Ratione mollitia eos ab laudantium rerum beatae quo</h3>
+          <h3>Responsive Design</h3>
 
           <div class="row">
 
             <div class="col-xl-4 text-center" data-aos="fade-right" data-aos-delay="100">
-              <img src="assets/img/features-3.png" class="img-fluid p-4" alt="">
+              <img src="{{ asset('/assets/img/features-3.png') }}" class="img-fluid p-4" alt="">
             </div>
 
             <div class="col-xl-8 d-flex content">
               <div class="row align-self-center gy-4">
 
-                <div class="col-md-6 icon-box" data-aos="fade-up">
-                  <i class="ri-line-chart-line"></i>
-                  <div>
-                    <h4>Corporis voluptates sit</h4>
-                    <p>Consequuntur sunt aut quasi enim aliquam quae harum pariatur laboris nisi ut aliquip</p>
-                  </div>
-                </div>
 
                 <div class="col-md-6 icon-box" data-aos="fade-up" data-aos-delay="100">
-                  <i class="ri-stack-line"></i>
+                  <i class="ri-customer-service-2-line"></i>
                   <div>
-                    <h4>Ullamco laboris nisi</h4>
-                    <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt</p>
+                    <h4>Customer-centric solutions</h4>
+                    <p>Visual hierarchy and progressive 
+                      disclosure and navigation drawers to give users needed items first.</p>
                   </div>
                 </div>
 
                 <div class="col-md-6 icon-box" data-aos="fade-up" data-aos-delay="200">
-                  <i class="ri-brush-4-line"></i>
+                  <i class="ri-device-line"></i>
                   <div>
-                    <h4>Labore consequatur</h4>
-                    <p>Aut suscipit aut cum nemo deleniti aut omnis. Doloribus ut maiores omnis facere</p>
+                    <h4>“Mobile first” approach</h4>
+                    <p>Phone-sized designs to suit larger screens.</p>
+                  </div>
+                </div>
+
+                <div class="col-md-6 icon-box" data-aos="fade-up">
+                  <i class="ri-user-follow-line"></i>
+                  <div>
+                    <h4>Client-focused</h4>
+                    <p>Consequuntur sunt aut quasi enim aliquam quae harum pariatur laboris nisi ut aliquip</p>
                   </div>
                 </div>
 
                 <div class="col-md-6 icon-box" data-aos="fade-up" data-aos-delay="300">
-                  <i class="ri-magic-line"></i>
+                  <i class="ri-collage-line"></i>
                   <div>
-                    <h4>Beatae veritatis</h4>
-                    <p>Expedita veritatis consequuntur nihil tempore laudantium vitae denat pacta</p>
+                    <h4>Fluid grids and images</h4>
+                    <p>Images in native dimension, or croped for maximize impact</p>
                   </div>
                 </div>
 
                 <div class="col-md-6 icon-box" data-aos="fade-up" data-aos-delay="400">
-                  <i class="ri-command-line"></i>
+                  <i class="ri-text-wrap"></i>
                   <div>
-                    <h4>Molestiae dolor</h4>
-                    <p>Et fuga et deserunt et enim. Dolorem architecto ratione tensa raptor marte</p>
+                    <h4>Users’ contexts</h4>
+                    <p>Prioritize and hide content to suit users’ contexts</p>
                   </div>
                 </div>
 
                 <div class="col-md-6 icon-box" data-aos="fade-up" data-aos-delay="500">
-                  <i class="ri-radar-line"></i>
+                  <i class="ri-pencil-ruler-line"></i>
                   <div>
-                    <h4>Explicabo consectetur</h4>
-                    <p>Est autem dicta beatae suscipit. Sint veritatis et sit quasi ab aut inventore</p>
+                    <h4>Design patterns</h4>
+                    <p>Ease of use for users, quicken their familiarity</p>
                   </div>
                 </div>
 
@@ -387,7 +406,7 @@
 
           <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
             <div class="service-box blue">
-              <i class="ri-discuss-line icon"></i>
+              <i class="ri-layout-masonry-line icon"></i>
               <h3>Responsive Design</h3>
               <p>
 
@@ -398,7 +417,7 @@
 
           <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
             <div class="service-box orange">
-              <i class="ri-discuss-line icon"></i>
+              <i class="ri-coins-line icon"></i>
               <h3>E-Commerce</h3>
               <p>Start selling right away!</p>
               <a href="#" class="read-more"><span>Read More</span> <i class="bi bi-arrow-right"></i></a>
@@ -407,7 +426,7 @@
 
           <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="400">
             <div class="service-box green">
-              <i class="ri-discuss-line icon"></i>
+              <i class="ri-user-follow-line icon"></i>
               <h3>User Experience</h3>
               <p>Your customer will love it!</p>
               <a href="#" class="read-more"><span>Read More</span> <i class="bi bi-arrow-right"></i></a>
@@ -416,27 +435,28 @@
 
           <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="500">
             <div class="service-box red">
-              <i class="ri-discuss-line icon"></i>
+              <i class="ri-rocket-line icon"></i>
               <h3>Fast Page Loading</h3>
-              <p>We don’t make our customers wait.</p>
+              <p>We don’t make our customers wait.</p>ri-run-line
               <a href="#" class="read-more"><span>Read More</span> <i class="bi bi-arrow-right"></i></a>
             </div>
           </div>
 
           <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="600">
             <div class="service-box purple">
-              <i class="ri-discuss-line icon"></i>
-              <h3>Velit Doloremque.</h3>
-              <p>Cumque et suscipit saepe. Est maiores autem enim facilis ut aut ipsam corporis aut. Sed animi at autem alias eius labore.</p>
+              <i class="ri-wheelchair-line icon"></i>
+              <h3>Aim for accessibility.</h3>
+              <p>Contrast and background effectiveness, all text responsive</p>
               <a href="#" class="read-more"><span>Read More</span> <i class="bi bi-arrow-right"></i></a>
             </div>
           </div>
 
           <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="700">
             <div class="service-box pink">
-              <i class="ri-discuss-line icon"></i>
-              <h3>Dolori Architecto</h3>
-              <p>Hic molestias ea quibusdam eos. Fugiat enim doloremque aut neque non et debitis iure. Corrupti recusandae ducimus enim.</p>
+              <i class="ri-device-line icon"></i> 
+              <h3>Mobile solutions</h3>
+              <p>Added value to mobile solutions for society, 
+                industries, organizations, and administrative departments.</p>
               <a href="#" class="read-more"><span>Read More</span> <i class="bi bi-arrow-right"></i></a>
             </div>
           </div>
@@ -463,7 +483,7 @@
             <div class="box">
               <h3 style="color: #07d5c0;">Free Quote</h3>
               <div class="price"><sup>$</sup>0<span> / mo</span></div>
-              <img src="assets/img/pricing-free.png" class="img-fluid" alt="">
+              <img src="{{ asset('/assets/img/pricing-free.png') }}" class="img-fluid" alt="">
               <ul>
                 <li>Web site app quote</li>
                 <li>Revisions</li>
@@ -479,7 +499,7 @@
             <div class="box">
               <h3 style="color: #65c600;">Software Installation</h3>
               <div class="price">From <sup>$</sup>1<span></span></div>
-              <img src="assets/img/pricing-starter.png" class="img-fluid" alt="">
+              <img src="{{ asset('/assets/img/pricing-starter.png') }}" class="img-fluid" alt="">
               <ul>
                 <li>Software Upload</li>
                 <li>Installation</li>
@@ -496,7 +516,7 @@
               <span class="featured">Featured</span>
               <h3 style="color: #ff901c;">Website/ app Creation</h3>
               <div class="price">From <sup>$</sup>10<span> +</span></div>
-              <img src="assets/img/pricing-business.png" class="img-fluid" alt="">
+              <img src="{{ asset('/assets/img/pricing-business.png') }}" class="img-fluid" alt="">
               <ul>
                 <li>Home page</li>
                 <li>3 pages</li>
@@ -512,7 +532,7 @@
             <div class="box">
               <h3 style="color: #ff0071;">Full Stack service</h3>
               <div class="price"><sup>$</sup>70<span> / h</span></div>
-              <img src="assets/img/pricing-ultimate.png" class="img-fluid" alt="">
+              <img src="{{ asset('/assets/img/pricing-ultimate.png') }}" class="img-fluid" alt="">
               <ul>
                 <li>Website/ app Creation</li>
                 <li>Hosting/Cloud/ installation</li>
@@ -689,12 +709,12 @@
 
           <div class="col-lg-4 col-md-6 portfolio-item filter-web">
             <div class="portfolio-wrap">
-              <img src="Portfolio/img/Medilab-bootstrap-website-template.png" class="img-fluid" alt="">
+              <img src="{{ asset('/assets/img/Portfolio/img/Medilab-bootstrap-website-template.png') }}" class="img-fluid" alt="">
               <div class="portfolio-info">
                 <h4>Medilab</h4>
                 <p>Web</p>
                 <div class="portfolio-links">
-                  <a href="Portfolio/img/Medilab-bootstrap-website-template.png" data-gallery="portfolioGallery" class="portfokio-lightbox" title="Medilab"><i class="bi bi-plus"></i></a>
+                  <a href="{{ asset('/assets/img/Portfolio/img/Medilab-bootstrap-website-template.png') }}" data-gallery="portfolioGallery" class="portfokio-lightbox" title="Medilab"><i class="bi bi-plus"></i></a>
                   <a href="Portfolio/medilab.html" title="Demo"  target="_Blank"><i class="bi bi-link"></i></a>
                 </div>
               </div>
@@ -703,12 +723,12 @@
 
           <div class="col-lg-4 col-md-6 portfolio-item filter-web">
             <div class="portfolio-wrap">
-              <img src="Portfolio/img/OnePage-bootstrap-website-template.png" class="img-fluid" alt="">
+              <img src="{{ asset('/assets/img/Portfolio/img/OnePage-bootstrap-website-template.png') }}" class="img-fluid" alt="">
               <div class="portfolio-info">
                 <h4>OnePage</h4>
                 <p>Web</p>
                 <div class="portfolio-links">
-                  <a href="Portfolio/OnePage-bootstrap-website-template.png" data-gallery="portfolioGallery" class="portfokio-lightbox" title="One Page"><i class="bi bi-plus"></i></a>
+                  <a href="{{ asset('/assets/img/portfolio/img/OnePage-bootstrap-website-template.png') }}" data-gallery="portfolioGallery" class="portfokio-lightbox" title="One Page"><i class="bi bi-plus"></i></a>
                   <a href="https://bootstrapmade.com/demo/templates/OnePage/" title="Demo"  target="_Blank"><i class="bi bi-link"></i></a>
                 </div>
               </div>
@@ -717,12 +737,12 @@
 
           <div class="col-lg-4 col-md-6 portfolio-item filter-app">
             <div class="portfolio-wrap">
-              <img src="assets/img/portfolio/portfolio-3.jpg" class="img-fluid" alt="">
+              <img src="{{ asset('/assets/img/portfolio/img/portfolio-3.jpg') }}" class="img-fluid" alt="">
               <div class="portfolio-info">
                 <h4>App 2</h4>
                 <p>App</p>
                 <div class="portfolio-links">
-                  <a href="assets/img/portfolio/portfolio-3.jpg" data-gallery="portfolioGallery" class="portfokio-lightbox" title="App 2"><i class="bi bi-plus"></i></a>
+                  <a href="{{ asset('/assets/img/portfolio/img/portfolio-3.jpg') }}" data-gallery="portfolioGallery" class="portfokio-lightbox" title="App 2"><i class="bi bi-plus"></i></a>
                   <a href="portfolio-details.html" title="More Details"><i class="bi bi-link"></i></a>
                 </div>
               </div>
@@ -731,12 +751,12 @@
 
           <div class="col-lg-4 col-md-6 portfolio-item filter-card">
             <div class="portfolio-wrap">
-              <img src="assets/img/portfolio/portfolio-4.jpg" class="img-fluid" alt="">
+              <img src="{{ asset('/assets/img/portfolio/img/portfolio-4.jpg') }}" class="img-fluid" alt="">
               <div class="portfolio-info">
                 <h4>Card 2</h4>
                 <p>Card</p>
                 <div class="portfolio-links">
-                  <a href="assets/img/portfolio/portfolio-4.jpg" data-gallery="portfolioGallery" class="portfokio-lightbox" title="Card 2"><i class="bi bi-plus"></i></a>
+                  <a href="{{ asset('/assets/img/portfolio/img/portfolio-4.jpg') }}" data-gallery="portfolioGallery" class="portfokio-lightbox" title="Card 2"><i class="bi bi-plus"></i></a>
                   <a href="portfolio-details.html" title="More Details"><i class="bi bi-link"></i></a>
                 </div>
               </div>
@@ -745,12 +765,12 @@
 
           <div class="col-lg-4 col-md-6 portfolio-item filter-web">
             <div class="portfolio-wrap">
-              <img src="Portfolio/img/Company-bootstrap-website-template.png" class="img-fluid" alt="">
+              <img src="{{ asset('/assets/img/portfolio/img/Company-bootstrap-website-template.png') }}" class="img-fluid" alt="">
               <div class="portfolio-info">
                 <h4>Company</h4>
                 <p>Web</p>
                 <div class="portfolio-links">
-                  <a href="Portfolio/Company-bootstrap-website-template.png" data-gallery="portfolioGallery" class="portfokio-lightbox" title="Company"><i class="bi bi-plus"></i></a>
+                  <a href="{{ asset('/assets/img/Portfolio/Company-bootstrap-website-template.png') }}" data-gallery="portfolioGallery" class="portfokio-lightbox" title="Company"><i class="bi bi-plus"></i></a>
                   <a href="https://bootstrapmade.com/demo/templates/Company/index.html" title="Demo" target="_Blank"><i class="bi bi-link"></i></a>
                 </div>
               </div>
@@ -759,12 +779,12 @@
 
           <div class="col-lg-4 col-md-6 portfolio-item filter-app">
             <div class="portfolio-wrap">
-              <img src="assets/img/portfolio/portfolio-6.jpg" class="img-fluid" alt="">
+              <img src="{{ asset('/assets/img/portfolio/img/portfolio-6.jpg') }}" class="img-fluid" alt="">
               <div class="portfolio-info">
                 <h4>App 3</h4>
                 <p>App</p>
                 <div class="portfolio-links">
-                  <a href="assets/img/portfolio/portfolio-6.jpg" data-gallery="portfolioGallery" class="portfokio-lightbox" title="App 3"><i class="bi bi-plus"></i></a>
+                  <a href="{{ asset('/assets/img/portfolio/img/portfolio-6.jpg') }}" data-gallery="portfolioGallery" class="portfokio-lightbox" title="App 3"><i class="bi bi-plus"></i></a>
                   <a href="portfolio-details.html" title="More Details"><i class="bi bi-link"></i></a>
                 </div>
               </div>
@@ -773,12 +793,12 @@
 
           <div class="col-lg-4 col-md-6 portfolio-item filter-card">
             <div class="portfolio-wrap">
-              <img src="assets/img/portfolio/portfolio-7.jpg" class="img-fluid" alt="">
+              <img src="{{ asset('/assets/img/portfolio/img/portfolio-7.jpg') }}" class="img-fluid" alt="">
               <div class="portfolio-info">
                 <h4>Card 1</h4>
                 <p>Card</p>
                 <div class="portfolio-links">
-                  <a href="assets/img/portfolio/portfolio-7.jpg" data-gallery="portfolioGallery" class="portfokio-lightbox" title="Card 1"><i class="bi bi-plus"></i></a>
+                  <a href="{{ asset('/assets/img/portfolio/img/portfolio-7.jpg') }}" data-gallery="portfolioGallery" class="portfokio-lightbox" title="Card 1"><i class="bi bi-plus"></i></a>
                   <a href="portfolio-details.html" title="More Details"><i class="bi bi-link"></i></a>
                 </div>
               </div>
@@ -787,12 +807,12 @@
 
           <div class="col-lg-4 col-md-6 portfolio-item filter-card">
             <div class="portfolio-wrap">
-              <img src="assets/img/portfolio/portfolio-8.jpg" class="img-fluid" alt="">
+              <img src="{{ asset('/assets/img/portfolio/img/portfolio-8.jpg') }}" class="img-fluid" alt="">
               <div class="portfolio-info">
                 <h4>Card 3</h4>
                 <p>Card</p>
                 <div class="portfolio-links">
-                  <a href="assets/img/portfolio/portfolio-8.jpg" data-gallery="portfolioGallery" class="portfokio-lightbox" title="Card 3"><i class="bi bi-plus"></i></a>
+                  <a href="{{ asset('/assets/img/portfolio/img/portfolio-8.jpg') }}" data-gallery="portfolioGallery" class="portfokio-lightbox" title="Card 3"><i class="bi bi-plus"></i></a>
                   <a href="portfolio-details.html" title="More Details"><i class="bi bi-link"></i></a>
                 </div>
               </div>
@@ -801,12 +821,12 @@
 
           <div class="col-lg-4 col-md-6 portfolio-item filter-web">
             <div class="portfolio-wrap">
-              <img src="assets/img/portfolio/portfolio-9.jpg" class="img-fluid" alt="">
+              <img src="{{ asset('/assets/img/portfolio/img/portfolio-9.jpg') }}" class="img-fluid" alt="">
               <div class="portfolio-info">
                 <h4>Web 3</h4>
                 <p>Web</p>
                 <div class="portfolio-links">
-                  <a href="assets/img/portfolio/portfolio-9.jpg" data-gallery="portfolioGallery" class="portfokio-lightbox" title="Web 3"><i class="bi bi-plus"></i></a>
+                  <a href="{{ asset('/assets/img/portfolio/img/portfolio-9.jpg') }}" data-gallery="portfolioGallery" class="portfokio-lightbox" title="Web 3"><i class="bi bi-plus"></i></a>
                   <a href="portfolio-details.html" title="More Details"><i class="bi bi-link"></i></a>
                 </div>
               </div>
@@ -826,7 +846,7 @@
 
         <header class="section-header">
           <h2>Testimonials</h2>
-          <p>What they are saying about us</p>
+          <p>What our clients are saying about us</p>
         </header>
 
         <div class="testimonials-slider swiper-container" data-aos="fade-up" data-aos-delay="200">
@@ -838,10 +858,10 @@
                   <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
                 </div>
                 <p>
-                  Proin iaculis purus consequat sem cure digni ssim donec porttitora entum suscipit rhoncus. Accusantium quam, ultricies eget id, aliquam eget nibh et. Maecen aliquam, risus at semper.
+                  @tn76com my best experience ever.
                 </p>
                 <div class="profile mt-auto">
-                  <img src="assets/img/testimonials/testimonials-1.jpg" class="testimonial-img" alt="">
+                  <img src="{{ asset('/assets/img/testimonials/testimonials-1.jpg') }}" class="testimonial-img" alt="">
                   <h3>Saul Goodman</h3>
                   <h4>Ceo &amp; Founder</h4>
                 </div>
@@ -854,12 +874,12 @@
                   <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
                 </div>
                 <p>
-                  Export tempor illum tamen malis malis eram quae irure esse labore quem cillum quid cillum eram malis quorum velit fore eram velit sunt aliqua noster fugiat irure amet legam anim culpa.
+                  My website built using Wordpress Divi theme is SO GOOD 100/10.
                 </p>
                 <div class="profile mt-auto">
-                  <img src="assets/img/testimonials/testimonials-2.jpg" class="testimonial-img" alt="">
+                  <img src="{{ asset('/assets/img/testimonials/testimonials-2.jpg') }}" class="testimonial-img" alt="">
                   <h3>Sara Wilsson</h3>
-                  <h4>Designer</h4>
+                  <h4>3F Founder</h4>
                 </div>
               </div>
             </div><!-- End testimonial item -->
@@ -870,12 +890,12 @@
                   <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
                 </div>
                 <p>
-                  Enim nisi quem export duis labore cillum quae magna enim sint quorum nulla quem veniam duis minim tempor labore quem eram duis noster aute amet eram fore quis sint minim.
+                  We're running all tiketing trough their awesome platform for our event #fwssummit                
                 </p>
                 <div class="profile mt-auto">
-                  <img src="assets/img/testimonials/testimonials-3.jpg" class="testimonial-img" alt="">
+                  <img src="{{ asset('/assets/img/testimonials/testimonials-3.jpg') }}" class="testimonial-img" alt="">
                   <h3>Jena Karlis</h3>
-                  <h4>Store Owner</h4>
+                  <h4>Event manager</h4>
                 </div>
               </div>
             </div><!-- End testimonial item -->
@@ -886,12 +906,12 @@
                   <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
                 </div>
                 <p>
-                  Fugiat enim eram quae cillum dolore dolor amet nulla culpa multos export minim fugiat minim velit minim dolor enim duis veniam ipsum anim magna sunt elit fore quem dolore labore illum veniam.
+                  @tn76com I love my @pizzagotn :) Easy platform to use, fantastic staff and nothing but greay results!
                 </p>
                 <div class="profile mt-auto">
-                  <img src="assets/img/testimonials/testimonials-4.jpg" class="testimonial-img" alt="">
+                  <img src="{{ asset('/assets/img/testimonials/testimonials-4.jpg') }}" class="testimonial-img" alt="">
                   <h3>Matt Brandon</h3>
-                  <h4>Freelancer</h4>
+                  <h4>Restaurant owner </h4>
                 </div>
               </div>
             </div><!-- End testimonial item -->
@@ -902,10 +922,10 @@
                   <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
                 </div>
                 <p>
-                  Quis quorum aliqua sint quem legam fore sunt eram irure aliqua veniam tempor noster veniam enim culpa labore duis sunt culpa nulla illum cillum fugiat legam esse veniam culpa fore nisi cillum quid.
+                  @tn76com So glad to work with you.
                 </p>
                 <div class="profile mt-auto">
-                  <img src="assets/img/testimonials/testimonials-5.jpg" class="testimonial-img" alt="">
+                  <img src="{{ asset('/assets/img/testimonials/testimonials-5.jpg') }}" class="testimonial-img" alt="">
                   <h3>John Larson</h3>
                   <h4>Entrepreneur</h4>
                 </div>
@@ -935,7 +955,7 @@
           <div class="col-lg-3 col-md-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="100">
             <div class="member">
               <div class="member-img">
-                <img src="assets/img/team/team-1.jpg" class="img-fluid" alt="">
+                <img src="{{ asset('/assets/img/team/team-1.jpg') }}" class="img-fluid" alt="">
                 <div class="social">
                   <a href=""><i class="bi bi-twitter"></i></a>
                   <a href=""><i class="bi bi-facebook"></i></a>
@@ -954,7 +974,7 @@
           <div class="col-lg-3 col-md-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="200">
             <div class="member">
               <div class="member-img">
-                <img src="assets/img/team/team-2.jpg" class="img-fluid" alt="">
+                <img src="{{ asset('/assets/img/team/team-2.jpg') }}" class="img-fluid" alt="">
                 <div class="social">
                   <a href=""><i class="bi bi-twitter"></i></a>
                   <a href=""><i class="bi bi-facebook"></i></a>
@@ -973,7 +993,7 @@
           <div class="col-lg-3 col-md-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="300">
             <div class="member">
               <div class="member-img">
-                <img src="assets/img/team/team-3.jpg" class="img-fluid" alt="">
+                <img src="{{ asset('/assets/img/team/team-3.jpg') }}" class="img-fluid" alt="">
                 <div class="social">
                   <a href=""><i class="bi bi-twitter"></i></a>
                   <a href=""><i class="bi bi-facebook"></i></a>
@@ -992,7 +1012,7 @@
           <div class="col-lg-3 col-md-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="400">
             <div class="member">
               <div class="member-img">
-                <img src="assets/img/team/team-4.jpg" class="img-fluid" alt="">
+                <img src="{{ asset('/assets/img/team/team-4.jpg') }}" class="img-fluid" alt="">
                 <div class="social">
                   <a href=""><i class="bi bi-twitter"></i></a>
                   <a href=""><i class="bi bi-facebook"></i></a>
@@ -1026,14 +1046,14 @@
 
         <div class="clients-slider swiper-container">
           <div class="swiper-wrapper align-items-center">
-            <div class="swiper-slide"><img src="assets/img/clients/client-1.png" class="img-fluid" alt=""></div>
-            <div class="swiper-slide"><img src="assets/img/clients/client-2.png" class="img-fluid" alt=""></div>
-            <div class="swiper-slide"><img src="assets/img/clients/client-3.png" class="img-fluid" alt=""></div>
-            <div class="swiper-slide"><img src="assets/img/clients/client-4.png" class="img-fluid" alt=""></div>
-            <div class="swiper-slide"><img src="assets/img/clients/client-5.png" class="img-fluid" alt=""></div>
-            <div class="swiper-slide"><img src="assets/img/clients/client-6.png" class="img-fluid" alt=""></div>
-            <div class="swiper-slide"><img src="assets/img/clients/client-7.png" class="img-fluid" alt=""></div>
-            <div class="swiper-slide"><img src="assets/img/clients/client-8.png" class="img-fluid" alt=""></div>
+            <div class="swiper-slide"><img src="{{ asset('/assets/img/clients/client-1.png') }}" class="img-fluid" alt=""></div>
+            <div class="swiper-slide"><img src="{{ asset('/assets/img/clients/client-2.png') }}" class="img-fluid" alt=""></div>
+            <div class="swiper-slide"><img src="{{ asset('/assets/img/clients/client-3.png') }}" class="img-fluid" alt=""></div>
+            <div class="swiper-slide"><img src="{{ asset('/assets/img/clients/client-4.png') }}" class="img-fluid" alt=""></div>
+            <div class="swiper-slide"><img src="{{ asset('/assets/img/clients/client-5.png') }}" class="img-fluid" alt=""></div>
+            <div class="swiper-slide"><img src="{{ asset('/assets/img/clients/client-6.png') }}" class="img-fluid" alt=""></div>
+            <div class="swiper-slide"><img src="{{ asset('/assets/img/clients/client-7.png') }}" class="img-fluid" alt=""></div>
+            <div class="swiper-slide"><img src="{{ asset('/assets/img/clients/client-8.png') }}" class="img-fluid" alt=""></div>
           </div>
           <div class="swiper-pagination"></div>
         </div>
@@ -1057,7 +1077,7 @@
             
           <div class="col-lg-4">
             <div class="post-box">
-              <div class="post-img"><img src="assets/img/blog/blog-1.jpg" class="img-fluid" alt=""></div>
+              <div class="post-img"><img src="{{ asset('/assets/img/blog/blog-1.jpg') }}" class="img-fluid" alt=""></div>
               <span id="date1" name="date1" ></span>
               <h3 class="post-title">Eum ad dolor et. Autem aut fugiat debitis voluptatem consequuntur sit</h3>
               <a href="#" class="readmore stretched-link mt-auto"><span>Read More</span><i class="bi bi-arrow-right"></i></a>
@@ -1065,7 +1085,7 @@
           </div>
           <div class="col-lg-4">
             <div class="post-box">
-              <div class="post-img"><img src="assets/img/blog/blog-2.jpg" class="img-fluid" alt=""></div>
+              <div class="post-img"><img src="{{ asset('/assets/img/blog/blog-2.jpg') }}" class="img-fluid" alt=""></div>
               <span id="date2" name="date2" ></span>
               <h3 class="post-title">Et repellendus molestiae qui est sed omnis voluptates magnam</h3>
               <a href="#" class="readmore stretched-link mt-auto"><span>Read More</span><i class="bi bi-arrow-right"></i></a>
@@ -1074,7 +1094,7 @@
 
           <div class="col-lg-4">
             <div class="post-box">
-              <div class="post-img"><img src="assets/img/blog/blog-3.jpg" class="img-fluid" alt=""></div>
+              <div class="post-img"><img src="{{ asset('/assets/img/blog/blog-3.jpg') }}" class="img-fluid" alt=""></div>
               <span id="date3" name="date3" ></span>
               <h3 class="post-title">Quia assumenda est et veritatis aut quae</h3>
               <a href="#" class="readmore stretched-link mt-auto"><span>Read More</span><i class="bi bi-arrow-right"></i></a>
@@ -1118,7 +1138,11 @@
                 <div class="info-box">
                   <i class="bi bi-geo-alt"></i>
                   <h3>Address</h3>
-                  <p>A201 Res Chaabane,<br>New York, NY 532045</p>
+                  <p>
+                    A201 Res Shopping <br>
+                    New Tn, TN 532045<br>
+                    Tunisia <br><br>
+                  </p>
                 </div>
               </div>
               <div class="col-md-6">
@@ -1164,6 +1188,9 @@
 
     </section><!-- End Contact Section -->
 
-  </main><!-- End #main -->
+  </main>
+  <!-- End #main -->
+
+  <!-- End reusable part -->
 
 @endsection

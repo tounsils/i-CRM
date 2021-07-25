@@ -41,6 +41,7 @@
 </head>
 
 <body>
+@csrf
 
   <!-- ======= Header ======= -->
   <header id="header" class="header fixed-top">
@@ -50,6 +51,30 @@
         <img src="{{ asset('/assets/img/logo.png') }}" alt="">
         <span>Dev</span>
       </a>
+
+@if (session('status'))
+<div class="alert alert-success">
+{{ session('status') }}
+</div>
+@endif
+
+@if (session('message'))
+<div class="alert session('alert-type')">
+{!! session('message') !!}
+</div>
+@endif
+
+@guest
+<nav id="navbar" class="navbar">
+        <ul>
+          <li><a href="{{ route('login') }}">Login</a></li>
+          <li><a href="{{ route('register-user') }}">Register</a></li>
+        </ul>
+        <i class="bi bi-list mobile-nav-toggle"></i>
+      </nav><!-- .navbar --> 
+
+@else
+
 
       <nav id="navbar" class="navbar">
         <ul>
@@ -94,11 +119,38 @@
               <li><a href="#">Drop Down 4</a></li>
             </ul>
           </li>
-          <li><a class="nav-link scrollto" href="#contact">Contact</a></li>
-          <li><a class="getstarted scrollto" href="mailto:tn76contact@gmail.com?subject=Contacting throu tn76.com&body=I need you to ...">Get Started</a></li>
+          <li class="dropdown"><a href="#"><span>Profile</span> <i class="bi bi-chevron-down"></i></a>
+            <ul>
+@guest
+                    <li><a href="{{ route('login') }}">Login</a>
+                    </li>
+                    <li><a href="{{ route('register-user') }}">Register</a>
+                    </li>
+@else
+              <li><a href="{{ route('signout') }}">logout</a></li>
+              <li class="dropdown"><a href="#"><span>Deep Drop Down</span> <i class="bi bi-chevron-right"></i></a>
+                <ul>
+                  <li><a href="#">Drop Down 1</a></li>
+                  <li><a href="#">Deep Drop Down 2</a></li>
+                  <li><a href="#">Deep Drop Down 3</a></li>
+                  <li><a href="#">Deep Drop Down 4</a></li>
+                  <li><a href="#">Deep Drop Down 5</a></li>
+                </ul>
+              </li>
+          @endguest
+
+            </ul>
+          </li>
         </ul>
         <i class="bi bi-list mobile-nav-toggle"></i>
-      </nav><!-- .navbar -->
+      </nav><!-- .navbar --> 
+      
+@endguest
 
     </div>
-  </header><!-- End Header -->
+
+
+
+  </header>
+
+  <!-- E n d Header -->
