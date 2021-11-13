@@ -4,6 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\user;  // use user model
+use DataTables;
+use Illuminate\Support\Facades\DB;
+Use Redirect;
+use Illuminate\Support\Facades\Auth;
+use Session;
 
 class usersController extends Controller
 {
@@ -42,6 +47,7 @@ class usersController extends Controller
         $user -> last_name = $request -> input('last_name');
         $user -> email = $request -> input('email');
         $user -> phone = $request -> input('phone');
+        $user -> role_id = $request -> input('role_id');
         $user -> save();
         return redirect(route('usershome')) -> with('successMsg','User sucessfull added');
 
@@ -94,4 +100,21 @@ class usersController extends Controller
     {
         //
     }
+
+
+    public function getData()
+    {
+    if(Auth::check()){
+        $users = user::paginate(5);
+        return view('users.index', compact('users'));
+    }
+
+    $notification = array(
+        'message' => "You are not allowed to access users data!",
+        'alert-type' => 'alert-success');
+
+    return redirect("welcome")->with($notification);
+
+}
+
 }

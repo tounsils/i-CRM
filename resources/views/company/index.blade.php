@@ -16,12 +16,13 @@
           <p>Listing</p>
         </header>
 
-        
-        @if (session('message'))
-        <div class="alert session('alert-type')">
-         {!! session('message') !!}
-        </div>
-        @endif
+<div class="message" data-aos="fade-up">
+@if (session('message'))
+<div class="alert session('alert-type')">
+{!! session('message') !!}
+</div>
+@endif
+</div>
 
     <a class="btn btn-success" href="javascript:void(0)" id="createNewcompany"> 
     <i class="ri-add-line"></i>  Create New company</a>

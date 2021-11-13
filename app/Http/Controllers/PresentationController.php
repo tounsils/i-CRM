@@ -21,5 +21,8 @@ class PresentationController extends Controller
     public function LaravelDatabaseSeeding(){
         return view('LaravelDatabaseSeeding');
     }
+    public function LaravelTinker(){
+        return view('LaravelTinker');
+    }
 }
 

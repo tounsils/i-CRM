@@ -25,6 +25,12 @@ body {
 }
 
 
+
+pre {
+    background-color: #EEE;
+    padding: 10px;
+    }     
+
 .container table tr {
   border: #240909;
 }
