@@ -52,18 +52,6 @@
         <span>Dev</span>
       </a>
 
-@if (session('status'))
-<div class="alert alert-success">
-{{ session('status') }}
-</div>
-@endif
-
-@if (session('message'))
-<div class="alert session('alert-type')">
-{!! session('message') !!}
-</div>
-@endif
-
 @guest
 <nav id="navbar" class="navbar">
         <ul>
@@ -90,6 +78,7 @@
               <li class="dropdown"><a href="#"><span>Laravel Dev</span> <i class="bi bi-chevron-right"></i></a>
                 <ul>
                   <li><a href="{{ asset('LaravelDatabaseSeeding') }}">Laravel Database Seeding</a></li>
+                  <li><a href="{{ asset('LaravelTinker') }}">Laravel Tinker</a></li>
                   <li><a href="#">Deep Drop Down 2</a></li>
                   <li><a href="#">Deep Drop Down 3</a></li>
                   <li><a href="#">Deep Drop Down 4</a></li>
@@ -148,6 +137,7 @@
 @endguest
 
     </div>
+
 
 
 

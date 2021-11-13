@@ -24,6 +24,7 @@ Route::get('/', 'App\Http\Controllers\PresentationController@index');
 Route::get('/about', 'App\Http\Controllers\PresentationController@about');
 Route::get('/LaravelQuestions', 'App\Http\Controllers\PresentationController@LaravelQuestions');
 Route::get('/LaravelDatabaseSeeding', 'App\Http\Controllers\PresentationController@LaravelDatabaseSeeding');
+Route::get('/LaravelTinker', 'App\Http\Controllers\PresentationController@LaravelTinker');
 
 Route::get('/blog', 'App\Http\Controllers\BlogController@index');
 
@@ -41,6 +42,7 @@ Route::get('/usercreate', 'App\Http\Controllers\usersController@create')->name('
 Route::post('/usercreate', 'App\Http\Controllers\usersController@store')->name('store');
 */
 Route::resource('users', 'App\Http\Controllers\usersController');
+Route::get('users', [App\Http\Controllers\usersController::class, 'getData']);
 
 //Route::get('/companyhome', 'App\Http\Controllers\companyController@index')->name('companyhome');
 //Route::resource('companyhome', 'App\Http\Controllers\companyController');

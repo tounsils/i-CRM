@@ -43,6 +43,7 @@
           <th>Last</th>
           <th>Email</th>
           <th>Phone</th>
+          <th>role_id</th>
           <th colspan = 2>Actions</th>
         </tr>
     </thead>
@@ -54,6 +55,7 @@
           <td>{{ $user->last_name }}</td>
           <td>{{ $user->email }}</td>
           <td>{{ $user->phone }}</td>
+          <td>{{ $user->role_id }}</td>
             <td>
                 <a href="{{ route('users.edit',$user->id)}}" class="btn btn-edit">Edit</a>
             </td>
@@ -68,6 +70,13 @@
         @endforeach
     </tbody>
   </table>
+
+  {{-- Pagination --}}
+        <div class="d-flex justify-content-center">
+            {!! $users->links() !!}
+        </div>
+
+
 <div>
 </div>
 

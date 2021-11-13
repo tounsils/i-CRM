@@ -68,3 +68,8 @@ git push -u origin main
 
 # USeful vscode plugins 
 Wijmo Designer Extension
+
+# install dependancies
+php artisan compose install
+# Update Laravel
+Modify laravel version inside composer.json then run: composer update

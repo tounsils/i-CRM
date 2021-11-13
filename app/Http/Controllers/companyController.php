@@ -12,15 +12,6 @@ use Session;
 
 class companyController extends Controller
 {
-    public function welcome()
-    {
-        if(Auth::check()){
-            return view('welcome');
-        }
-  
-        return redirect("login")->withSuccess('You are not allowed to access');
-    }
-
 
     /**
      * Display a listing of the resource.
@@ -85,9 +76,12 @@ class companyController extends Controller
      */
     public function show($id)
     {
+        $companies = company::paginate(5);
+        return view('company.index', compact('companies'));
+/*
         $company = company::find($id);
-
         return view('company.index', compact('company'));
+        */
         }
 
     /**
@@ -119,13 +113,20 @@ class companyController extends Controller
         ]);
 
         $company = company::find($id);
-        $company->company_name =  $request->get('company_name');
+        $company->company_name =  $request->company_name;
         $company->email = $request->get('email');
+        //$employee->name = $request->fullname;
+
         $company->phone = $request->get('phone');
         $company->save();
+        
+        $notification = array(
+            'message' => "Company (<b>" . $request->get('company_name') . "</b>) updated!",
+            'alert-type' => 'success'
+        );
 
-        $companies = company::all();
-        return view('company.index', compact('companies'))->with('success', 'company updated!');
+        return redirect("company")->with($notification);
+        //companyController::getData();
     }
 /*
             $table->string('company_name');
@@ -159,7 +160,11 @@ class companyController extends Controller
         return view('company.index', compact('companies'));
     }
 
-    return redirect("welcome")->with('message', 'You are not allowed to access Company data!');
+    $notification = array(
+        'message' => "You are not allowed to access Company data!",
+        'alert-type' => 'alert-success');
+
+    return redirect("welcome")->with($notification);
 
 }
  
