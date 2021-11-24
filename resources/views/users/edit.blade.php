@@ -20,29 +20,29 @@
             <div class="form-group">
 
                 <label for="first_name">First Name:</label>
-                <input type="text" class="form-control" name="first_name" value={{ $user->first_name }} />
+                <input type="text" class="form-control" name="first_name" value="{{ $user->first_name }}" />
             </div>
 
             <div class="form-group">
                 <label for="last_name">Last Name:</label>
-                <input type="text" class="form-control" name="last_name" value={{ $user->last_name }} />
+                <input type="text" class="form-control" name="last_name" value="{{ $user->last_name }}" />
             </div>
 
             <div class="form-group">
                 <label for="email">Email:</label>
-                <input type="text" class="form-control" name="email" value={{ $user->email }} />
+                <input type="text" class="form-control" name="email" value="{{ $user->email }}" />
             </div>
             <div class="form-group">
                 <label for="city">City:</label>
-                <input type="text" class="form-control" name="city" value={{ $user->city }} />
+                <input type="text" class="form-control" name="city" value="{{ $user->city }}" />
             </div>
             <div class="form-group">
                 <label for="country">Country:</label>
-                <input type="text" class="form-control" name="country" value={{ $user->country }} />
+                <input type="text" class="form-control" name="country" value="{{ $user->country }}" />
             </div>
             <div class="form-group">
                 <label for="job_title">Job Title:</label>
-                <input type="text" class="form-control" name="job_title" value={{ $user->job_title }} />
+                <input type="text" class="form-control" name="job_title" value=""{{ $user->job_title }}"" />
             </div>
             <button type="submit" class="btn btn-primary">Update</button>
         </form>
