@@ -41,17 +41,17 @@
             <div class="form-group">
 
                 <label for="company_name">Company Name:</label>
-                <input type="text" class="form-control" name="company_name" value={{ $company->company_name }} />
+                <input type="text" class="form-control" name="company_name" value="{{ $company->company_name }}" />
             </div>
 
             <div class="form-group">
                 <label for="email">Email:</label>
-                <input type="text" class="form-control" name="email" value={{ $company->email }} />
+                <input type="text" class="form-control" name="email" value="{{ $company->email }}" />
             </div>
 
             <div class="form-group">
                 <label for="phone">Phone:</label>
-                <input type="text" class="form-control" name="phone" value={{ $company->phone }} />
+                <input type="text" class="form-control" name="phone" value="{{ $company->phone }}" />
             </div>
             <button type="submit" class="btn btn-primary">Update</button>
         </form>
