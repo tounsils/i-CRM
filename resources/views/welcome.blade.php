@@ -1190,7 +1190,23 @@
 
   </main>
   <!-- End #main -->
-
+  
+  <div class="footer-newsletter">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-12 text-center">
+            <h4>Solution</h4>
+            <p>Got a problem that needs a solution? <br>We can help! Our clients love us because we're friendly, 
+              enthusiastic, accommodating, and we listen to your needs. 
+              <br>We'll work with you to help you find the solutions you've been looking for!</p>
+          </div>
+          <div class="col-lg-12 text-center">
+          <a class="getstarted scrollto" href="mailto:tn76contact@gmail.com?subject=Contacting throu tn76.com&body=I need you to ...">Get Started</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  
   <!-- End reusable part -->
 
 @endsection
