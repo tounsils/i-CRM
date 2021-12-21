@@ -108,7 +108,7 @@
               <li><a href="#">Drop Down 4</a></li>
             </ul>
           </li>
-          <li class="dropdown"><a href="#"><span>Profile</span> <i class="bi bi-chevron-down"></i></a>
+          <li class="dropdown"><a href="#"><span>Profile</span> ( {{ auth()->user()->first_name }} ) <i class="bi bi-chevron-down"></i></a>
             <ul>
 @guest
                     <li><a href="{{ route('login') }}">Login</a>
@@ -116,16 +116,17 @@
                     <li><a href="{{ route('register-user') }}">Register</a>
                     </li>
 @else
-              <li><a href="{{ route('signout') }}">logout</a></li>
+                  <li><p align=center>{{ auth()->user()->first_name }} {{ auth()->user()->last_name }}</p></li>
+                  <li><p align=center>{{ auth()->user()->email }}</p></li>
+                  <li><hr></li>
               <li class="dropdown"><a href="#"><span>Deep Drop Down</span> <i class="bi bi-chevron-right"></i></a>
                 <ul>
-                  <li><a href="#">Drop Down 1</a></li>
-                  <li><a href="#">Deep Drop Down 2</a></li>
                   <li><a href="#">Deep Drop Down 3</a></li>
                   <li><a href="#">Deep Drop Down 4</a></li>
                   <li><a href="#">Deep Drop Down 5</a></li>
                 </ul>
               </li>
+              <li><a href="{{ route('signout') }}">logout</a></li>
           @endguest
 
             </ul>
