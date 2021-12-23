@@ -24,5 +24,10 @@ class PresentationController extends Controller
     public function LaravelTinker(){
         return view('LaravelTinker');
     }
+    public function Laraveljson(){
+        return view('dev.Laraveljson');
+    }
+
+
 }
 
