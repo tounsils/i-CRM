@@ -249,7 +249,7 @@
         <p style="margin-bottom: 0cm;line-height: 100%;text-align: left;background: transparent;"><span lang="en-US">PHP artisan up;</span></p>
     </li>
     <li>
-        <p style="margin-bottom: 0cm;line-height: 100%;text-align: left;background: transparent;"><span lang="en-US">PHP artisan make:controller;</span></p>
+        <p style="margin-bottom: 0cm;line-height: 100%;text-align: left;background: transparent;"><span lang="en-US">PHP artisan make:controller;</span> (PHP artisan make:controller UserController)</p>
     </li>
     <li>
         <p style="margin-bottom: 0cm;line-height: 100%;text-align: left;background: transparent;"><span lang="en-US">PHP artisan make:model;</span></p>

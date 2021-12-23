@@ -25,6 +25,9 @@ Route::get('/about', 'App\Http\Controllers\PresentationController@about');
 Route::get('/LaravelQuestions', 'App\Http\Controllers\PresentationController@LaravelQuestions');
 Route::get('/LaravelDatabaseSeeding', 'App\Http\Controllers\PresentationController@LaravelDatabaseSeeding');
 Route::get('/LaravelTinker', 'App\Http\Controllers\PresentationController@LaravelTinker');
+Route::get('/Laraveljson', 'App\Http\Controllers\PresentationController@Laraveljson');
+
+Route::get('/Laraveljson_import_test', 'App\Http\Controllers\jsonImportController@index');
 
 Route::get('/blog', 'App\Http\Controllers\BlogController@index');
 
