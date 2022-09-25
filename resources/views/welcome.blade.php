@@ -1141,7 +1141,7 @@
                   <p>
                     A201 Res Shopping <br>
                     New Tn, TN 532045<br>
-                    Tunisia <br><br>
+                    California <br><br>
                   </p>
                 </div>
               </div>
@@ -1154,7 +1154,7 @@
                     <a href="https://wa.me/+21697538607/?text=Hello, Please ">WhatsApp</a>
                   </p>
                   <p>                   
-                    <a href="tel:+18312045509">+1 831 2045509</a>
+                    <a href="tel:+17605666555">+1 (760 ) 566 6555</a>
                   </p>
                   
                 </div>

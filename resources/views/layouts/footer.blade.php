@@ -73,8 +73,8 @@
             <p>
               A201 Res Shopping <br>
               New Tn, TN 532045<br>
-              Tunisia <br><br>
-              <strong>Phone:</strong> +1 831 2045509<br>
+              California <br><br>
+              <strong>Phone:</strong> +1 (760 ) 566 6555<br>
               <strong>Email:</strong> <a href="mailto:tn76contact@gmail.com?subject=Contacting throu tn76.com&body=I need you to ...">tn76contact@gmail.com</a><br>
             </p>
 

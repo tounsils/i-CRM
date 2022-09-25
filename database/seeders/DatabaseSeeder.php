@@ -16,12 +16,12 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
       $this->call([
-        
-         AdminSeeder::class,
-    ]);
+        AdminSeeder::class,
+        CompanySeeder::class,
+        UserSeeder::class,
+        RoleSeeder::class,
+      ]);
 
       }
 }
- //      CompanySeeder::class,
- //      UserSeeder::class,
- // RoleSeeder::class,
+
