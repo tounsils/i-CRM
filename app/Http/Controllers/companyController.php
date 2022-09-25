@@ -52,20 +52,12 @@ class companyController extends Controller
         $company->email = $request->email;
         $company->phone = $request->phone;
 
-    /*
-        $company = company::updateOrCreate(['id' => $request->company_id],
-                [
-                    'company_name' => $request->company_name, 
-                    'email' => $request->email,
-                    'phone' => $request->phone
-                ]); 
-                */
+
                 $company->save();       
                 
                 $companies = company::all();
                 return view('company.index', compact('companies'))->with('success', 'company updated!');
 
-        //return response()->json(['success'=>'company saved successfully!']);
     }
 
     /**
@@ -94,8 +86,6 @@ class companyController extends Controller
     {
         $company = company::find($id);
         return view('company.edit', compact('company'));        
-        //$company = company::find($id);
-        //return response()->json($company);
     }
 
     /**
@@ -126,13 +116,7 @@ class companyController extends Controller
         );
 
         return redirect("company")->with($notification);
-        //companyController::getData();
     }
-/*
-            $table->string('company_name');
-            $table->string('email');
-            $table->string('phone');
-*/
 
     /**
      * Remove the specified resource from storage.

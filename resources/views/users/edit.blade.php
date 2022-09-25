@@ -1,5 +1,30 @@
-@extends('base') 
-@section('main')
+@extends('layouts.main')
+
+@section('title', 'Users Edit')
+
+@section('content')
+
+<main id="main">
+
+    <!-- ======= company Section ======= -->
+    <section id="user" class="user">
+
+      <div class="container" data-aos="fade-up">
+
+        <header class="section-header">
+          <h2>Users</h2>
+          <p>Listing</p>
+        </header>
+
+        <div class="container">
+        
+        @if (session('message'))
+        <div class="alert session('alert-type')">
+         {!! session('message') !!}
+        </div>
+        @endif
+
+
 <div class="row">
     <div class="col-sm-8 offset-sm-2">
         <h1 class="display-3">Update a user</h1>
@@ -33,19 +58,26 @@
                 <input type="text" class="form-control" name="email" value="{{ $user->email }}" />
             </div>
             <div class="form-group">
-                <label for="city">City:</label>
-                <input type="text" class="form-control" name="city" value="{{ $user->city }}" />
+                <label for="phone">Phone:</label>
+                <input type="text" class="form-control" name="phone" value="{{ $user->phone }}" />
             </div>
             <div class="form-group">
-                <label for="country">Country:</label>
-                <input type="text" class="form-control" name="country" value="{{ $user->country }}" />
+                <label for="password">Password:</label>
+                <input type="password" class="form-control" name="password" value="" />
             </div>
-            <div class="form-group">
-                <label for="job_title">Job Title:</label>
-                <input type="text" class="form-control" name="job_title" value=""{{ $user->job_title }}"" />
-            </div>
+
             <button type="submit" class="btn btn-primary">Update</button>
         </form>
     </div>
 </div>
+
+<div class="col-sm-12">
+
+  @if(session()->get('success'))
+    <div class="alert alert-success">
+      {{ session()->get('success') }}  
+    </div>
+  @endif
+</div>
+
 @endsection

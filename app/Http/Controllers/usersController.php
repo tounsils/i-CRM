@@ -87,8 +87,37 @@ class usersController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
-    }
+        $request->validate([
+            'first_name'=>'required',
+            'email'=>'required'
+        ]);
+        /*
+            'first_name' => 'Admin',
+            'last_name' => 'Admin',
+            'email' => 'Admin@admin.com',
+            'phone' => '0022115511',
+            'role_id' => 1,
+            'password' => bcrypt('root'),
+
+        */
+
+        $user = user::find($id);
+        $user->first_name =  $request->first_name;
+        $user->last_name =  $request->last_name;
+        $user->email = $request->get('email');
+        $user->phone = $request->get('phone');
+        if (!empty($request->password)) {
+            $user->password = bcrypt($request->password); //  update password only if modified
+            //$user->password = $request->get('password'); //  update password only if modified
+            }
+        $user->save();
+        
+        $notification = array(
+            'message' => "User (<b>" . $request->get('first_name') . "</b>) updated!",
+            'alert-type' => 'success'
+        );
+
+        return redirect("users")->with($notification);    }
 
     /**
      * Remove the specified resource from storage.
