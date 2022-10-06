@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>Dev - @yield('title')</title>
+  <title>i CRM - @yield('title')</title>
   <meta content="" name="description">
 
   <meta content="" name="keywords">
@@ -49,7 +49,7 @@
 
       <a href="{{ asset('') }}" class="logo d-flex align-items-center">
         <img src="{{ asset('/assets/img/logo.png') }}" alt="">
-        <span>Dev</span>
+        <span>i CRM</span>
       </a>
 
 @guest
@@ -94,7 +94,7 @@
               <li><a href="#">Drop Down 4</a></li>
             </ul>
           </li>
-          <li><a class="nav-link scrollto" href="{{ asset('company') }}">Company</a></li>
+          <li><a class="nav-link scrollto" href="{{ asset('company') }}">Companies</a></li>
           <li class="dropdown"><a href="{{ asset('users') }}"><span>Users</span> <i class="bi bi-chevron-down"></i></a>
             <ul>
               <li><a href="{{ asset('usercreate') }}">Add new user</a></li>

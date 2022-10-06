@@ -27,40 +27,16 @@ Laravel has the most extensive and thorough [documentation](https://laravel.com/
 
 If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
-
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
 
 ## Code of Conduct
 
 In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
 
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
 
+# Github commit
 
 git add .
 git commit -m "Commit tn76.com"
@@ -89,9 +65,12 @@ Alternatively, we can regenerate the autoload.php file using the command,
 Later on, we check if the Laravel project works.
 
 # Update Laravel
-Modify laravel version inside composer.json then run: composer update
+Modify laravel version inside composer.json 
+then run: 
+    composer update
 
 # Run laravel project locally
+
 ## Windows users:
 - Download wamp: http://www.wampserver.com/en/
 - Download and extract cmder mini: https://github.com/cmderdev/cmder/releases/download/v1.1.4.1/cmder_mini.zip
@@ -111,9 +90,14 @@ cmder will be refered as console
 - Run `php artisan key:generate` 
 - Run `php artisan migrate`
 - Run `php artisan db:seed` to run seeders, if any.
-- Run `php artisan serve`
+
+- Run :
+    php artisan serve
 
 You can now access your project at localhost:8000 :)
+login
+    user : Admin@admin.com 
+    pass : root 
 
 
 ## If for some reason your project stop working do these:

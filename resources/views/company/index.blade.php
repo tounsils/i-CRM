@@ -12,7 +12,7 @@
       <div class="container" data-aos="fade-up">
 
         <header class="section-header">
-          <h2>Company</h2>
+          <h1>Companies</h1>
           <p>Listing</p>
         </header>
 

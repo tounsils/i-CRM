@@ -132,7 +132,8 @@ class companyController extends Controller
             'alert-type' => 'success'
         );
         
-        return Redirect::back()->with($notification);
+        return redirect::back()->with($notification);
+        //return view('company.index', compact('companies'));
 
     }
 
