@@ -12,9 +12,11 @@ deployment is a file and a data directory.
 ## Status
 
 This is a working application, not a scaffold. It is also young, and the list
-of what it does not do is as important as the list of what it does.
+of what it does not do is as important as the list of what it does. Everything
+below is current: nothing is listed as working that is not, and nothing is
+listed as coming that is not tracked.
 
-**Implemented and covered by tests**
+### Working today, and covered by tests
 
 - First-run administrator setup, bcrypt sign-in, signed session cookies, and a
   lockout after repeated failed attempts
@@ -29,17 +31,34 @@ of what it does not do is as important as the list of what it does.
 - Conversion from proposal to estimate to invoice, carrying the lines across
 - Payments against sent invoices, with paid and partly paid derived from the
   payments on file rather than chosen by a click
-- A dashboard showing what is outstanding and what moved recently
+- Overdue invoices, derived from the due date on every read rather than swept
+  into a status by a scheduled job
+- A dashboard showing what is outstanding, what is late, and what moved recently
+- A printable view of any document, which the browser will save as a PDF
 
-**Not implemented**
+### Coming, in roughly this order
 
-- No PDF rendering. Documents are screens, not files, for now.
-- No email is sent. The correspondence timeline records what was said; it does
-  not deliver it.
-- One administrator account. There is no user management screen and no roles.
-- No recurring invoices, credit notes, or currency conversion. A document holds
-  a currency code and arithmetic stays within it.
-- No reporting beyond the dashboard, no attachments, and no HTTP API.
+Each of these is an open issue with the design question written down. None has a
+date attached, because this is maintained by one person.
+
+| | What | Why it is not done yet |
+| --- | --- | --- |
+| [#17](https://github.com/tounsils/i-CRM/issues/17) | Documents rendered as PDF by the server | A pure-Go writer keeps the single static binary and means maintaining the layout twice. A headless browser gives one layout and costs the self-contained binary. That decision comes first. |
+| [#18](https://github.com/tounsils/i-CRM/issues/18) | Sending documents by email | Wants [#17](https://github.com/tounsils/i-CRM/issues/17) for the attachment, and needs delivery failures surfaced rather than swallowed |
+| [#19](https://github.com/tounsils/i-CRM/issues/19) | More than one user, with roles | `users.role` exists in the schema and nothing reads it. Needs a decision on what the roles actually are |
+| [#20](https://github.com/tounsils/i-CRM/issues/20) | Credit notes | The money arithmetic is already symmetric for this. The open question is what a fully credited invoice's status becomes |
+| [#28](https://github.com/tounsils/i-CRM/issues/28) | Revenue, tax and ageing reports | Must state whether it reports on an accrual or cash basis, and share arithmetic with the documents |
+| [#21](https://github.com/tounsils/i-CRM/issues/21) | Recurring invoices | Idempotency across a restart is the hard part |
+| [#27](https://github.com/tounsils/i-CRM/issues/27) | Attachments | Storage choice: blobs keep the one-file backup, a directory keeps the file small and makes a backup two things |
+| [#29](https://github.com/tounsils/i-CRM/issues/29) | An HTTP API | Needs token auth rather than session cookies, and read-only first |
+
+### Not planned
+
+- **Currency conversion.** A document holds a currency code and all arithmetic
+  stays inside it. Converting between currencies means sourcing rates and
+  deciding which date's rate is authoritative for a given document, which is a
+  larger product question than it looks.
+- **A hosted version.** This is software you run yourself. That is the point.
 
 ## Running it
 
