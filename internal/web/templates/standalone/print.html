@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{.Document.Type.Label}} {{.Document.Number}} &middot; {{.CompanyName}}</title>
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body class="printable">
+
+<div class="no-print toolbar">
+  <a href="/documents/{{.Document.ID}}">Back to {{.Document.Number}}</a>
+  <span class="hint">Use your browser's print command to print or save as PDF.</span>
+</div>
+
+<div class="sheet">
+  <header class="sheet-head">
+    <div class="from">
+      <div class="company">{{.CompanyName}}</div>
+      {{if .CompanyAddress}}<div class="address">{{.CompanyAddress}}</div>{{end}}
+    </div>
+    <div class="doc-id">
+      <h1>{{.Document.Type.Label}}</h1>
+      <div class="number">{{.Document.Number}}</div>
+    </div>
+  </header>
+
+  <section class="parties">
+    <div class="to">
+      <div class="caption">To</div>
+      <div class="company">{{.Customer.Name}}</div>
+      {{if .Customer.ContactName}}<div>{{.Customer.ContactName}}</div>{{end}}
+      {{if .Customer.Address}}<div class="address">{{.Customer.Address}}</div>{{end}}
+      {{if .Customer.Email}}<div>{{.Customer.Email}}</div>{{end}}
+    </div>
+    <dl class="kv meta">
+      <dt>Issued</dt><dd>{{date .Document.IssueDate}}</dd>
+      {{if .Document.DueDate}}<dt>Due</dt><dd>{{optionalDate .Document.DueDate}}</dd>{{end}}
+      <dt>Currency</dt><dd>{{.Document.Currency}}</dd>
+    </dl>
+  </section>
+
+  <table class="lines">
+    <thead>
+      <tr>
+        <th>Description</th>
+        <th class="num">Quantity</th>
+        <th class="num">Unit price</th>
+        <th>Tax</th>
+        <th class="num">Net</th>
+        <th class="num">Tax</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{range .Document.Lines}}
+      {{$totals := .Totals}}
+      <tr>
+        <td>{{.Description}}</td>
+        <td class="num">{{.Quantity}}</td>
+        <td class="num">{{.UnitPrice}}</td>
+        <td>{{if .TaxName}}{{.TaxName}} ({{.TaxRate}}){{else}}&mdash;{{end}}</td>
+        <td class="num">{{$totals.Subtotal}}</td>
+        <td class="num">{{$totals.Tax}}</td>
+      </tr>
+      {{end}}
+    </tbody>
+  </table>
+
+  <table class="totals">
+    <tbody>
+      <tr><td>Subtotal</td><td class="num">{{.Document.Currency}} {{.Document.Totals.Subtotal}}</td></tr>
+      <tr><td>Tax</td><td class="num">{{.Document.Currency}} {{.Document.Totals.Tax}}</td></tr>
+      <tr class="grand"><td>Total</td><td class="num">{{.Document.Currency}} {{.Document.Totals.Total}}</td></tr>
+      {{if .Payments}}
+      <tr><td>Paid</td><td class="num">{{.Document.Currency}} {{.Document.Paid}}</td></tr>
+      <tr class="grand">
+        <td>Outstanding</td>
+        <td class="num">{{.Document.Currency}} {{.Document.Outstanding}}</td>
+      </tr>
+      {{end}}
+    </tbody>
+  </table>
+
+  {{if .Payments}}
+  <section class="payments">
+    <h2>Payments received</h2>
+    <table>
+      <thead><tr><th>Date</th><th>Method</th><th>Reference</th><th class="num">Amount</th></tr></thead>
+      <tbody>
+        {{range .Payments}}
+        <tr>
+          <td>{{date .PaidOn}}</td>
+          <td>{{if .Method}}{{.Method}}{{else}}&mdash;{{end}}</td>
+          <td>{{if .Reference}}{{.Reference}}{{else}}&mdash;{{end}}</td>
+          <td class="num">{{.Amount}}</td>
+        </tr>
+        {{end}}
+      </tbody>
+    </table>
+  </section>
+  {{end}}
+
+  {{if .Document.Notes}}
+  <section class="notes">
+    <h2>Notes</h2>
+    <p>{{.Document.Notes}}</p>
+  </section>
+  {{end}}
+</div>
+
+</body>
+</html>
