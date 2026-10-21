@@ -1,0 +1,60 @@
+name: CI
+
+# Every push to main and every pull request, so a change is checked before it
+# lands rather than after someone notices.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# The workflow needs the checkout and nothing else. Stating the permission
+# explicitly means a later step has to ask for more rather than inherit it.
+permissions:
+  contents: read
+
+# A newer push to the same branch makes the previous run's answer irrelevant.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gates:
+    name: Format, build, vet, test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          # Read the version from go.mod so the toolchain used here cannot
+          # drift from the one the module declares.
+          go-version-file: go.mod
+          cache: true
+
+      - name: Quality gates
+        run: sh scripts/gates.sh
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: golangci-lint
+        # The same image used locally, rather than a lint action whose version
+        # would be a second thing to keep current. Config is .golangci.yml.
+        run: |
+          docker run --rm -v "$PWD":/src -w /src \
+            golangci/golangci-lint:latest-alpine golangci-lint run ./...
+
+  image:
+    name: Docker image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build the deployable image
+        # The Dockerfile runs vet and the suite inside the build, so a green
+        # result here also proves the tests pass with no Go toolchain on the
+        # host, which is how the image is actually built in practice.
+        run: docker build -t icrm:ci .
