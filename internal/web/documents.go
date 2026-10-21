@@ -280,6 +280,61 @@ func (s *Server) handleDocumentShow(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+// printPage is the document on its own, as it would be handed to a customer.
+//
+// It carries the full customer record rather than the joined name alone,
+// because a document needs the address it is being sent to.
+type printPage struct {
+	Document       store.Document
+	Customer       store.Customer
+	Payments       []store.Payment
+	CompanyName    string
+	CompanyAddress string
+}
+
+// handleDocumentPrint renders one document with no navigation, for printing or
+// saving as a PDF from the browser.
+//
+// This is the layout half of PDF generation. Doing it as HTML first means the
+// layout exists and is usable now, and whatever renders a PDF later has
+// something to match rather than a second design to invent.
+func (s *Server) handleDocumentPrint(w http.ResponseWriter, r *http.Request) {
+	id, ok := pathID(r)
+	if !ok {
+		http.NotFound(w, r)
+		return
+	}
+
+	doc, err := s.store.DocumentByID(r.Context(), id)
+	if errors.Is(err, store.ErrNotFound) {
+		http.NotFound(w, r)
+		return
+	}
+	if err != nil {
+		s.fail(w, r, http.StatusInternalServerError, err)
+		return
+	}
+
+	customer, err := s.store.CustomerByID(r.Context(), doc.CustomerID)
+	if err != nil {
+		s.fail(w, r, http.StatusInternalServerError, err)
+		return
+	}
+	payments, err := s.store.PaymentsForDocument(r.Context(), id)
+	if err != nil {
+		s.fail(w, r, http.StatusInternalServerError, err)
+		return
+	}
+
+	s.renderStandalone(w, r, "print.html", printPage{
+		Document:       doc,
+		Customer:       customer,
+		Payments:       payments,
+		CompanyName:    s.cfg.CompanyName,
+		CompanyAddress: s.cfg.CompanyAddress,
+	})
+}
+
 func (s *Server) handleDocumentLines(w http.ResponseWriter, r *http.Request) {
 	id, ok := pathID(r)
 	if !ok {

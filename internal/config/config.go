@@ -20,6 +20,7 @@ type Settings struct {
 	SessionKey       []byte
 	PaymentTermsDays int
 	CompanyName      string
+	CompanyAddress   string
 	DefaultCurrency  string
 	Production       bool
 
@@ -58,6 +59,7 @@ func Load() (Settings, error) {
 		Addr:             envOr("ICRM_ADDR", defaultAddr),
 		DatabasePath:     envOr("ICRM_DB", defaultDatabasePath),
 		CompanyName:      envOr("ICRM_COMPANY_NAME", defaultCompanyName),
+		CompanyAddress:   multilineEnv("ICRM_COMPANY_ADDRESS"),
 		DefaultCurrency:  strings.ToUpper(envOr("ICRM_CURRENCY", defaultCurrency)),
 		PaymentTermsDays: defaultPaymentTermsDays,
 		Production:       strings.EqualFold(os.Getenv("ICRM_ENV"), "production"),
@@ -114,4 +116,19 @@ func envOr(name, fallback string) string {
 		return v
 	}
 	return fallback
+}
+
+// multilineEnv reads a setting whose natural form is several lines, such as a
+// postal address, and returns "" when it is unset.
+//
+// A real newline cannot be written in a `.env` file that docker compose reads,
+// so the two-character sequence \n is accepted and turned into one. Writing a
+// genuine newline still works for anyone setting the variable from a shell, and
+// both forms end up identical by the time anything renders them.
+func multilineEnv(name string) string {
+	raw := strings.TrimSpace(os.Getenv(name))
+	if raw == "" {
+		return ""
+	}
+	return strings.ReplaceAll(raw, `\n`, "\n")
 }

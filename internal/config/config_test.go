@@ -12,7 +12,8 @@ func clearEnv(t *testing.T) {
 	t.Helper()
 	for _, name := range []string{
 		"ICRM_ADDR", "ICRM_DB", "ICRM_SESSION_KEY", "ICRM_ENV",
-		"ICRM_COMPANY_NAME", "ICRM_CURRENCY", "ICRM_PAYMENT_TERMS_DAYS",
+		"ICRM_COMPANY_NAME", "ICRM_COMPANY_ADDRESS", "ICRM_CURRENCY",
+		"ICRM_PAYMENT_TERMS_DAYS",
 	} {
 		t.Setenv(name, "")
 	}
@@ -121,6 +122,36 @@ func TestLoadRejectsSettingsThatWouldFailSilentlyLater(t *testing.T) {
 			t.Setenv(c.variable, c.value)
 			if _, err := Load(); err == nil {
 				t.Fatalf("Load with %s=%q succeeded, want an error", c.variable, c.value)
+			}
+		})
+	}
+}
+
+func TestCompanyAddressAcceptsEscapedAndRealNewlines(t *testing.T) {
+	// A real newline cannot be written in a .env file that docker compose
+	// reads, so the escaped form has to work. A shell can supply the real
+	// thing, so that has to work too, and both must end up identical.
+	cases := []struct {
+		name  string
+		value string
+		want  string
+	}{
+		{"unset", "", ""},
+		{"single line", "1 Dock Road", "1 Dock Road"},
+		{"escaped newlines", `1 Dock Road\nPortsmouth\nPO1 3AX`, "1 Dock Road\nPortsmouth\nPO1 3AX"},
+		{"real newlines", "1 Dock Road\nPortsmouth\nPO1 3AX", "1 Dock Road\nPortsmouth\nPO1 3AX"},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			clearEnv(t)
+			t.Setenv("ICRM_COMPANY_ADDRESS", c.value)
+
+			got, err := Load()
+			if err != nil {
+				t.Fatalf("Load: %v", err)
+			}
+			if got.CompanyAddress != c.want {
+				t.Errorf("CompanyAddress = %q, want %q", got.CompanyAddress, c.want)
 			}
 		})
 	}

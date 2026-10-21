@@ -28,6 +28,7 @@ func testSettings() config.Settings {
 		SessionKey:       testSessionKey,
 		PaymentTermsDays: 30,
 		CompanyName:      "Test Company",
+		CompanyAddress:   "1 Test Street\nTestville TE5 7ING",
 		DefaultCurrency:  "USD",
 	}
 }
@@ -214,6 +215,7 @@ func privateRoutes() []struct {
 		{http.MethodGet, "/documents/new"},
 		{http.MethodPost, "/documents"},
 		{http.MethodGet, "/documents/1"},
+		{http.MethodGet, "/documents/1/print"},
 		{http.MethodPost, "/documents/1/lines"},
 		{http.MethodPost, "/documents/1/status"},
 		{http.MethodPost, "/documents/1/convert"},
@@ -663,6 +665,91 @@ func TestOverdueInvoicesSurfaceOnTheDashboardAndTheList(t *testing.T) {
 	}
 	if again := h.body(h.get("/documents?overdue=1")); strings.Contains(again, settled.Number) {
 		t.Errorf("%s is still listed as overdue after being paid in full", settled.Number)
+	}
+}
+
+func TestPrintViewIsTheDocumentWithoutTheApplicationAroundIt(t *testing.T) {
+	h := newHarness(t)
+	h.signIn()
+
+	res := h.post("/catalog/taxes", url.Values{"name": {"VAT"}, "rate": {"20"}})
+	res.Body.Close()
+	taxes, err := h.store.ListTaxes(t.Context())
+	if err != nil || len(taxes) == 0 {
+		t.Fatalf("ListTaxes = %d, %v", len(taxes), err)
+	}
+
+	res = h.post("/customers", url.Values{
+		"name":         {"Northwind Trading"},
+		"contact_name": {"Ada Byron"},
+		"status":       {"active"},
+		"currency":     {"USD"},
+		"email":        {"ap@northwind.example"},
+		"address":      {"4 Dock Road\nPortsmouth"},
+	})
+	res.Body.Close()
+	customers, err := h.store.ListCustomers(t.Context(), "")
+	if err != nil || len(customers) == 0 {
+		t.Fatalf("ListCustomers = %d, %v", len(customers), err)
+	}
+
+	id := h.createdDocumentID(h.post("/documents", url.Values{
+		"type":             {"invoice"},
+		"customer_id":      {strconv.FormatInt(customers[0].ID, 10)},
+		"currency":         {"USD"},
+		"issue_date":       {"2026-10-21"},
+		"notes":            {"Thank you for your business."},
+		"line_description": {"Implementation"},
+		"line_quantity":    {"10"},
+		"line_unit_price":  {"1500.00"},
+		"line_tax_id":      {strconv.FormatInt(taxes[0].ID, 10)},
+	}))
+
+	doc, err := h.store.DocumentByID(t.Context(), id)
+	if err != nil {
+		t.Fatalf("DocumentByID: %v", err)
+	}
+	page := h.body(h.get("/documents/" + strconv.FormatInt(id, 10) + "/print"))
+
+	// Both parties, which is what makes it a document rather than a screen.
+	for _, want := range []string{
+		"Test Company", "1 Test Street", "Testville TE5 7ING",
+		"Northwind Trading", "Ada Byron", "4 Dock Road",
+		doc.Number, "Implementation", "Thank you for your business.",
+	} {
+		if !strings.Contains(page, want) {
+			t.Errorf("the print view omits %q", want)
+		}
+	}
+
+	// The figures must be the same ones the screen shows. 10 x 1500.00 at 20%.
+	for _, want := range []string{"15000.00", "3000.00", "18000.00"} {
+		if !strings.Contains(page, want) {
+			t.Errorf("the print view omits the figure %q", want)
+		}
+	}
+
+	// And none of the application around it.
+	for _, unwanted := range []string{"Sign out", "Mark Sent", "Record payment", "Edit lines"} {
+		if strings.Contains(page, unwanted) {
+			t.Errorf("the print view includes %q, which does not belong on a document", unwanted)
+		}
+	}
+
+	// It is a complete document of its own, not a fragment, and it carries no
+	// script, which is what lets the content security policy stay strict.
+	if !strings.HasPrefix(strings.TrimSpace(page), "<!doctype html>") {
+		t.Error("the print view is not a standalone HTML document")
+	}
+	if strings.Contains(page, "<script") {
+		t.Error("the print view contains a script tag")
+	}
+
+	if missing := h.get("/documents/99999/print"); missing.StatusCode != http.StatusNotFound {
+		missing.Body.Close()
+		t.Errorf("printing a document that does not exist returned %d, want 404", missing.StatusCode)
+	} else {
+		missing.Body.Close()
 	}
 }
 

@@ -28,6 +28,7 @@ type Server struct {
 	cfg              config.Settings
 	store            *store.Store
 	pages            map[string]*template.Template
+	standalone       map[string]*template.Template
 	enumerationGuard []byte
 }
 
@@ -38,11 +39,21 @@ func New(cfg config.Settings, st *store.Store) (*Server, error) {
 	if err != nil {
 		return nil, err
 	}
+	standalone, err := parseStandalone()
+	if err != nil {
+		return nil, err
+	}
 	guard, err := newEnumerationGuard()
 	if err != nil {
 		return nil, err
 	}
-	return &Server{cfg: cfg, store: st, pages: pages, enumerationGuard: guard}, nil
+	return &Server{
+		cfg:              cfg,
+		store:            st,
+		pages:            pages,
+		standalone:       standalone,
+		enumerationGuard: guard,
+	}, nil
 }
 
 // Routes builds the handler.
@@ -84,6 +95,7 @@ func (s *Server) registerPrivateRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("GET /documents/new", s.handleDocumentNew)
 	mux.HandleFunc("POST /documents", s.handleDocumentCreate)
 	mux.HandleFunc("GET /documents/{id}", s.handleDocumentShow)
+	mux.HandleFunc("GET /documents/{id}/print", s.handleDocumentPrint)
 	mux.HandleFunc("POST /documents/{id}/lines", s.handleDocumentLines)
 	mux.HandleFunc("POST /documents/{id}/status", s.handleDocumentStatus)
 	mux.HandleFunc("POST /documents/{id}/convert", s.handleDocumentConvert)
@@ -207,6 +219,49 @@ func parsePages() (map[string]*template.Template, error) {
 		out[path.Base(name)] = t
 	}
 	return out, nil
+}
+
+// parseStandalone parses the pages that carry their own <html> and are not
+// wrapped in the layout, because they are documents rather than screens: no
+// navigation, no sign-out form, nothing that should appear on paper.
+func parseStandalone() (map[string]*template.Template, error) {
+	names, err := fs.Glob(templateFS, "templates/standalone/*.html")
+	if err != nil {
+		return nil, fmt.Errorf("web: listing standalone templates: %w", err)
+	}
+
+	out := make(map[string]*template.Template, len(names))
+	for _, name := range names {
+		base := path.Base(name)
+		t, err := template.New(base).Funcs(templateFuncs).ParseFS(templateFS, name)
+		if err != nil {
+			return nil, fmt.Errorf("web: parsing %s: %w", name, err)
+		}
+		out[base] = t
+	}
+	return out, nil
+}
+
+// renderStandalone writes a page that is not wrapped in the layout.
+//
+// Buffered for the same reason as render: a template error must become a 500
+// rather than a 200 carrying half a document.
+func (s *Server) renderStandalone(w http.ResponseWriter, r *http.Request, page string, data any) {
+	t, ok := s.standalone[page]
+	if !ok {
+		s.fail(w, r, http.StatusInternalServerError, fmt.Errorf("unknown standalone page %q", page))
+		return
+	}
+
+	var buf bytes.Buffer
+	if err := t.Execute(&buf, data); err != nil {
+		s.fail(w, r, http.StatusInternalServerError, fmt.Errorf("rendering %s: %w", page, err))
+		return
+	}
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	if _, err := buf.WriteTo(w); err != nil {
+		log.Printf("web: writing response for %s: %v", r.URL.Path, err)
+	}
 }
 
 // render writes a page.

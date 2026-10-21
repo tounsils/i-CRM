@@ -12,6 +12,7 @@
     </p>
   </div>
   <div class="actions">
+    <a class="button secondary" href="/documents/{{$doc.ID}}/print">Print view</a>
     {{range .NextStatuses}}
     <form class="inline-form" method="post" action="/documents/{{$doc.ID}}/status">
       <input type="hidden" name="csrf_token" value="{{$root.CSRFToken}}">

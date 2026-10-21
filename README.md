@@ -77,6 +77,7 @@ a default is written down.
 | `ICRM_ADDR` | `:8080` | Listen address. |
 | `ICRM_DB` | `data/icrm.db` | Path to the SQLite file. The container sets `/data/icrm.db`. |
 | `ICRM_COMPANY_NAME` | `i-CRM` | Shown in the title and top bar. |
+| `ICRM_COMPANY_ADDRESS` | empty | Your postal address, printed on documents. Use `\n` between lines, since a `.env` file cannot hold a real newline. |
 | `ICRM_CURRENCY` | `USD` | Default currency for new records. |
 | `ICRM_PAYMENT_TERMS_DAYS` | `30` | Added to an invoice's issue date to get its due date. |
 
