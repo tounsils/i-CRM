@@ -11,6 +11,7 @@ import (
 	"strconv"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/tounsils/i-CRM/internal/config"
 	"github.com/tounsils/i-CRM/internal/store"
@@ -37,6 +38,7 @@ func testSettings() config.Settings {
 type harness struct {
 	t      *testing.T
 	store  *store.Store
+	srv    *Server
 	server *httptest.Server
 	client *http.Client
 	jar    *cookiejar.Jar
@@ -72,6 +74,7 @@ func newHarness(t *testing.T) *harness {
 	return &harness{
 		t:      t,
 		store:  db,
+		srv:    srv,
 		server: ts,
 		// Redirects are not followed, so a test can assert on the 303 and its
 		// Location rather than on whatever page it lands on.
@@ -343,6 +346,87 @@ func TestLoginRejectsTheWrongPasswordAndAcceptsTheRight(t *testing.T) {
 	}
 }
 
+func TestRepeatedFailedSignInsAreThrottledOverHTTP(t *testing.T) {
+	seed := newHarness(t)
+	seed.signIn() // creates the account, then this client is irrelevant
+
+	h := newHarnessSharingStore(t, seed.store)
+	clock := &fixedClock{at: time.Date(2026, time.October, 21, 9, 0, 0, 0, time.UTC)}
+	h.srv.throttle.now = clock.now
+
+	h.get("/login").Body.Close()
+
+	wrong := url.Values{"email": {"admin@example.com"}, "password": {"not the password"}}
+
+	// Up to the limit the answer stays the generic rejection, which is what
+	// stops the throttle itself from reporting whether the account exists.
+	for attempt := 1; attempt < maxFailures; attempt++ {
+		page := h.body(h.post("/login", wrong))
+		if !strings.Contains(page, "do not match an account") {
+			t.Fatalf("attempt %d did not get the generic rejection", attempt)
+		}
+		if strings.Contains(page, "Too many sign-in attempts") {
+			t.Fatalf("locked at attempt %d, the limit is %d", attempt, maxFailures)
+		}
+	}
+
+	if page := h.body(h.post("/login", wrong)); !strings.Contains(page, "Too many sign-in attempts") {
+		t.Fatal("reaching the limit did not produce the lockout message")
+	}
+
+	// The correct password is refused while locked, which is the point.
+	right := url.Values{"email": {"admin@example.com"}, "password": {testPassword}}
+	page := h.body(h.post("/login", right))
+	if !strings.Contains(page, "Too many sign-in attempts") {
+		t.Fatal("the correct password was accepted during the lockout")
+	}
+	if h.hasSession() {
+		t.Fatal("a session was issued during the lockout")
+	}
+
+	// And it works again once the lockout expires, without a restart.
+	clock.advance(lockoutPeriod + time.Second)
+	res := h.post("/login", right)
+	res.Body.Close()
+	if res.StatusCode != http.StatusSeeOther {
+		t.Fatalf("sign-in after the lockout returned %d, want 303", res.StatusCode)
+	}
+	if !h.hasSession() {
+		t.Fatal("no session after a correct sign-in following the lockout")
+	}
+}
+
+func TestThrottleTreatsAnUnknownAddressLikeAKnownOneOverHTTP(t *testing.T) {
+	// If an unknown address were not throttled, or were throttled differently,
+	// the sign-in page would report which addresses have accounts.
+	seed := newHarness(t)
+	seed.signIn()
+
+	attempt := func(email string) string {
+		h := newHarnessSharingStore(t, seed.store)
+		h.get("/login").Body.Close()
+		var last string
+		for i := 0; i <= maxFailures; i++ {
+			last = h.body(h.post("/login", url.Values{
+				"email": {email}, "password": {"wrong"},
+			}))
+		}
+		return last
+	}
+
+	known := attempt("admin@example.com")
+	unknown := attempt("nobody@example.com")
+
+	knownLocked := strings.Contains(known, "Too many sign-in attempts")
+	unknownLocked := strings.Contains(unknown, "Too many sign-in attempts")
+	if knownLocked != unknownLocked {
+		t.Fatalf("known address locked=%v but unknown locked=%v", knownLocked, unknownLocked)
+	}
+	if !knownLocked {
+		t.Fatal("neither address locked, so the throttle did not engage at all")
+	}
+}
+
 // newHarnessSharingStore gives a second client against the same database, for
 // tests that need a different cookie jar.
 func newHarnessSharingStore(t *testing.T, db *store.Store) *harness {
@@ -363,7 +447,7 @@ func newHarnessSharingStore(t *testing.T, db *store.Store) *harness {
 		t.Fatalf("parsing URL: %v", err)
 	}
 	return &harness{
-		t: t, store: db, server: ts, jar: jar, base: base,
+		t: t, store: db, srv: srv, server: ts, jar: jar, base: base,
 		client: &http.Client{
 			Jar:           jar,
 			CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse },

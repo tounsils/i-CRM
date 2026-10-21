@@ -16,7 +16,8 @@ of what it does not do is as important as the list of what it does.
 
 **Implemented and covered by tests**
 
-- First-run administrator setup, bcrypt sign-in, signed session cookies
+- First-run administrator setup, bcrypt sign-in, signed session cookies, and a
+  lockout after repeated failed attempts
 - Leads and customers as one record with a stage, filterable
 - Per-customer correspondence timeline: sent, received and internal notes
 - Proposals, estimates and invoices sharing one lifecycle and one numbering scheme
