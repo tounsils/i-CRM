@@ -583,6 +583,89 @@ func walkToConversion(h *harness, id int64) int64 {
 	return h.createdDocumentID(h.post(path+"/convert", nil))
 }
 
+func TestOverdueInvoicesSurfaceOnTheDashboardAndTheList(t *testing.T) {
+	h := newHarness(t)
+	h.signIn()
+
+	res := h.post("/customers", url.Values{
+		"name": {"Northwind Trading"}, "status": {"active"}, "currency": {"USD"},
+	})
+	res.Body.Close()
+	customers, err := h.store.ListCustomers(t.Context(), "")
+	if err != nil || len(customers) == 0 {
+		t.Fatalf("ListCustomers = %d, %v", len(customers), err)
+	}
+	customerID := strconv.FormatInt(customers[0].ID, 10)
+
+	// Fixed dates rather than offsets from today: 2020 is in the past and 2099
+	// is not, whenever this suite happens to run.
+	raise := func(issue, due string) int64 {
+		t.Helper()
+		return h.createdDocumentID(h.post("/documents", url.Values{
+			"type":             {"invoice"},
+			"customer_id":      {customerID},
+			"currency":         {"USD"},
+			"issue_date":       {issue},
+			"due_date":         {due},
+			"line_description": {"Consulting"},
+			"line_quantity":    {"1"},
+			"line_unit_price":  {"400.00"},
+		}))
+	}
+	late := raise("2020-01-01", "2020-01-31")
+	notYetDue := raise("2020-01-01", "2099-12-31")
+
+	// A draft is not overdue however old, so both are sent.
+	for _, id := range []int64{late, notYetDue} {
+		res := h.post("/documents/"+strconv.FormatInt(id, 10)+"/status", url.Values{"status": {"sent"}})
+		res.Body.Close()
+	}
+
+	lateDoc, err := h.store.DocumentByID(t.Context(), late)
+	if err != nil {
+		t.Fatalf("DocumentByID: %v", err)
+	}
+	notYetDueDoc, err := h.store.DocumentByID(t.Context(), notYetDue)
+	if err != nil {
+		t.Fatalf("DocumentByID: %v", err)
+	}
+
+	dashboard := h.body(h.get("/"))
+	if !strings.Contains(dashboard, "Overdue") {
+		t.Error("the dashboard does not mention Overdue despite an invoice being late")
+	}
+	if !strings.Contains(dashboard, lateDoc.Number) {
+		t.Errorf("the dashboard does not show the overdue invoice %s", lateDoc.Number)
+	}
+
+	// The filter shows the late one and withholds the one not yet due.
+	filtered := h.body(h.get("/documents?overdue=1"))
+	if !strings.Contains(filtered, lateDoc.Number) {
+		t.Errorf("the overdue filter omits %s, which is late", lateDoc.Number)
+	}
+	if strings.Contains(filtered, notYetDueDoc.Number) {
+		t.Errorf("the overdue filter includes %s, which is due in 2099", notYetDueDoc.Number)
+	}
+
+	// Paying it takes it off both, with no sweep or scheduled job involved.
+	res = h.post("/documents/"+strconv.FormatInt(late, 10)+"/payments", url.Values{
+		"amount":  {lateDoc.Totals.Total.String()},
+		"paid_on": {"2026-10-21"},
+	})
+	res.Body.Close()
+
+	settled, err := h.store.DocumentByID(t.Context(), late)
+	if err != nil {
+		t.Fatalf("DocumentByID: %v", err)
+	}
+	if settled.Status != "paid" {
+		t.Fatalf("invoice is %s after full payment, want paid", settled.Status)
+	}
+	if again := h.body(h.get("/documents?overdue=1")); strings.Contains(again, settled.Number) {
+		t.Errorf("%s is still listed as overdue after being paid in full", settled.Number)
+	}
+}
+
 func TestIllegalStatusMoveIsRefusedOverHTTP(t *testing.T) {
 	h := newHarness(t)
 	h.signIn()

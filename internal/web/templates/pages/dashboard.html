@@ -2,12 +2,18 @@
 {{$root := .}}
 {{with .Data}}
 <h1>Dashboard</h1>
-<p class="subtitle">What is owed, and what moved recently.</p>
+<p class="subtitle">What is owed, what is late, and what moved recently.</p>
 
 <div class="tiles">
   <div class="tile">
     <div class="figure">{{.Currency}} {{.Outstanding}}</div>
-    <div class="label">Outstanding on sent invoices</div>
+    <div class="label">Outstanding on issued invoices</div>
+  </div>
+  <div class="tile{{if .Overdue}} tile-alert{{end}}">
+    <div class="figure">{{.Currency}} {{.OverdueTotal}}</div>
+    <div class="label">
+      {{if .Overdue}}Overdue across {{len .Overdue}} invoice{{if ne (len .Overdue) 1}}s{{end}}{{else}}Nothing overdue{{end}}
+    </div>
   </div>
   {{range .Statuses}}
   <div class="tile">
@@ -24,8 +30,8 @@
   <a class="button secondary" href="/customers/new">New customer</a>
 </div>
 
-<h2>Awaiting payment</h2>
-{{if .Unpaid}}
+{{if .Overdue}}
+<h2>Overdue</h2>
 <div class="panel table-wrap">
   <table>
     <thead>
@@ -35,11 +41,38 @@
       </tr>
     </thead>
     <tbody>
-      {{range .Unpaid}}
+      {{range .Overdue}}
       <tr>
         <td><a href="/documents/{{.ID}}">{{.Number}}</a></td>
         <td>{{.CustomerName}}</td>
         <td>{{optionalDate .DueDate}}</td>
+        <td class="num">{{.Currency}} {{.Totals.Total}}</td>
+        <td class="num">{{.Currency}} {{.Outstanding}}</td>
+      </tr>
+      {{end}}
+    </tbody>
+  </table>
+</div>
+{{end}}
+
+<h2>Awaiting payment</h2>
+{{if .Unsettled}}
+<div class="panel table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Invoice</th><th>Customer</th><th>Due</th><th>Status</th>
+        <th class="num">Total</th><th class="num">Outstanding</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{range .Unsettled}}
+      {{$state := pill .}}
+      <tr>
+        <td><a href="/documents/{{.ID}}">{{.Number}}</a></td>
+        <td>{{.CustomerName}}</td>
+        <td>{{optionalDate .DueDate}}</td>
+        <td><span class="pill {{$state.Tone}}">{{$state.Label}}</span></td>
         <td class="num">{{.Currency}} {{.Totals.Total}}</td>
         <td class="num">{{.Currency}} {{.Outstanding}}</td>
       </tr>
@@ -60,12 +93,13 @@
     </thead>
     <tbody>
       {{range .Recent}}
+      {{$state := pill .}}
       <tr>
         <td><a href="/documents/{{.ID}}">{{.Number}}</a></td>
         <td>{{.Type.Label}}</td>
         <td>{{.CustomerName}}</td>
         <td>{{date .IssueDate}}</td>
-        <td><span class="pill {{statusTone .Status}}">{{.Status.Label}}</span></td>
+        <td><span class="pill {{$state.Tone}}">{{$state.Label}}</span></td>
         <td class="num">{{.Currency}} {{.Totals.Total}}</td>
       </tr>
       {{end}}

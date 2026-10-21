@@ -9,10 +9,12 @@
 </div>
 
 <div class="filters">
-  <a href="/documents" {{if not .Filter.Type}}class="on"{{end}}>All</a>
+  <a href="/documents" {{if and (not .Filter.Type) (not .OverdueOnly)}}class="on"{{end}}>All</a>
   {{range .Types}}
-  <a href="/documents?type={{.}}" {{if eq $.Data.Filter.Type .}}class="on"{{end}}>{{.Label}}s</a>
+  <a href="/documents?type={{.}}"
+     {{if and (eq $.Data.Filter.Type .) (not $.Data.OverdueOnly)}}class="on"{{end}}>{{.Label}}s</a>
   {{end}}
+  <a href="/documents?overdue=1" {{if .OverdueOnly}}class="on"{{end}}>Overdue</a>
 </div>
 
 {{if .Documents}}
@@ -26,13 +28,14 @@
     </thead>
     <tbody>
       {{range .Documents}}
+      {{$state := pill .}}
       <tr>
         <td><a href="/documents/{{.ID}}">{{.Number}}</a></td>
         <td>{{.Type.Label}}</td>
         <td><a href="/customers/{{.CustomerID}}">{{.CustomerName}}</a></td>
         <td>{{date .IssueDate}}</td>
         <td>{{optionalDate .DueDate}}</td>
-        <td><span class="pill {{statusTone .Status}}">{{.Status.Label}}</span></td>
+        <td><span class="pill {{$state.Tone}}">{{$state.Label}}</span></td>
         <td class="num">{{.Currency}} {{.Totals.Total}}</td>
         <td class="num">{{.Currency}} {{.Outstanding}}</td>
       </tr>
@@ -40,6 +43,8 @@
     </tbody>
   </table>
 </div>
+{{else if .OverdueOnly}}
+<p class="empty">Nothing is overdue.</p>
 {{else}}
 <p class="empty">Nothing here yet.</p>
 {{end}}

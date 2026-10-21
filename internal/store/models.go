@@ -90,6 +90,14 @@ func (d Document) Outstanding() domain.Money {
 	return d.Totals.Total - d.Paid
 }
 
+// Overdue reports whether this document is past its due date as of asOf.
+//
+// The rule is domain.IsOverdue and this is only the adapter onto it, so the
+// store never holds a second opinion about what overdue means.
+func (d Document) Overdue(asOf time.Time) bool {
+	return domain.IsOverdue(d.Type, d.Status, d.DueDate, asOf)
+}
+
 // Payment is money received against an invoice.
 type Payment struct {
 	ID         int64

@@ -2,19 +2,23 @@ package web
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/tounsils/i-CRM/internal/domain"
 	"github.com/tounsils/i-CRM/internal/store"
 )
 
-// dashboardPage is the landing screen: what is owed, and what moved recently.
+// dashboardPage is the landing screen: what is owed, what is late, and what
+// moved recently.
 type dashboardPage struct {
 	CustomerCounts map[domain.CustomerStatus]int
 	Statuses       []domain.CustomerStatus
 	Outstanding    domain.Money
+	OverdueTotal   domain.Money
 	Currency       string
 	Recent         []store.Document
-	Unpaid         []store.Document
+	Unsettled      []store.Document
+	Overdue        []store.Document
 }
 
 // recentDocumentLimit caps the dashboard lists. Ten is a screenful; the full
@@ -40,13 +44,26 @@ func (s *Server) handleDashboard(w http.ResponseWriter, r *http.Request) {
 		s.fail(w, r, http.StatusInternalServerError, err)
 		return
 	}
-	unpaid, err := s.store.ListDocuments(ctx, store.DocumentFilter{
-		Type:   domain.DocInvoice,
-		Status: domain.StatusSent,
-	})
+	unsettled, err := s.store.ListUnsettledInvoices(ctx)
 	if err != nil {
 		s.fail(w, r, http.StatusInternalServerError, err)
 		return
+	}
+
+	// Overdue is derived here from the invoices that are still owed, rather
+	// than fetched by a second query carrying a copy of the date comparison.
+	// One clock reading is used for the whole page so the tile and the table
+	// cannot disagree about where the boundary fell.
+	asOf := time.Now()
+	var (
+		overdue      []store.Document
+		overdueTotal domain.Money
+	)
+	for _, invoice := range unsettled {
+		if invoice.Overdue(asOf) {
+			overdue = append(overdue, invoice)
+			overdueTotal += invoice.Outstanding()
+		}
 	}
 
 	s.render(w, r, "dashboard.html", pageData{
@@ -55,9 +72,11 @@ func (s *Server) handleDashboard(w http.ResponseWriter, r *http.Request) {
 			CustomerCounts: counts,
 			Statuses:       domain.CustomerStatuses(),
 			Outstanding:    outstanding,
+			OverdueTotal:   overdueTotal,
 			Currency:       s.cfg.DefaultCurrency,
 			Recent:         capDocuments(recent, recentDocumentLimit),
-			Unpaid:         capDocuments(unpaid, recentDocumentLimit),
+			Unsettled:      capDocuments(unsettled, recentDocumentLimit),
+			Overdue:        capDocuments(overdue, recentDocumentLimit),
 		},
 	})
 }

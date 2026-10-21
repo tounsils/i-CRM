@@ -25,6 +25,7 @@ type documentPage struct {
 	Convertible      bool
 	Types            []domain.DocType
 	Filter           store.DocumentFilter
+	OverdueOnly      bool
 	Today            string
 	BlankLines       int
 }
@@ -59,9 +60,30 @@ func (s *Server) handleDocumentList(w http.ResponseWriter, r *http.Request) {
 		s.fail(w, r, http.StatusInternalServerError, err)
 		return
 	}
+
+	// Overdue is applied here rather than in the query, because the rule lives
+	// in domain.IsOverdue and a WHERE clause repeating it would be a second
+	// owner of the same comparison. One clock reading for the whole list.
+	overdueOnly := r.URL.Query().Get("overdue") == "1"
+	if overdueOnly {
+		asOf := time.Now()
+		late := make([]store.Document, 0, len(documents))
+		for _, d := range documents {
+			if d.Overdue(asOf) {
+				late = append(late, d)
+			}
+		}
+		documents = late
+	}
+
 	s.render(w, r, "documents.html", pageData{
 		Title: "Documents",
-		Data:  documentPage{Documents: documents, Types: documentTypes(), Filter: filter},
+		Data: documentPage{
+			Documents:   documents,
+			Types:       documentTypes(),
+			Filter:      filter,
+			OverdueOnly: overdueOnly,
+		},
 	})
 }
 
