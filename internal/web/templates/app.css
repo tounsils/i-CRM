@@ -95,6 +95,8 @@ h2 { font-size: 17px; margin: 28px 0 10px; }
 }
 .tile .figure { font-size: 24px; font-weight: 650; }
 .tile .label { color: var(--muted); font-size: 13px; }
+.tile-alert { border-color: var(--bad); }
+.tile-alert .figure { color: var(--bad); }
 
 /* Tables */
 

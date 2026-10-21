@@ -384,6 +384,88 @@ func TestOutstandingTotalCountsOnlyLiveInvoices(t *testing.T) {
 	}
 }
 
+func TestUnsettledInvoicesExcludeTheSettledAndUnissued(t *testing.T) {
+	s := newTestStore(t)
+	ctx := context.Background()
+	customerID := mustCustomer(t, s)
+
+	issued := time.Now().AddDate(0, 0, -40)
+	past := time.Now().AddDate(0, 0, -10)
+	future := time.Now().AddDate(0, 0, 30)
+
+	invoice := func(due time.Time) int64 {
+		t.Helper()
+		id, err := s.CreateDocument(ctx, Document{
+			Type:       domain.DocInvoice,
+			CustomerID: customerID,
+			Currency:   "USD",
+			IssueDate:  issued,
+			DueDate:    &due,
+		}, sampleLines())
+		if err != nil {
+			t.Fatalf("CreateDocument: %v", err)
+		}
+		return id
+	}
+
+	late := invoice(past)
+	notYetDue := invoice(future)
+	settled := invoice(past)
+	neverIssued := invoice(past)
+
+	for _, id := range []int64{late, notYetDue, settled} {
+		if err := s.SetStatus(ctx, id, domain.StatusSent); err != nil {
+			t.Fatalf("SetStatus sent: %v", err)
+		}
+	}
+	paid, err := s.DocumentByID(ctx, settled)
+	if err != nil {
+		t.Fatalf("DocumentByID: %v", err)
+	}
+	if _, err := s.RecordPayment(ctx, Payment{
+		DocumentID: settled, Amount: paid.Totals.Total, PaidOn: time.Now(),
+	}); err != nil {
+		t.Fatalf("RecordPayment: %v", err)
+	}
+
+	unsettled, err := s.ListUnsettledInvoices(ctx)
+	if err != nil {
+		t.Fatalf("ListUnsettledInvoices: %v", err)
+	}
+	if len(unsettled) != 2 {
+		t.Fatalf("got %d unsettled invoices, want 2 (the sent ones that are not paid)", len(unsettled))
+	}
+
+	byID := make(map[int64]Document, len(unsettled))
+	for _, d := range unsettled {
+		byID[d.ID] = d
+	}
+	if _, ok := byID[neverIssued]; ok {
+		t.Error("a draft invoice appeared in the unsettled list despite its due date having passed")
+	}
+	if _, ok := byID[settled]; ok {
+		t.Error("a paid invoice appeared in the unsettled list")
+	}
+
+	// Soonest due first, which is the order the dashboard relies on.
+	if unsettled[0].ID != late {
+		t.Errorf("unsettled[0] is %d, want the earlier-due invoice %d", unsettled[0].ID, late)
+	}
+
+	asOf := time.Now()
+	if !byID[late].Overdue(asOf) {
+		t.Error("an invoice sent and due ten days ago is not reported overdue")
+	}
+	if byID[notYetDue].Overdue(asOf) {
+		t.Error("an invoice due in thirty days is reported overdue")
+	}
+	if paidAgain, err := s.DocumentByID(ctx, settled); err != nil {
+		t.Fatalf("DocumentByID: %v", err)
+	} else if paidAgain.Overdue(asOf) {
+		t.Error("a paid invoice is reported overdue because its due date passed")
+	}
+}
+
 func TestCustomerAndMessageTimeline(t *testing.T) {
 	s := newTestStore(t)
 	ctx := context.Background()

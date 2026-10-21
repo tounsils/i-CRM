@@ -36,11 +36,12 @@
     </thead>
     <tbody>
       {{range .Documents}}
+      {{$state := pill .}}
       <tr>
         <td><a href="/documents/{{.ID}}">{{.Number}}</a></td>
         <td>{{.Type.Label}}</td>
         <td>{{date .IssueDate}}</td>
-        <td><span class="pill {{statusTone .Status}}">{{.Status.Label}}</span></td>
+        <td><span class="pill {{$state.Tone}}">{{$state.Label}}</span></td>
         <td class="num">{{.Currency}} {{.Totals.Total}}</td>
         <td class="num">{{.Currency}} {{.Outstanding}}</td>
       </tr>

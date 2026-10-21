@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/tounsils/i-CRM/internal/domain"
@@ -241,6 +242,55 @@ func (s *Store) ListDocuments(ctx context.Context, f DocumentFilter) ([]Document
 	}
 	if err := rows.Err(); err != nil {
 		return nil, fmt.Errorf("store: listing documents: %w", err)
+	}
+	return out, nil
+}
+
+// unsettledInvoiceArgs builds the type and status arguments for a query over
+// invoices that still represent money owed.
+//
+// The status list comes from domain.UnsettledInvoiceStatuses so that this
+// package does not keep a second copy of it. The overdue comparison itself is
+// deliberately not pushed into SQL: domain.IsOverdue owns that rule, and a
+// duplicate of it in a WHERE clause is exactly the kind of second owner that
+// drifts.
+func unsettledInvoiceArgs() (placeholders string, args []any) {
+	statuses := domain.UnsettledInvoiceStatuses()
+	marks := make([]string, len(statuses))
+	args = append(args, string(domain.DocInvoice))
+	for i, status := range statuses {
+		marks[i] = "?"
+		args = append(args, string(status))
+	}
+	return strings.Join(marks, ", "), args
+}
+
+// ListUnsettledInvoices returns the invoices that still represent money owed,
+// soonest due first and those without a due date last.
+//
+// Callers decide which of these are overdue by asking each one, because the
+// answer depends on the time of asking rather than on anything stored.
+func (s *Store) ListUnsettledInvoices(ctx context.Context) ([]Document, error) {
+	placeholders, args := unsettledInvoiceArgs()
+	q := documentSelect + ` WHERE d.type = ? AND d.status IN (` + placeholders + `)
+	      ORDER BY d.due_date IS NULL, d.due_date, d.id`
+
+	rows, err := s.db.QueryContext(ctx, q, args...)
+	if err != nil {
+		return nil, fmt.Errorf("store: listing unsettled invoices: %w", err)
+	}
+	defer rows.Close()
+
+	var out []Document
+	for rows.Next() {
+		d, err := scanDocumentRows(rows)
+		if err != nil {
+			return nil, err
+		}
+		out = append(out, d)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("store: listing unsettled invoices: %w", err)
 	}
 	return out, nil
 }

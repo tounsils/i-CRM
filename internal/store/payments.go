@@ -133,15 +133,15 @@ func (s *Store) PaymentsForDocument(ctx context.Context, docID int64) ([]Payment
 // dashboard. Draft and void invoices are excluded because neither is money
 // anybody owes.
 func (s *Store) OutstandingTotal(ctx context.Context) (domain.Money, error) {
-	const q = `SELECT COALESCE(SUM(d.total_minor -
-	               (SELECT COALESCE(SUM(p.amount_minor), 0) FROM payments p
-	                WHERE p.document_id = d.id)), 0)
-	           FROM documents d
-	           WHERE d.type = ? AND d.status IN (?, ?)`
+	placeholders, args := unsettledInvoiceArgs()
+	q := `SELECT COALESCE(SUM(d.total_minor -
+	          (SELECT COALESCE(SUM(p.amount_minor), 0) FROM payments p
+	           WHERE p.document_id = d.id)), 0)
+	      FROM documents d
+	      WHERE d.type = ? AND d.status IN (` + placeholders + `)`
+
 	var outstanding int64
-	err := s.db.QueryRowContext(ctx, q, string(domain.DocInvoice),
-		string(domain.StatusSent), string(domain.StatusPartiallyPaid)).Scan(&outstanding)
-	if err != nil {
+	if err := s.db.QueryRowContext(ctx, q, args...).Scan(&outstanding); err != nil {
 		return 0, fmt.Errorf("store: totalling outstanding invoices: %w", err)
 	}
 	return domain.Money(outstanding), nil

@@ -3,6 +3,7 @@ package domain
 import (
 	"errors"
 	"fmt"
+	"time"
 )
 
 // DocType is the kind of document. Proposals, estimates and invoices are one
@@ -215,6 +216,52 @@ func ComputeTotals(lines []Line) Totals {
 	}
 	t.Total = t.Subtotal + t.Tax
 	return t
+}
+
+// UnsettledInvoiceStatuses are the statuses in which an invoice still
+// represents money somebody owes. A draft was never issued, a void one was
+// withdrawn, and a paid one is settled, so none of those is money outstanding.
+//
+// This is the single owner of that set. The outstanding total and the overdue
+// list both read it, so adding a status later cannot update one and miss the
+// other.
+func UnsettledInvoiceStatuses() []DocStatus {
+	return []DocStatus{StatusSent, StatusPartiallyPaid}
+}
+
+// IsOverdue reports whether a document is past its due date as of asOf.
+//
+// Overdue is derived on read rather than stored as a status. Storing it would
+// need something to sweep the table and move invoices into it, and an invoice
+// that was paid after going overdue would then sit in a stale status until the
+// next sweep. Deriving it means the answer is correct the moment a payment
+// lands.
+//
+// The boundary is the end of the due date rather than the instant: payment is
+// due by the close of that day, so an invoice due today is not overdue today.
+// Both times are reduced to their UTC calendar date before comparison, which is
+// also why asOf is a parameter instead of a call to time.Now inside here.
+func IsOverdue(t DocType, status DocStatus, dueDate *time.Time, asOf time.Time) bool {
+	if t != DocInvoice || dueDate == nil {
+		return false
+	}
+	unsettled := false
+	for _, s := range UnsettledInvoiceStatuses() {
+		if s == status {
+			unsettled = true
+			break
+		}
+	}
+	if !unsettled {
+		return false
+	}
+	return utcDate(asOf).After(utcDate(*dueDate))
+}
+
+// utcDate reduces a timestamp to midnight on its UTC calendar date.
+func utcDate(t time.Time) time.Time {
+	year, month, day := t.UTC().Date()
+	return time.Date(year, month, day, 0, 0, 0, 0, time.UTC)
 }
 
 // StatusForPayments is the status an invoice holds given its total and the sum

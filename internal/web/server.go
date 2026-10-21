@@ -113,7 +113,28 @@ type pageData struct {
 	Data        any
 }
 
+// documentPill is the badge shown for a document's state.
+type documentPill struct {
+	Label string
+	Tone  string
+}
+
 var templateFuncs = template.FuncMap{
+	// pill is the state badge for a document. An unsettled invoice past its due
+	// date reads as Overdue rather than as its stored status, because overdue
+	// is the fact the reader needs; the stored status is still Sent, and
+	// nothing was swept into a new state to achieve this.
+	//
+	// The clock is read here rather than threaded in from the handler because
+	// this is presentation only. The rule itself is domain.IsOverdue and is
+	// tested there against fixed times.
+	"pill": func(d store.Document) documentPill {
+		if d.Overdue(time.Now()) {
+			return documentPill{Label: "Overdue", Tone: "tone-bad"}
+		}
+		return documentPill{Label: d.Status.Label(), Tone: statusTone(d.Status)}
+	},
+
 	"date": func(t time.Time) string { return t.Format("2 Jan 2006") },
 	"optionalDate": func(t *time.Time) string {
 		if t == nil {

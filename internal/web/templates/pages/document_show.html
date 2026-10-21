@@ -2,11 +2,12 @@
 {{$root := .}}
 {{with .Data}}
 {{$doc := .Document}}
+{{$state := pill $doc}}
 <div class="pagehead">
   <div>
     <h1>{{$doc.Type.Label}} {{$doc.Number}}</h1>
     <p class="subtitle">
-      <span class="pill {{statusTone $doc.Status}}">{{$doc.Status.Label}}</span>
+      <span class="pill {{$state.Tone}}">{{$state.Label}}</span>
       <a href="/customers/{{$doc.CustomerID}}">{{$doc.CustomerName}}</a>
     </p>
   </div>
