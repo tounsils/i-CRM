@@ -76,6 +76,23 @@ func (s *Server) handleLogin(w http.ResponseWriter, r *http.Request) {
 	password := r.PostFormValue("password")
 	next := safeNext(r.PostFormValue("next"))
 
+	// Both keys are checked and both are counted, so one address cannot work
+	// through a list of accounts while staying under each account's own limit.
+	keys := []string{accountKey(email), sourceKey(r)}
+
+	if wait, locked := s.throttle.locked(keys...); locked {
+		// Deliberately before the password is read against anything. The
+		// message is identical whether or not the address exists, because the
+		// counter is keyed on what was submitted rather than on what is
+		// registered.
+		s.render(w, r, "login.html", pageData{
+			Title: "Sign in",
+			Error: "Too many sign-in attempts. Try again in " + humanWait(wait) + ".",
+			Data:  map[string]string{"Next": next, "Email": email},
+		})
+		return
+	}
+
 	user, err := s.store.UserByEmail(r.Context(), email)
 	if err != nil && !errors.Is(err, store.ErrNotFound) {
 		s.fail(w, r, http.StatusInternalServerError, err)
@@ -87,15 +104,29 @@ func (s *Server) handleLogin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if bcrypt.CompareHashAndPassword(hash, []byte(password)) != nil || user.ID == 0 {
-		// One message for both a wrong password and an unknown address.
+		s.throttle.recordFailure(keys...)
+
+		// One message for both a wrong password and an unknown address, unless
+		// this was the attempt that tripped the lock, in which case say so now.
+		// Reporting "wrong password" on the attempt that locks the account and
+		// only mentioning the lock on the next one makes the lock look
+		// arbitrary.
+		problem := "Those details do not match an account."
+		if wait, locked := s.throttle.locked(keys...); locked {
+			problem = "Too many sign-in attempts. Try again in " + humanWait(wait) + "."
+		}
+
 		s.render(w, r, "login.html", pageData{
 			Title: "Sign in",
-			Error: "Those details do not match an account.",
+			Error: problem,
 			Data:  map[string]string{"Next": next, "Email": email},
 		})
 		return
 	}
 
+	// A user who eventually remembers their password should not still be
+	// counting towards a lock.
+	s.throttle.reset(keys...)
 	s.issueSession(w, user.ID)
 	http.Redirect(w, r, next, http.StatusSeeOther)
 }

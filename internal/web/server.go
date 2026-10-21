@@ -29,6 +29,7 @@ type Server struct {
 	store            *store.Store
 	pages            map[string]*template.Template
 	standalone       map[string]*template.Template
+	throttle         *loginThrottle
 	enumerationGuard []byte
 }
 
@@ -52,6 +53,7 @@ func New(cfg config.Settings, st *store.Store) (*Server, error) {
 		store:            st,
 		pages:            pages,
 		standalone:       standalone,
+		throttle:         newLoginThrottle(),
 		enumerationGuard: guard,
 	}, nil
 }
