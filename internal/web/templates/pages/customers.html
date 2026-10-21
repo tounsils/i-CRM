@@ -1,0 +1,42 @@
+{{define "content"}}
+{{with .Data}}
+<div class="pagehead">
+  <div>
+    <h1>Customers</h1>
+    <p class="subtitle">Leads and customers are one list at different stages.</p>
+  </div>
+  <a class="button" href="/customers/new">New customer</a>
+</div>
+
+<div class="filters">
+  <a href="/customers" {{if not .Filter}}class="on"{{end}}>All</a>
+  {{range .Statuses}}
+  <a href="/customers?status={{.}}" {{if eq $.Data.Filter .}}class="on"{{end}}>{{.Label}}</a>
+  {{end}}
+</div>
+
+{{if .Customers}}
+<div class="panel table-wrap">
+  <table>
+    <thead>
+      <tr><th>Name</th><th>Contact</th><th>Email</th><th>Phone</th><th>Stage</th><th>Currency</th></tr>
+    </thead>
+    <tbody>
+      {{range .Customers}}
+      <tr>
+        <td><a href="/customers/{{.ID}}">{{.Name}}</a></td>
+        <td>{{.ContactName}}</td>
+        <td>{{.Email}}</td>
+        <td>{{.Phone}}</td>
+        <td><span class="pill">{{.Status.Label}}</span></td>
+        <td>{{.Currency}}</td>
+      </tr>
+      {{end}}
+    </tbody>
+  </table>
+</div>
+{{else}}
+<p class="empty">No customers match. Add one to get started.</p>
+{{end}}
+{{end}}
+{{end}}

@@ -1,0 +1,79 @@
+{{define "content"}}
+{{$root := .}}
+{{with .Data}}
+<h1>Dashboard</h1>
+<p class="subtitle">What is owed, and what moved recently.</p>
+
+<div class="tiles">
+  <div class="tile">
+    <div class="figure">{{.Currency}} {{.Outstanding}}</div>
+    <div class="label">Outstanding on sent invoices</div>
+  </div>
+  {{range .Statuses}}
+  <div class="tile">
+    <div class="figure">{{index $root.Data.CustomerCounts .}}</div>
+    <div class="label">{{.Label}}</div>
+  </div>
+  {{end}}
+</div>
+
+<div class="actions">
+  <a class="button" href="/documents/new?type=invoice">New invoice</a>
+  <a class="button secondary" href="/documents/new?type=estimate">New estimate</a>
+  <a class="button secondary" href="/documents/new?type=proposal">New proposal</a>
+  <a class="button secondary" href="/customers/new">New customer</a>
+</div>
+
+<h2>Awaiting payment</h2>
+{{if .Unpaid}}
+<div class="panel table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Invoice</th><th>Customer</th><th>Due</th>
+        <th class="num">Total</th><th class="num">Outstanding</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{range .Unpaid}}
+      <tr>
+        <td><a href="/documents/{{.ID}}">{{.Number}}</a></td>
+        <td>{{.CustomerName}}</td>
+        <td>{{optionalDate .DueDate}}</td>
+        <td class="num">{{.Currency}} {{.Totals.Total}}</td>
+        <td class="num">{{.Currency}} {{.Outstanding}}</td>
+      </tr>
+      {{end}}
+    </tbody>
+  </table>
+</div>
+{{else}}
+<p class="empty">Nothing is awaiting payment.</p>
+{{end}}
+
+<h2>Recent documents</h2>
+{{if .Recent}}
+<div class="panel table-wrap">
+  <table>
+    <thead>
+      <tr><th>Reference</th><th>Type</th><th>Customer</th><th>Issued</th><th>Status</th><th class="num">Total</th></tr>
+    </thead>
+    <tbody>
+      {{range .Recent}}
+      <tr>
+        <td><a href="/documents/{{.ID}}">{{.Number}}</a></td>
+        <td>{{.Type.Label}}</td>
+        <td>{{.CustomerName}}</td>
+        <td>{{date .IssueDate}}</td>
+        <td><span class="pill {{statusTone .Status}}">{{.Status.Label}}</span></td>
+        <td class="num">{{.Currency}} {{.Totals.Total}}</td>
+      </tr>
+      {{end}}
+    </tbody>
+  </table>
+</div>
+{{else}}
+<p class="empty">No documents yet. Add a tax rate under Taxes &amp; items, then raise your first one.</p>
+{{end}}
+{{end}}
+{{end}}

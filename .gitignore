@@ -1,16 +1,16 @@
-/node_modules
-/_version
-/public/hot
-/public/storage
-/storage/*.key
-/vendor
+# Build output
+/bin/
+
+# The SQLite database and its write-ahead log sidecars. Never commit these:
+# they hold customer records and invoices.
+/data/
+*.db
+*.db-wal
+*.db-shm
+
+# Local environment for docker compose
 .env
-.env.backup
-.phpunit.result.cache
-docker-compose.override.yml
-Homestead.json
-Homestead.yaml
-npm-debug.log
-yarn-error.log
-/.idea
-/.vscode
+
+# Editors
+/.idea/
+/.vscode/

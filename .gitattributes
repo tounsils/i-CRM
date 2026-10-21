@@ -1,5 +1,6 @@
-* text=auto
-*.css linguist-vendored
-*.scss linguist-vendored
-*.js linguist-vendored
-CHANGELOG.md export-ignore
+* text=auto eol=lf
+
+# The stylesheet and templates are this project's own code, not vendored
+# assets, so they should count towards the language breakdown.
+*.css linguist-vendored=false
+*.html linguist-vendored=false

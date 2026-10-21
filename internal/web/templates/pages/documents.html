@@ -1,0 +1,47 @@
+{{define "content"}}
+{{with .Data}}
+<div class="pagehead">
+  <div>
+    <h1>Documents</h1>
+    <p class="subtitle">Proposals, estimates and invoices, in the order they were issued.</p>
+  </div>
+  <a class="button" href="/documents/new?type=invoice">New invoice</a>
+</div>
+
+<div class="filters">
+  <a href="/documents" {{if not .Filter.Type}}class="on"{{end}}>All</a>
+  {{range .Types}}
+  <a href="/documents?type={{.}}" {{if eq $.Data.Filter.Type .}}class="on"{{end}}>{{.Label}}s</a>
+  {{end}}
+</div>
+
+{{if .Documents}}
+<div class="panel table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Reference</th><th>Type</th><th>Customer</th><th>Issued</th><th>Due</th>
+        <th>Status</th><th class="num">Total</th><th class="num">Outstanding</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{range .Documents}}
+      <tr>
+        <td><a href="/documents/{{.ID}}">{{.Number}}</a></td>
+        <td>{{.Type.Label}}</td>
+        <td><a href="/customers/{{.CustomerID}}">{{.CustomerName}}</a></td>
+        <td>{{date .IssueDate}}</td>
+        <td>{{optionalDate .DueDate}}</td>
+        <td><span class="pill {{statusTone .Status}}">{{.Status.Label}}</span></td>
+        <td class="num">{{.Currency}} {{.Totals.Total}}</td>
+        <td class="num">{{.Currency}} {{.Outstanding}}</td>
+      </tr>
+      {{end}}
+    </tbody>
+  </table>
+</div>
+{{else}}
+<p class="empty">Nothing here yet.</p>
+{{end}}
+{{end}}
+{{end}}

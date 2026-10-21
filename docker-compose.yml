@@ -1,0 +1,28 @@
+# Self-hosting i-CRM. One container, one volume.
+#
+# ICRM_SESSION_KEY has no default on purpose: a generated key signs every user
+# out on each restart, and the resulting bug report looks like a session fault
+# rather than a missing setting.
+#
+# ICRM_ENV defaults to development because that is what decides whether session
+# cookies are marked Secure, and a Secure cookie is never sent over plain HTTP.
+# Set it to production once this sits behind a TLS terminator, and not before,
+# or nobody will be able to sign in.
+
+services:
+  icrm:
+    build: .
+    ports:
+      - "${ICRM_PORT:-8080}:8080"
+    environment:
+      ICRM_SESSION_KEY: ${ICRM_SESSION_KEY:?set ICRM_SESSION_KEY to at least 32 characters}
+      ICRM_ENV: ${ICRM_ENV:-development}
+      ICRM_COMPANY_NAME: ${ICRM_COMPANY_NAME:-i-CRM}
+      ICRM_CURRENCY: ${ICRM_CURRENCY:-USD}
+      ICRM_PAYMENT_TERMS_DAYS: ${ICRM_PAYMENT_TERMS_DAYS:-30}
+    volumes:
+      - icrm-data:/data
+    restart: unless-stopped
+
+volumes:
+  icrm-data:

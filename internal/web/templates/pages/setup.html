@@ -1,0 +1,21 @@
+{{define "content"}}
+<h1>Create the first administrator</h1>
+<p class="subtitle">This page is only available while there are no accounts.</p>
+
+<form class="panel" method="post" action="/setup">
+  <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+  <label>
+    <span class="text">Your name</span>
+    <input type="text" name="name" value="{{index .Data "Name"}}" required autofocus>
+  </label>
+  <label>
+    <span class="text">Email</span>
+    <input type="email" name="email" value="{{index .Data "Email"}}" autocomplete="username" required>
+  </label>
+  <label>
+    <span class="text">Password, at least 12 characters</span>
+    <input type="password" name="password" autocomplete="new-password" minlength="12" required>
+  </label>
+  <button type="submit">Create account</button>
+</form>
+{{end}}

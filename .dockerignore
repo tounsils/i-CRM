@@ -1,0 +1,13 @@
+.git
+.gitignore
+.dockerignore
+Dockerfile
+docker-compose.yml
+Makefile
+README.md
+handoff.md
+CLAUDE.md
+data
+*.db
+*.db-wal
+*.db-shm

@@ -1,0 +1,80 @@
+{{define "content"}}
+{{$root := .}}
+{{with .Data}}
+<h1>Taxes and items</h1>
+<p class="subtitle">
+  A tax rate is copied onto a line when the line is saved, so changing a rate here never
+  restates a document that has already been sent.
+</p>
+
+<h2>Tax rates</h2>
+{{if .Taxes}}
+<div class="panel table-wrap">
+  <table>
+    <thead><tr><th>Name</th><th class="num">Rate</th></tr></thead>
+    <tbody>
+      {{range .Taxes}}
+      <tr><td>{{.Name}}</td><td class="num">{{.Rate}}</td></tr>
+      {{end}}
+    </tbody>
+  </table>
+</div>
+{{else}}
+<p class="empty">No tax rates yet.</p>
+{{end}}
+
+<form class="panel" method="post" action="/catalog/taxes">
+  <input type="hidden" name="csrf_token" value="{{$root.CSRFToken}}">
+  <div class="grid2">
+    <label>
+      <span class="text">Name</span>
+      <input type="text" name="name" placeholder="VAT" required>
+    </label>
+    <label>
+      <span class="text">Rate as a percentage</span>
+      <input type="text" name="rate" placeholder="20" required>
+    </label>
+  </div>
+  <button type="submit">Add tax rate</button>
+</form>
+
+<h2>Items</h2>
+{{if .Items}}
+<div class="panel table-wrap">
+  <table>
+    <thead><tr><th>Name</th><th>Description</th><th class="num">Unit price</th></tr></thead>
+    <tbody>
+      {{range .Items}}
+      <tr>
+        <td>{{.Name}}</td>
+        <td>{{.Description}}</td>
+        <td class="num">{{.UnitPrice}}</td>
+      </tr>
+      {{end}}
+    </tbody>
+  </table>
+</div>
+{{else}}
+<p class="empty">No items yet. Items are reusable prices you can copy onto a line.</p>
+{{end}}
+
+<form class="panel" method="post" action="/catalog/items">
+  <input type="hidden" name="csrf_token" value="{{$root.CSRFToken}}">
+  <div class="grid2">
+    <label>
+      <span class="text">Name</span>
+      <input type="text" name="name" placeholder="Consulting day" required>
+    </label>
+    <label>
+      <span class="text">Unit price</span>
+      <input type="text" name="unit_price" placeholder="1200.00" required>
+    </label>
+  </div>
+  <label>
+    <span class="text">Description</span>
+    <input type="text" name="description">
+  </label>
+  <button type="submit">Add item</button>
+</form>
+{{end}}
+{{end}}

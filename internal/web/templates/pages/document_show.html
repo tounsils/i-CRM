@@ -1,0 +1,172 @@
+{{define "content"}}
+{{$root := .}}
+{{with .Data}}
+{{$doc := .Document}}
+<div class="pagehead">
+  <div>
+    <h1>{{$doc.Type.Label}} {{$doc.Number}}</h1>
+    <p class="subtitle">
+      <span class="pill {{statusTone $doc.Status}}">{{$doc.Status.Label}}</span>
+      <a href="/customers/{{$doc.CustomerID}}">{{$doc.CustomerName}}</a>
+    </p>
+  </div>
+  <div class="actions">
+    {{range .NextStatuses}}
+    <form class="inline-form" method="post" action="/documents/{{$doc.ID}}/status">
+      <input type="hidden" name="csrf_token" value="{{$root.CSRFToken}}">
+      <input type="hidden" name="status" value="{{.}}">
+      <button class="secondary" type="submit">Mark {{.Label}}</button>
+    </form>
+    {{end}}
+    {{if .Convertible}}
+    <form class="inline-form" method="post" action="/documents/{{$doc.ID}}/convert">
+      <input type="hidden" name="csrf_token" value="{{$root.CSRFToken}}">
+      <button type="submit">Convert to {{.ConversionTarget.Label}}</button>
+    </form>
+    {{end}}
+  </div>
+</div>
+
+<div class="panel">
+  <dl class="kv">
+    <dt>Issued</dt><dd>{{date $doc.IssueDate}}</dd>
+    <dt>Due</dt><dd>{{if $doc.DueDate}}{{optionalDate $doc.DueDate}}{{else}}&mdash;{{end}}</dd>
+    <dt>Currency</dt><dd>{{$doc.Currency}}</dd>
+    {{if $doc.ConvertedToID}}
+    <dt>Converted into</dt>
+    <dd><a href="/documents/{{$doc.ConvertedToID}}">document #{{$doc.ConvertedToID}}</a></dd>
+    {{end}}
+    {{if $doc.Notes}}<dt>Notes</dt><dd>{{$doc.Notes}}</dd>{{end}}
+  </dl>
+</div>
+
+<h2>Lines</h2>
+<div class="panel table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Description</th><th class="num">Quantity</th><th class="num">Unit price</th>
+        <th>Tax</th><th class="num">Net</th><th class="num">Tax</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{range $doc.Lines}}
+      {{$totals := .Totals}}
+      <tr>
+        <td>{{.Description}}</td>
+        <td class="num">{{.Quantity}}</td>
+        <td class="num">{{.UnitPrice}}</td>
+        <td>{{if .TaxName}}{{.TaxName}} ({{.TaxRate}}){{else}}&mdash;{{end}}</td>
+        <td class="num">{{$totals.Subtotal}}</td>
+        <td class="num">{{$totals.Tax}}</td>
+      </tr>
+      {{end}}
+    </tbody>
+    <tfoot>
+      <tr><td colspan="4">Subtotal</td><td class="num">{{$doc.Totals.Subtotal}}</td><td></td></tr>
+      <tr><td colspan="4">Tax</td><td class="num">{{$doc.Totals.Tax}}</td><td></td></tr>
+      <tr><td colspan="4">Total</td><td class="num">{{$doc.Currency}} {{$doc.Totals.Total}}</td><td></td></tr>
+      {{if $doc.Paid}}
+      <tr><td colspan="4">Paid</td><td class="num">{{$doc.Paid}}</td><td></td></tr>
+      <tr><td colspan="4">Outstanding</td><td class="num">{{$doc.Outstanding}}</td><td></td></tr>
+      {{end}}
+    </tfoot>
+  </table>
+</div>
+
+{{if editable $doc}}
+<h2>Edit lines</h2>
+<p class="subtitle">Only a draft can be edited. Clear a description to remove that line.</p>
+<form method="post" action="/documents/{{$doc.ID}}/lines">
+  <input type="hidden" name="csrf_token" value="{{$root.CSRFToken}}">
+  <div class="panel table-wrap">
+    <table>
+      <thead>
+        <tr><th>Description</th><th>Quantity</th><th>Unit price</th><th>Tax</th></tr>
+      </thead>
+      <tbody>
+        {{range $doc.Lines}}
+        {{$lineTax := .TaxName}}
+        <tr>
+          <td><input type="text" name="line_description" value="{{.Description}}"></td>
+          <td><input type="text" name="line_quantity" value="{{.Quantity}}"></td>
+          <td><input type="text" name="line_unit_price" value="{{.UnitPrice}}"></td>
+          <td>
+            <select name="line_tax_id">
+              <option value="">No tax</option>
+              {{range $root.Data.Taxes}}
+              <option value="{{.ID}}" {{if eq .Name $lineTax}}selected{{end}}>{{.Name}} ({{.Rate}})</option>
+              {{end}}
+            </select>
+          </td>
+        </tr>
+        {{end}}
+        {{range rows 3}}
+        <tr>
+          <td><input type="text" name="line_description" placeholder="Add a line"></td>
+          <td><input type="text" name="line_quantity" value="1"></td>
+          <td><input type="text" name="line_unit_price" placeholder="0.00"></td>
+          <td>
+            <select name="line_tax_id">
+              <option value="">No tax</option>
+              {{range $root.Data.Taxes}}
+              <option value="{{.ID}}">{{.Name}} ({{.Rate}})</option>
+              {{end}}
+            </select>
+          </td>
+        </tr>
+        {{end}}
+      </tbody>
+    </table>
+  </div>
+  <div class="actions"><button type="submit">Save lines</button></div>
+</form>
+{{end}}
+
+{{if payable $doc}}
+<h2>Payments</h2>
+{{if .Payments}}
+<div class="panel table-wrap">
+  <table>
+    <thead><tr><th>Date</th><th>Method</th><th>Reference</th><th class="num">Amount</th></tr></thead>
+    <tbody>
+      {{range .Payments}}
+      <tr>
+        <td>{{date .PaidOn}}</td>
+        <td>{{if .Method}}{{.Method}}{{else}}&mdash;{{end}}</td>
+        <td>{{if .Reference}}{{.Reference}}{{else}}&mdash;{{end}}</td>
+        <td class="num">{{.Amount}}</td>
+      </tr>
+      {{end}}
+    </tbody>
+  </table>
+</div>
+{{else}}
+<p class="empty">No payments recorded.</p>
+{{end}}
+
+<form class="panel" method="post" action="/documents/{{$doc.ID}}/payments">
+  <input type="hidden" name="csrf_token" value="{{$root.CSRFToken}}">
+  <div class="grid2">
+    <label>
+      <span class="text">Amount</span>
+      <input type="text" name="amount" placeholder="{{$doc.Outstanding}}" required>
+    </label>
+    <label>
+      <span class="text">Received on</span>
+      <input type="date" name="paid_on" value="{{.Today}}" required>
+    </label>
+    <label>
+      <span class="text">Method</span>
+      <input type="text" name="method" placeholder="Bank transfer">
+    </label>
+    <label>
+      <span class="text">Reference</span>
+      <input type="text" name="reference">
+    </label>
+  </div>
+  <button type="submit">Record payment</button>
+</form>
+{{end}}
+{{end}}
+{{end}}

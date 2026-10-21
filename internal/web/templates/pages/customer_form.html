@@ -1,0 +1,63 @@
+{{define "content"}}
+{{$root := .}}
+{{with .Data}}
+{{$action := "/customers"}}
+{{if .Customer.ID}}{{$action = printf "/customers/%d" .Customer.ID}}{{end}}
+
+<h1>{{if .Customer.ID}}Edit {{.Customer.Name}}{{else}}New customer{{end}}</h1>
+<p class="subtitle">A lead and a customer are the same record; the stage is what differs.</p>
+
+<form class="panel" method="post" action="{{$action}}">
+  <input type="hidden" name="csrf_token" value="{{$root.CSRFToken}}">
+
+  <div class="grid2">
+    <label>
+      <span class="text">Company or person</span>
+      <input type="text" name="name" value="{{.Customer.Name}}" required autofocus>
+    </label>
+    <label>
+      <span class="text">Contact name</span>
+      <input type="text" name="contact_name" value="{{.Customer.ContactName}}">
+    </label>
+    <label>
+      <span class="text">Email</span>
+      <input type="email" name="email" value="{{.Customer.Email}}">
+    </label>
+    <label>
+      <span class="text">Phone</span>
+      <input type="text" name="phone" value="{{.Customer.Phone}}">
+    </label>
+    <label>
+      <span class="text">Stage</span>
+      <select name="status">
+        {{range .Statuses}}
+        <option value="{{.}}" {{if eq $root.Data.Customer.Status .}}selected{{end}}>{{.Label}}</option>
+        {{end}}
+      </select>
+    </label>
+    <label>
+      <span class="text">Currency</span>
+      <input type="text" name="currency" value="{{.Customer.Currency}}" maxlength="3" required>
+    </label>
+  </div>
+
+  <label>
+    <span class="text">Address</span>
+    <textarea name="address">{{.Customer.Address}}</textarea>
+  </label>
+  <label>
+    <span class="text">Notes</span>
+    <textarea name="notes">{{.Customer.Notes}}</textarea>
+  </label>
+
+  <div class="actions">
+    <button type="submit">Save</button>
+    {{if .Customer.ID}}
+    <a class="button secondary" href="/customers/{{.Customer.ID}}">Cancel</a>
+    {{else}}
+    <a class="button secondary" href="/customers">Cancel</a>
+    {{end}}
+  </div>
+</form>
+{{end}}
+{{end}}

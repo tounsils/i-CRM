@@ -1,0 +1,63 @@
+# Lint configuration.
+#
+# The set is deliberately small and all of it is expected to pass. A wall of
+# warnings nobody acts on is worse than no linter, so anything that is wrong
+# often enough to be noise is turned off here with a reason rather than
+# suppressed case by case at the call site.
+
+version: "2"
+
+linters:
+  default: none
+  enable:
+    - errcheck      # an ignored error is the most common real defect in Go
+    - govet
+    - ineffassign
+    - staticcheck   # includes the old stylecheck and gosimple
+    - unused
+    - bodyclose     # a leaked response body is a leaked connection
+    - rowserrcheck  # sql.Rows.Err after a loop, easy to forget and silent
+    - sqlclosecheck
+    - misspell
+    - revive
+
+  settings:
+    errcheck:
+      exclude-functions:
+        # Close on a drained sql.Rows reports the same error that rows.Err()
+        # has already surfaced, so checking it in a defer adds a wrapper around
+        # every query and catches nothing. rows.Err() is checked after every
+        # loop in this codebase, which is where the error actually lives.
+        - (*database/sql.Rows).Close
+        # Rollback after a successful Commit is a no-op returning
+        # sql.ErrTxDone. Every transaction here defers it as the failure path.
+        - (*database/sql.Tx).Rollback
+    revive:
+      rules:
+        - name: exported
+          # Comments on exported identifiers are expected here, but not in the
+          # stock "Xyz should have comment or be unexported" phrasing, which
+          # fires on obvious accessors.
+          disabled: true
+    misspell:
+      locale: UK
+
+  exclusions:
+    rules:
+      # Test files legitimately ignore errors on cleanup paths where a failure
+      # cannot affect the assertion. bodyclose is excluded because the test
+      # harness closes every body inside its helpers (harness.body and
+      # harness.createdDocumentID both defer it), which the linter cannot see
+      # through.
+      - path: _test\.go
+        linters:
+          - errcheck
+          - bodyclose
+
+formatters:
+  enable:
+    - gofmt
+
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0

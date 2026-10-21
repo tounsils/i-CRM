@@ -1,0 +1,93 @@
+{{define "content"}}
+{{$root := .}}
+{{with .Data}}
+<div class="pagehead">
+  <div>
+    <h1>{{.Customer.Name}}</h1>
+    <p class="subtitle">
+      <span class="pill">{{.Customer.Status.Label}}</span>
+      Customer since {{date .Customer.CreatedAt}}
+    </p>
+  </div>
+  <div class="actions">
+    <a class="button" href="/documents/new?type=proposal&amp;customer={{.Customer.ID}}">New proposal</a>
+    <a class="button secondary" href="/documents/new?type=invoice&amp;customer={{.Customer.ID}}">New invoice</a>
+    <a class="button secondary" href="/customers/{{.Customer.ID}}/edit">Edit</a>
+  </div>
+</div>
+
+<div class="panel">
+  <dl class="kv">
+    <dt>Contact</dt><dd>{{if .Customer.ContactName}}{{.Customer.ContactName}}{{else}}&mdash;{{end}}</dd>
+    <dt>Email</dt><dd>{{if .Customer.Email}}{{.Customer.Email}}{{else}}&mdash;{{end}}</dd>
+    <dt>Phone</dt><dd>{{if .Customer.Phone}}{{.Customer.Phone}}{{else}}&mdash;{{end}}</dd>
+    <dt>Currency</dt><dd>{{.Customer.Currency}}</dd>
+    {{if .Customer.Address}}<dt>Address</dt><dd>{{.Customer.Address}}</dd>{{end}}
+    {{if .Customer.Notes}}<dt>Notes</dt><dd>{{.Customer.Notes}}</dd>{{end}}
+  </dl>
+</div>
+
+<h2>Documents</h2>
+{{if .Documents}}
+<div class="panel table-wrap">
+  <table>
+    <thead>
+      <tr><th>Reference</th><th>Type</th><th>Issued</th><th>Status</th><th class="num">Total</th><th class="num">Outstanding</th></tr>
+    </thead>
+    <tbody>
+      {{range .Documents}}
+      <tr>
+        <td><a href="/documents/{{.ID}}">{{.Number}}</a></td>
+        <td>{{.Type.Label}}</td>
+        <td>{{date .IssueDate}}</td>
+        <td><span class="pill {{statusTone .Status}}">{{.Status.Label}}</span></td>
+        <td class="num">{{.Currency}} {{.Totals.Total}}</td>
+        <td class="num">{{.Currency}} {{.Outstanding}}</td>
+      </tr>
+      {{end}}
+    </tbody>
+  </table>
+</div>
+{{else}}
+<p class="empty">Nothing raised for this customer yet.</p>
+{{end}}
+
+<h2>Correspondence</h2>
+<form class="panel" method="post" action="/customers/{{.Customer.ID}}/messages">
+  <input type="hidden" name="csrf_token" value="{{$root.CSRFToken}}">
+  <div class="grid2">
+    <label>
+      <span class="text">Kind</span>
+      <select name="direction">
+        {{range .Directions}}<option value="{{.}}">{{.Label}}</option>{{end}}
+      </select>
+    </label>
+    <label>
+      <span class="text">Subject</span>
+      <input type="text" name="subject">
+    </label>
+  </div>
+  <label>
+    <span class="text">Message</span>
+    <textarea name="body" required></textarea>
+  </label>
+  <button type="submit">Add to timeline</button>
+</form>
+
+{{if .Messages}}
+<div class="panel">
+  {{range .Messages}}
+  <div class="timeline-entry">
+    <div class="timeline-meta">
+      {{.Direction.Label}} &middot; {{date .CreatedAt}} &middot; {{.AuthorName}}
+      {{if .Subject}}&middot; {{.Subject}}{{end}}
+    </div>
+    <p class="timeline-body">{{.Body}}</p>
+  </div>
+  {{end}}
+</div>
+{{else}}
+<p class="empty">No correspondence recorded.</p>
+{{end}}
+{{end}}
+{{end}}

@@ -1,0 +1,91 @@
+{{define "content"}}
+{{$root := .}}
+{{with .Data}}
+<h1>New {{.Document.Type.Label}}</h1>
+<p class="subtitle">Created as a draft, so the lines can still be corrected before it is sent.</p>
+
+{{if not .Customers}}
+<p class="banner error">
+  There are no customers yet. <a href="/customers/new">Add one</a> before raising a document.
+</p>
+{{end}}
+
+<form method="post" action="/documents">
+  <input type="hidden" name="csrf_token" value="{{$root.CSRFToken}}">
+  <input type="hidden" name="type" value="{{.Document.Type}}">
+
+  <div class="panel">
+    <div class="grid2">
+      <label>
+        <span class="text">Customer</span>
+        <select name="customer_id" required>
+          <option value="">Choose a customer</option>
+          {{range .Customers}}
+          <option value="{{.ID}}" {{if eq $root.Data.Document.CustomerID .ID}}selected{{end}}>
+            {{.Name}}
+          </option>
+          {{end}}
+        </select>
+      </label>
+      <label>
+        <span class="text">Currency</span>
+        <input type="text" name="currency" value="{{.Document.Currency}}" maxlength="3" required>
+      </label>
+      <label>
+        <span class="text">Issue date</span>
+        <input type="date" name="issue_date" value="{{inputDate .Document.IssueDate}}" required>
+      </label>
+      <label>
+        <span class="text">Due date{{if ne .Document.Type "invoice"}} (optional){{end}}</span>
+        <input type="date" name="due_date"
+               value="{{if .Document.DueDate}}{{inputDate .Document.DueDate}}{{end}}">
+      </label>
+    </div>
+  </div>
+
+  <h2>Lines</h2>
+  <div class="panel table-wrap">
+    <table>
+      <thead>
+        <tr><th>Description</th><th>Quantity</th><th>Unit price</th><th>Tax</th></tr>
+      </thead>
+      <tbody>
+        {{range rows .BlankLines}}
+        <tr>
+          <td><input type="text" name="line_description" placeholder="What is being billed"></td>
+          <td><input type="text" name="line_quantity" value="1"></td>
+          <td><input type="text" name="line_unit_price" placeholder="0.00"></td>
+          <td>
+            <select name="line_tax_id">
+              <option value="">No tax</option>
+              {{range $root.Data.Taxes}}
+              <option value="{{.ID}}">{{.Name}} ({{.Rate}})</option>
+              {{end}}
+            </select>
+          </td>
+        </tr>
+        {{end}}
+      </tbody>
+    </table>
+    {{if not .Taxes}}
+    <p class="empty">
+      No tax rates are set up. Add one under <a href="/catalog">Taxes &amp; items</a> if this
+      document needs tax.
+    </p>
+    {{end}}
+  </div>
+
+  <div class="panel">
+    <label>
+      <span class="text">Notes, shown on the document</span>
+      <textarea name="notes">{{.Document.Notes}}</textarea>
+    </label>
+  </div>
+
+  <div class="actions">
+    <button type="submit">Create draft</button>
+    <a class="button secondary" href="/documents">Cancel</a>
+  </div>
+</form>
+{{end}}
+{{end}}

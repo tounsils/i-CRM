@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{.Title}} &middot; {{.CompanyName}}</title>
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+{{if .User.ID}}
+<header class="topbar">
+  <a class="brand" href="/">{{.CompanyName}}</a>
+  <nav>
+    <a href="/">Dashboard</a>
+    <a href="/customers">Customers</a>
+    <a href="/documents">Documents</a>
+    <a href="/catalog">Taxes &amp; items</a>
+  </nav>
+  <form class="signout" method="post" action="/logout">
+    <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+    <span class="who">{{.User.Name}}</span>
+    <button class="linklike" type="submit">Sign out</button>
+  </form>
+</header>
+{{end}}
+
+<main{{if not .User.ID}} class="narrow"{{end}}>
+  {{if .Notice}}<p class="banner notice">{{.Notice}}</p>{{end}}
+  {{if .Error}}<p class="banner error">{{.Error}}</p>{{end}}
+  {{template "content" .}}
+</main>
+</body>
+</html>
