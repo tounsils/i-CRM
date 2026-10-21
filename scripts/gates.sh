@@ -15,7 +15,7 @@ GO=${GO:-go}
 status=0
 
 echo "== format =="
-unformatted=$($GO fmt -n ./... >/dev/null 2>&1; gofmt -l ./cmd ./internal)
+unformatted=$(gofmt -l ./cmd ./internal)
 if [ -n "$unformatted" ]; then
     echo "gofmt would rewrite:"
     echo "$unformatted"
