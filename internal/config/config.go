@@ -24,6 +24,16 @@ type Settings struct {
 	DefaultCurrency  string
 	Production       bool
 
+	// PDFFontPath and PDFFontBoldPath override the typeface compiled into the
+	// binary. Empty means use the embedded one, which covers Latin, Greek and
+	// Cyrillic. Supplying a font with wider coverage, a Chinese one for
+	// instance, is how a deployment renders documents the embedded font cannot.
+	//
+	// The bold path is optional: without it the regular face is used for bold
+	// text, which renders at normal weight rather than failing.
+	PDFFontPath     string
+	PDFFontBoldPath string
+
 	// SessionKeyGenerated is true when no key was supplied and an ephemeral one
 	// was made up, which means sessions do not survive a restart. main logs
 	// this; it is a development convenience and an error in production.
@@ -60,6 +70,8 @@ func Load() (Settings, error) {
 		DatabasePath:     envOr("ICRM_DB", defaultDatabasePath),
 		CompanyName:      envOr("ICRM_COMPANY_NAME", defaultCompanyName),
 		CompanyAddress:   multilineEnv("ICRM_COMPANY_ADDRESS"),
+		PDFFontPath:      envOr("ICRM_PDF_FONT", ""),
+		PDFFontBoldPath:  envOr("ICRM_PDF_FONT_BOLD", ""),
 		DefaultCurrency:  strings.ToUpper(envOr("ICRM_CURRENCY", defaultCurrency)),
 		PaymentTermsDays: defaultPaymentTermsDays,
 		Production:       strings.EqualFold(os.Getenv("ICRM_ENV"), "production"),

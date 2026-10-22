@@ -3,6 +3,8 @@ package pdf
 import (
 	"bytes"
 	"errors"
+	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 
@@ -41,7 +43,7 @@ func sampleView() docview.Document {
 }
 
 func TestRenderProducesAValidPDF(t *testing.T) {
-	file, err := Render(sampleView())
+	file, err := Render(sampleView(), testFonts(t))
 	if err != nil {
 		t.Fatalf("Render: %v", err)
 	}
@@ -87,7 +89,7 @@ func TestRenderEmbedsGlyphsForTextAboveLatin1(t *testing.T) {
 		t.Helper()
 		view := sampleView()
 		view.CustomerLines = []string{name}
-		file, err := Render(view)
+		file, err := Render(view, testFonts(t))
 		if err != nil {
 			t.Fatalf("Render(%q): %v", name, err)
 		}
@@ -132,7 +134,7 @@ func TestRenderAcceptsEveryScriptItClaimsToSupport(t *testing.T) {
 	} {
 		view := sampleView()
 		view.CustomerLines = []string{text}
-		if _, err := Render(view); err != nil {
+		if _, err := Render(view, testFonts(t)); err != nil {
 			t.Errorf("Render(%q) returned %v, but this script is supposed to be supported", text, err)
 		}
 	}
@@ -158,7 +160,7 @@ func TestRenderRefusesWhatItCannotDrawCorrectly(t *testing.T) {
 		view := sampleView()
 		view.CustomerLines = []string{c.text}
 
-		file, err := Render(view)
+		file, err := Render(view, testFonts(t))
 		if !errors.Is(err, ErrUnsupportedScript) {
 			t.Errorf("%s: Render returned %v, want ErrUnsupportedScript", c.name, err)
 			continue
@@ -178,7 +180,7 @@ func TestRefusalNamesTheOffendingCharacters(t *testing.T) {
 	view := sampleView()
 	view.Notes = "Delivered to 北風 warehouse"
 
-	_, err := Render(view)
+	_, err := Render(view, testFonts(t))
 	if !errors.Is(err, ErrUnsupportedScript) {
 		t.Fatalf("Render returned %v, want ErrUnsupportedScript", err)
 	}
@@ -197,7 +199,7 @@ func TestRefusalChecksEveryPartOfTheDocument(t *testing.T) {
 	withKanji := func(mutate func(*docview.Document)) error {
 		view := base
 		mutate(&view)
-		_, err := Render(view)
+		_, err := Render(view, testFonts(t))
 		return err
 	}
 
@@ -222,18 +224,128 @@ func TestRefusalChecksEveryPartOfTheDocument(t *testing.T) {
 	}
 }
 
-func TestRenderableRangesAreSaneAndOrdered(t *testing.T) {
-	// An inverted or overlapping range is a silent bug: the allowlist would
-	// still work, so nothing would fail, but the table would no longer say
-	// what it appears to say.
-	for i, span := range renderable {
+func TestShapingRangesAreSaneAndOrdered(t *testing.T) {
+	// An inverted or overlapping range is a silent bug: the lookup would still
+	// work, so nothing would fail, but the table would no longer say what it
+	// appears to say.
+	for i, span := range shapingRequired {
 		if span.lo > span.hi {
 			t.Errorf("range %d is inverted: %#x to %#x", i, span.lo, span.hi)
 		}
-		if i > 0 && span.lo <= renderable[i-1].hi {
+		if i > 0 && span.lo <= shapingRequired[i-1].hi {
 			t.Errorf("range %d (%#x) overlaps or precedes range %d (ending %#x)",
-				i, span.lo, i-1, renderable[i-1].hi)
+				i, span.lo, i-1, shapingRequired[i-1].hi)
 		}
+	}
+}
+
+func TestEmbeddedFontCoverageIsAskedOfTheFontNotHardcoded(t *testing.T) {
+	// The reason coverage is read from the font: a list of ranges in the
+	// source can drift away from what the file actually contains, and the
+	// failure is a document that renders blank.
+	fonts := testFonts(t)
+
+	for _, present := range []rune{'A', 'é', 'Ł', 'ż', 'Ş', 'О', 'Σ', '€', 'ế'} {
+		if !fonts.hasGlyph(present) {
+			t.Errorf("the embedded font reports no glyph for %q, but it should have one", present)
+		}
+	}
+	for _, absent := range []rune{'北', '風', '한', 'ا'} {
+		if fonts.hasGlyph(absent) {
+			t.Errorf("the embedded font reports a glyph for %q, which it does not carry", absent)
+		}
+	}
+}
+
+func TestHebrewIsRefusedEvenThoughTheFontHasTheGlyphs(t *testing.T) {
+	// The tempting mistake. Liberation Sans carries Hebrew, so a check based
+	// only on glyph coverage would accept it and draw it left to right, which
+	// is backwards. Direction is a renderer limitation, not a font one, and
+	// the two are tracked separately for exactly this case.
+	fonts := testFonts(t)
+
+	// Asserted rather than skipped over. If the font stops carrying Hebrew
+	// this test still passes for the wrong reason, so the premise is checked
+	// explicitly and a change to it fails here and makes somebody think.
+	if !fonts.hasGlyph('א') {
+		t.Fatal("the premise of this test has changed: the embedded font no longer " +
+			"carries Hebrew, so glyph coverage alone would now refuse it anyway")
+	}
+
+	view := sampleView()
+	view.CustomerLines = []string{"חברת הצפון"}
+	if _, err := Render(view, fonts); !errors.Is(err, ErrUnsupportedScript) {
+		t.Fatalf("Render returned %v, want ErrUnsupportedScript: the glyphs exist but the "+
+			"direction cannot be honoured", err)
+	}
+}
+
+func TestLoadFallsBackToTheEmbeddedFont(t *testing.T) {
+	fonts, err := Load("", "")
+	if err != nil {
+		t.Fatalf("Load with no paths: %v", err)
+	}
+	if !fonts.hasGlyph('Ł') {
+		t.Error("the fallback font cannot draw Latin Extended")
+	}
+	if fonts.BoldIsRegular {
+		t.Error("the embedded set has a real bold face, but BoldIsRegular is true")
+	}
+}
+
+func TestLoadRejectsAFileThatIsNotAUsableFont(t *testing.T) {
+	// The two formats people reach for first, a .ttc collection and a
+	// PostScript-outline .otf, both fail inside the PDF writer with an
+	// unhelpful "undefined font" at download time. Catching it at load means
+	// the message arrives when the operator sets the variable.
+	notAFont := filepath.Join(t.TempDir(), "notafont.ttf")
+	if err := os.WriteFile(notAFont, []byte("this is not a font at all"), 0o600); err != nil {
+		t.Fatalf("writing the fixture: %v", err)
+	}
+
+	_, err := Load(notAFont, "")
+	if err == nil {
+		t.Fatal("Load accepted a file that is not a font")
+	}
+	for _, want := range []string{"single-face TrueType", ".ttc", ".otf"} {
+		if !strings.Contains(err.Error(), want) {
+			t.Errorf("the error does not mention %q, so it does not say how to fix it: %v", want, err)
+		}
+	}
+}
+
+func TestLoadReportsAMissingFile(t *testing.T) {
+	if _, err := Load(filepath.Join(t.TempDir(), "absent.ttf"), ""); err == nil {
+		t.Fatal("Load accepted a path that does not exist")
+	}
+}
+
+func TestLoadUsesTheRegularFaceForBoldWhenNoneIsSupplied(t *testing.T) {
+	// A deliberate degradation: an operator with one font file for a script
+	// this binary cannot otherwise draw is better served by documents in a
+	// single weight than by no documents.
+	regular, err := fontFS.ReadFile(embeddedRegular)
+	if err != nil {
+		t.Fatalf("reading the embedded font: %v", err)
+	}
+	path := filepath.Join(t.TempDir(), "supplied.ttf")
+	if err := os.WriteFile(path, regular, 0o600); err != nil {
+		t.Fatalf("writing the fixture: %v", err)
+	}
+
+	fonts, err := Load(path, "")
+	if err != nil {
+		t.Fatalf("Load: %v", err)
+	}
+	if !fonts.BoldIsRegular {
+		t.Error("no bold face was supplied, but BoldIsRegular is false")
+	}
+	if fonts.Source != path {
+		t.Errorf("Source = %q, want the supplied path", fonts.Source)
+	}
+	// And it still renders, which is the point of the fallback.
+	if _, err := Render(sampleView(), fonts); err != nil {
+		t.Fatalf("Render with a regular-only font: %v", err)
 	}
 }
 
@@ -251,20 +363,20 @@ func TestRenderHandlesADocumentWithNothingOptional(t *testing.T) {
 		Totals: []docview.Field{{Label: "Total", Value: "USD 0.00", Emphasis: true}},
 	}
 
-	if _, err := Render(minimal); err != nil {
+	if _, err := Render(minimal, testFonts(t)); err != nil {
 		t.Fatalf("Render: %v", err)
 	}
 }
 
 func TestRenderWrapsALongDescriptionRatherThanOverrunning(t *testing.T) {
 	view := sampleView()
-	short, err := Render(view)
+	short, err := Render(view, testFonts(t))
 	if err != nil {
 		t.Fatalf("Render short: %v", err)
 	}
 
 	view.Lines[0].Description = strings.Repeat("A very long description of the work performed. ", 12)
-	long, err := Render(view)
+	long, err := Render(view, testFonts(t))
 	if err != nil {
 		t.Fatalf("Render long: %v", err)
 	}
@@ -288,7 +400,7 @@ func TestRenderSurvivesManyLines(t *testing.T) {
 		})
 	}
 
-	file, err := Render(view)
+	file, err := Render(view, testFonts(t))
 	if err != nil {
 		t.Fatalf("Render: %v", err)
 	}
@@ -302,4 +414,14 @@ func first(b []byte, n int) string {
 		n = len(b)
 	}
 	return string(b[:n])
+}
+
+// testFonts is the embedded typeface, which is what a default deployment uses.
+func testFonts(t *testing.T) Fonts {
+	t.Helper()
+	fonts, err := Embedded()
+	if err != nil {
+		t.Fatalf("Embedded: %v", err)
+	}
+	return fonts
 }

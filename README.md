@@ -36,7 +36,8 @@ listed as coming that is not tracked.
 - A dashboard showing what is outstanding, what is late, and what moved recently
 - A printable view of any document, and a PDF download rendered from the same
   view, so the file and the screen cannot disagree about the figures. Latin,
-  Greek and Cyrillic text renders; anything else is refused with a message
+  Greek and Cyrillic text renders out of the box, a wider font can be supplied
+  for other scripts, and anything still undrawable is refused with a message
   naming the characters rather than drawn blank
 
 ### Coming, in roughly this order
@@ -109,6 +110,8 @@ a default is written down.
 | `ICRM_COMPANY_ADDRESS` | empty | Your postal address, printed on documents. Use `\n` between lines, since a `.env` file cannot hold a real newline. |
 | `ICRM_CURRENCY` | `USD` | Default currency for new records. |
 | `ICRM_PAYMENT_TERMS_DAYS` | `30` | Added to an invoice's issue date to get its due date. |
+| `ICRM_PDF_FONT` | embedded | Override the typeface used for PDFs, to cover scripts the built-in font cannot draw. Must be a single-face TrueType `.ttf`; a `.ttc` or PostScript-outline `.otf` is refused at startup. |
+| `ICRM_PDF_FONT_BOLD` | empty | Bold face for the above. Without it the regular face is used for bold text, which then renders at normal weight. |
 
 **Set `ICRM_ENV=production` only once you are behind HTTPS.** A `Secure` cookie
 is never sent over plain HTTP, so turning this on while serving over HTTP makes

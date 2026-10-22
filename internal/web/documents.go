@@ -367,7 +367,7 @@ func (s *Server) handleDocumentPDF(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	file, err := pdf.Render(view)
+	file, err := pdf.Render(view, s.fonts)
 	if errors.Is(err, pdf.ErrUnsupportedScript) {
 		// Not a server fault, and not something to hide behind a 500. The
 		// renderer refused rather than drawing a document with the text
