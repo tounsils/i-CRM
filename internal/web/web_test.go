@@ -219,6 +219,7 @@ func privateRoutes() []struct {
 		{http.MethodPost, "/documents"},
 		{http.MethodGet, "/documents/1"},
 		{http.MethodGet, "/documents/1/print"},
+		{http.MethodGet, "/documents/1/pdf"},
 		{http.MethodPost, "/documents/1/lines"},
 		{http.MethodPost, "/documents/1/status"},
 		{http.MethodPost, "/documents/1/convert"},
@@ -834,6 +835,101 @@ func TestPrintViewIsTheDocumentWithoutTheApplicationAroundIt(t *testing.T) {
 		t.Errorf("printing a document that does not exist returned %d, want 404", missing.StatusCode)
 	} else {
 		missing.Body.Close()
+	}
+}
+
+func TestPDFDownloadCarriesTheSameFiguresAsTheScreen(t *testing.T) {
+	h := newHarness(t)
+	h.signIn()
+
+	res := h.post("/catalog/taxes", url.Values{"name": {"VAT"}, "rate": {"20"}})
+	res.Body.Close()
+	taxes, err := h.store.ListTaxes(t.Context())
+	if err != nil || len(taxes) == 0 {
+		t.Fatalf("ListTaxes = %d, %v", len(taxes), err)
+	}
+	res = h.post("/customers", url.Values{
+		"name": {"Northwind Trading"}, "status": {"active"}, "currency": {"USD"},
+		"address": {"4 Dock Road\nPortsmouth PO1 3AX"},
+	})
+	res.Body.Close()
+	customers, err := h.store.ListCustomers(t.Context(), "")
+	if err != nil || len(customers) == 0 {
+		t.Fatalf("ListCustomers = %d, %v", len(customers), err)
+	}
+
+	id := h.createdDocumentID(h.post("/documents", url.Values{
+		"type":             {"invoice"},
+		"customer_id":      {strconv.FormatInt(customers[0].ID, 10)},
+		"currency":         {"USD"},
+		"issue_date":       {"2026-10-21"},
+		"line_description": {"Implementation"},
+		"line_quantity":    {"10"},
+		"line_unit_price":  {"1500.00"},
+		"line_tax_id":      {strconv.FormatInt(taxes[0].ID, 10)},
+	}))
+	path := "/documents/" + strconv.FormatInt(id, 10)
+
+	doc, err := h.store.DocumentByID(t.Context(), id)
+	if err != nil {
+		t.Fatalf("DocumentByID: %v", err)
+	}
+
+	download := h.get(path + "/pdf")
+	if got := download.Header.Get("Content-Type"); got != "application/pdf" {
+		t.Errorf("Content-Type = %q, want application/pdf", got)
+	}
+	disposition := download.Header.Get("Content-Disposition")
+	if !strings.Contains(disposition, `attachment; filename="`+doc.Number+`.pdf"`) {
+		t.Errorf("Content-Disposition = %q, want an attachment named after %s", disposition, doc.Number)
+	}
+	file := h.body(download)
+
+	if !strings.HasPrefix(file, "%PDF-") {
+		t.Fatalf("the download does not begin with a PDF header, starts %q", file[:min(16, len(file))])
+	}
+	if len(file) < 1000 {
+		t.Fatalf("the download is %d bytes, too small to be a rendered page", len(file))
+	}
+
+	// The real assertion: the figures in the file are the figures on the
+	// screen. Both render from one docview.Document, and this is what proves
+	// that rather than assuming it.
+	screen := h.body(h.get(path + "/print"))
+	for _, figure := range []string{"15000.00", "3000.00", "18000.00", doc.Number} {
+		if !strings.Contains(file, figure) {
+			t.Errorf("the PDF is missing %q", figure)
+		}
+		if !strings.Contains(screen, figure) {
+			t.Errorf("the print view is missing %q", figure)
+		}
+	}
+
+	missing := h.get("/documents/99999/pdf")
+	missing.Body.Close()
+	if missing.StatusCode != http.StatusNotFound {
+		t.Errorf("a PDF for a document that does not exist returned %d, want 404", missing.StatusCode)
+	}
+}
+
+func TestSafeFilenameStripsAnythingThatCouldReachAHeader(t *testing.T) {
+	cases := []struct {
+		in   string
+		want string
+	}{
+		{"INV-0001", "INV-0001"},
+		{"EST_0002", "EST_0002"},
+		{`in"jected`, "injected"},
+		{"with space", "withspace"},
+		{"nl\r\nSet-Cookie: x=y", "nlSet-Cookiexy"},
+		{"../../etc/passwd", "etcpasswd"},
+		{"", "document"},
+		{"///", "document"},
+	}
+	for _, c := range cases {
+		if got := safeFilename(c.in); got != c.want {
+			t.Errorf("safeFilename(%q) = %q, want %q", c.in, got, c.want)
+		}
 	}
 }
 

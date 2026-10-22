@@ -220,6 +220,7 @@ button.linklike {
 .sheet-head .doc-id { text-align: right; }
 .sheet .company { font-weight: 650; }
 .sheet .address { white-space: pre-line; color: var(--muted); }
+.sheet .address-line { color: var(--muted); }
 .sheet .caption { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; }
 
 .parties { display: flex; justify-content: space-between; gap: 32px; margin-bottom: 32px; }

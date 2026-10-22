@@ -3,40 +3,39 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{.Document.Type.Label}} {{.Document.Number}} &middot; {{.CompanyName}}</title>
+  <title>{{.View.Kind}} {{.View.Number}} &middot; {{.View.CompanyName}}</title>
   <link rel="stylesheet" href="/static/app.css">
 </head>
 <body class="printable">
 
 <div class="no-print toolbar">
-  <a href="/documents/{{.Document.ID}}">Back to {{.Document.Number}}</a>
-  <span class="hint">Use your browser's print command to print or save as PDF.</span>
+  <a href="{{.BackURL}}">Back to {{.View.Number}}</a>
+  <a href="{{.PDFURL}}">Download PDF</a>
+  <span class="hint">Or use your browser's print command.</span>
 </div>
 
+{{with .View}}
 <div class="sheet">
   <header class="sheet-head">
     <div class="from">
       <div class="company">{{.CompanyName}}</div>
-      {{if .CompanyAddress}}<div class="address">{{.CompanyAddress}}</div>{{end}}
+      {{range .CompanyAddress}}<div class="address-line">{{.}}</div>{{end}}
     </div>
     <div class="doc-id">
-      <h1>{{.Document.Type.Label}}</h1>
-      <div class="number">{{.Document.Number}}</div>
+      <h1>{{.Kind}}</h1>
+      <div class="number">{{.Number}}</div>
     </div>
   </header>
 
   <section class="parties">
     <div class="to">
       <div class="caption">To</div>
-      <div class="company">{{.Customer.Name}}</div>
-      {{if .Customer.ContactName}}<div>{{.Customer.ContactName}}</div>{{end}}
-      {{if .Customer.Address}}<div class="address">{{.Customer.Address}}</div>{{end}}
-      {{if .Customer.Email}}<div>{{.Customer.Email}}</div>{{end}}
+      {{range $i, $line := .CustomerLines}}
+      <div {{if eq $i 0}}class="company"{{end}}>{{$line}}</div>
+      {{end}}
     </div>
     <dl class="kv meta">
-      <dt>Issued</dt><dd>{{date .Document.IssueDate}}</dd>
-      {{if .Document.DueDate}}<dt>Due</dt><dd>{{optionalDate .Document.DueDate}}</dd>{{end}}
-      <dt>Currency</dt><dd>{{.Document.Currency}}</dd>
+      {{range .Meta}}<dt>{{.Label}}</dt><dd>{{.Value}}</dd>{{end}}
     </dl>
   </section>
 
@@ -52,15 +51,14 @@
       </tr>
     </thead>
     <tbody>
-      {{range .Document.Lines}}
-      {{$totals := .Totals}}
+      {{range .Lines}}
       <tr>
         <td>{{.Description}}</td>
         <td class="num">{{.Quantity}}</td>
         <td class="num">{{.UnitPrice}}</td>
-        <td>{{if .TaxName}}{{.TaxName}} ({{.TaxRate}}){{else}}&mdash;{{end}}</td>
-        <td class="num">{{$totals.Subtotal}}</td>
-        <td class="num">{{$totals.Tax}}</td>
+        <td>{{.Tax}}</td>
+        <td class="num">{{.Net}}</td>
+        <td class="num">{{.TaxAmount}}</td>
       </tr>
       {{end}}
     </tbody>
@@ -68,14 +66,10 @@
 
   <table class="totals">
     <tbody>
-      <tr><td>Subtotal</td><td class="num">{{.Document.Currency}} {{.Document.Totals.Subtotal}}</td></tr>
-      <tr><td>Tax</td><td class="num">{{.Document.Currency}} {{.Document.Totals.Tax}}</td></tr>
-      <tr class="grand"><td>Total</td><td class="num">{{.Document.Currency}} {{.Document.Totals.Total}}</td></tr>
-      {{if .Payments}}
-      <tr><td>Paid</td><td class="num">{{.Document.Currency}} {{.Document.Paid}}</td></tr>
-      <tr class="grand">
-        <td>Outstanding</td>
-        <td class="num">{{.Document.Currency}} {{.Document.Outstanding}}</td>
+      {{range .Totals}}
+      <tr {{if .Emphasis}}class="grand"{{end}}>
+        <td>{{.Label}}</td>
+        <td class="num">{{.Value}}</td>
       </tr>
       {{end}}
     </tbody>
@@ -89,9 +83,9 @@
       <tbody>
         {{range .Payments}}
         <tr>
-          <td>{{date .PaidOn}}</td>
-          <td>{{if .Method}}{{.Method}}{{else}}&mdash;{{end}}</td>
-          <td>{{if .Reference}}{{.Reference}}{{else}}&mdash;{{end}}</td>
+          <td>{{.Date}}</td>
+          <td>{{.Method}}</td>
+          <td>{{.Reference}}</td>
           <td class="num">{{.Amount}}</td>
         </tr>
         {{end}}
@@ -100,13 +94,14 @@
   </section>
   {{end}}
 
-  {{if .Document.Notes}}
+  {{if .Notes}}
   <section class="notes">
     <h2>Notes</h2>
-    <p>{{.Document.Notes}}</p>
+    <p>{{.Notes}}</p>
   </section>
   {{end}}
 </div>
+{{end}}
 
 </body>
 </html>

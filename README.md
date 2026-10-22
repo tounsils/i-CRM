@@ -34,7 +34,8 @@ listed as coming that is not tracked.
 - Overdue invoices, derived from the due date on every read rather than swept
   into a status by a scheduled job
 - A dashboard showing what is outstanding, what is late, and what moved recently
-- A printable view of any document, which the browser will save as a PDF
+- A printable view of any document, and a PDF download rendered from the same
+  view, so the file and the screen cannot disagree about the figures
 
 ### Coming, in roughly this order
 
@@ -43,8 +44,8 @@ date attached, because this is maintained by one person.
 
 | | What | Why it is not done yet |
 | --- | --- | --- |
-| [#17](https://github.com/tounsils/i-CRM/issues/17) | Documents rendered as PDF by the server | A pure-Go writer keeps the single static binary and means maintaining the layout twice. A headless browser gives one layout and costs the self-contained binary. That decision comes first. |
-| [#18](https://github.com/tounsils/i-CRM/issues/18) | Sending documents by email | Wants [#17](https://github.com/tounsils/i-CRM/issues/17) for the attachment, and needs delivery failures surfaced rather than swallowed |
+| [#18](https://github.com/tounsils/i-CRM/issues/18) | Sending documents by email | Needs SMTP settings, and delivery failures surfaced rather than swallowed: a silent failure means believing an invoice went out when it did not |
+| [#31](https://github.com/tounsils/i-CRM/issues/31) | PDF text outside Latin-1 | The standard PDF fonts are Latin-1, so a name in Arabic, Greek or Cyrillic renders correctly on screen and wrongly in the file. Fixing it means embedding a Unicode font |
 | [#19](https://github.com/tounsils/i-CRM/issues/19) | More than one user, with roles | `users.role` exists in the schema and nothing reads it. Needs a decision on what the roles actually are |
 | [#20](https://github.com/tounsils/i-CRM/issues/20) | Credit notes | The money arithmetic is already symmetric for this. The open question is what a fully credited invoice's status becomes |
 | [#28](https://github.com/tounsils/i-CRM/issues/28) | Revenue, tax and ageing reports | Must state whether it reports on an accrual or cash basis, and share arithmetic with the documents |
