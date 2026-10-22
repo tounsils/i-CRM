@@ -1,14 +1,18 @@
 package web
 
 import (
+	"context"
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
 	"strconv"
 	"strings"
 	"time"
 
+	"github.com/tounsils/i-CRM/internal/docview"
 	"github.com/tounsils/i-CRM/internal/domain"
+	"github.com/tounsils/i-CRM/internal/pdf"
 	"github.com/tounsils/i-CRM/internal/store"
 )
 
@@ -280,24 +284,46 @@ func (s *Server) handleDocumentShow(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-// printPage is the document on its own, as it would be handed to a customer.
-//
-// It carries the full customer record rather than the joined name alone,
-// because a document needs the address it is being sent to.
+// printPage wraps the shared document view with the links only the HTML
+// rendering needs. Routing concerns stay out of docview, which is rendered to
+// paper as well as to a screen.
 type printPage struct {
-	Document       store.Document
-	Customer       store.Customer
-	Payments       []store.Payment
-	CompanyName    string
-	CompanyAddress string
+	View    docview.Document
+	BackURL string
+	PDFURL  string
 }
 
-// handleDocumentPrint renders one document with no navigation, for printing or
-// saving as a PDF from the browser.
+// documentView assembles the one view of a document that both the print screen
+// and the PDF render from.
 //
-// This is the layout half of PDF generation. Doing it as HTML first means the
-// layout exists and is usable now, and whatever renders a PDF later has
-// something to match rather than a second design to invent.
+// This is the thing that stops the two drifting: there is no second place that
+// decides which totals rows a document carries or how a date is formatted. A
+// change to either happens in docview and both renderings follow.
+func (s *Server) documentView(ctx context.Context, id int64) (docview.Document, error) {
+	doc, err := s.store.DocumentByID(ctx, id)
+	if err != nil {
+		return docview.Document{}, err
+	}
+	customer, err := s.store.CustomerByID(ctx, doc.CustomerID)
+	if err != nil {
+		return docview.Document{}, err
+	}
+	payments, err := s.store.PaymentsForDocument(ctx, id)
+	if err != nil {
+		return docview.Document{}, err
+	}
+
+	return docview.Build(docview.Input{
+		Document:       doc,
+		Customer:       customer,
+		Payments:       payments,
+		CompanyName:    s.cfg.CompanyName,
+		CompanyAddress: s.cfg.CompanyAddress,
+	}), nil
+}
+
+// handleDocumentPrint renders one document with no navigation, for reading or
+// printing in the browser.
 func (s *Server) handleDocumentPrint(w http.ResponseWriter, r *http.Request) {
 	id, ok := pathID(r)
 	if !ok {
@@ -305,7 +331,7 @@ func (s *Server) handleDocumentPrint(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	doc, err := s.store.DocumentByID(r.Context(), id)
+	view, err := s.documentView(r.Context(), id)
 	if errors.Is(err, store.ErrNotFound) {
 		http.NotFound(w, r)
 		return
@@ -315,24 +341,65 @@ func (s *Server) handleDocumentPrint(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	customer, err := s.store.CustomerByID(r.Context(), doc.CustomerID)
-	if err != nil {
-		s.fail(w, r, http.StatusInternalServerError, err)
+	s.renderStandalone(w, r, "print.html", printPage{
+		View:    view,
+		BackURL: fmt.Sprintf("/documents/%d", id),
+		PDFURL:  fmt.Sprintf("/documents/%d/pdf", id),
+	})
+}
+
+// handleDocumentPDF serves the document as a downloadable PDF, rendered from
+// the same view the print screen uses.
+func (s *Server) handleDocumentPDF(w http.ResponseWriter, r *http.Request) {
+	id, ok := pathID(r)
+	if !ok {
+		http.NotFound(w, r)
 		return
 	}
-	payments, err := s.store.PaymentsForDocument(r.Context(), id)
+
+	view, err := s.documentView(r.Context(), id)
+	if errors.Is(err, store.ErrNotFound) {
+		http.NotFound(w, r)
+		return
+	}
 	if err != nil {
 		s.fail(w, r, http.StatusInternalServerError, err)
 		return
 	}
 
-	s.renderStandalone(w, r, "print.html", printPage{
-		Document:       doc,
-		Customer:       customer,
-		Payments:       payments,
-		CompanyName:    s.cfg.CompanyName,
-		CompanyAddress: s.cfg.CompanyAddress,
-	})
+	file, err := pdf.Render(view)
+	if err != nil {
+		s.fail(w, r, http.StatusInternalServerError, err)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/pdf")
+	w.Header().Set("Content-Length", strconv.Itoa(len(file)))
+	// Document numbers are generated, so this is already safe; it is sanitised
+	// anyway because a filename reaching a response header unchecked is how a
+	// header injection gets in, and the cost of being sure is one function.
+	w.Header().Set("Content-Disposition",
+		`attachment; filename="`+safeFilename(view.Number)+`.pdf"`)
+
+	if _, err := w.Write(file); err != nil {
+		log.Printf("web: writing the PDF for document %d: %v", id, err)
+	}
+}
+
+// safeFilename keeps only the characters a document reference is built from, so
+// nothing from the database can escape into a response header.
+func safeFilename(s string) string {
+	var b strings.Builder
+	for _, r := range s {
+		switch {
+		case r >= 'A' && r <= 'Z', r >= 'a' && r <= 'z', r >= '0' && r <= '9', r == '-', r == '_':
+			b.WriteRune(r)
+		}
+	}
+	if b.Len() == 0 {
+		return "document"
+	}
+	return b.String()
 }
 
 func (s *Server) handleDocumentLines(w http.ResponseWriter, r *http.Request) {

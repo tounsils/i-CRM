@@ -98,6 +98,7 @@ func (s *Server) registerPrivateRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("POST /documents", s.handleDocumentCreate)
 	mux.HandleFunc("GET /documents/{id}", s.handleDocumentShow)
 	mux.HandleFunc("GET /documents/{id}/print", s.handleDocumentPrint)
+	mux.HandleFunc("GET /documents/{id}/pdf", s.handleDocumentPDF)
 	mux.HandleFunc("POST /documents/{id}/lines", s.handleDocumentLines)
 	mux.HandleFunc("POST /documents/{id}/status", s.handleDocumentStatus)
 	mux.HandleFunc("POST /documents/{id}/convert", s.handleDocumentConvert)
