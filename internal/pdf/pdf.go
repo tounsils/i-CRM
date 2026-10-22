@@ -11,31 +11,11 @@ package pdf
 
 import (
 	"bytes"
-	"embed"
 	"fmt"
 
 	"github.com/go-pdf/fpdf"
 
 	"github.com/tounsils/i-CRM/internal/docview"
-)
-
-// Liberation Sans, embedded so the binary carries everything it needs to draw
-// a document. The core PDF fonts every reader already has are Latin-1 only,
-// which silently dropped any name outside it; see script.go.
-//
-// Liberation is metric-compatible with Helvetica, so the column widths and
-// positions below did not change when the font did.
-//
-// The licence is beside the fonts and must stay there: OFL 1.1 requires it to
-// accompany the font software, and the Reserved Font Names in it are the reason
-// these files must not be renamed or modified in place.
-//
-//go:embed fonts/LiberationSans-Regular.ttf fonts/LiberationSans-Bold.ttf
-var fontFS embed.FS
-
-const (
-	fontRegularPath = "fonts/LiberationSans-Regular.ttf"
-	fontBoldPath    = "fonts/LiberationSans-Bold.ttf"
 )
 
 // Page geometry in millimetres, for A4 portrait.
@@ -69,32 +49,24 @@ const (
 	rowPadding = 1.5
 )
 
-// Render returns the document as a PDF file.
+// Render returns the document as a PDF file, drawn with the given fonts.
 //
 // It returns ErrUnsupportedScript, before drawing anything, if the document
-// contains text this renderer cannot draw correctly. Refusing is deliberate:
-// the alternative, which this replaced, was a document that rendered with the
-// text missing and no indication that anything was wrong.
-func Render(doc docview.Document) ([]byte, error) {
-	if bad := unsupportedRunes(doc); len(bad) > 0 {
+// contains text these fonts or this renderer cannot draw correctly. Refusing is
+// deliberate: the alternative, which this replaced, was a document that
+// rendered with the text missing and no indication that anything was wrong.
+func Render(doc docview.Document, fonts Fonts) ([]byte, error) {
+	if bad := unsupportedRunes(doc, fonts); len(bad) > 0 {
 		return nil, fmt.Errorf("%w: %s", ErrUnsupportedScript, describeRunes(bad))
 	}
 
 	out := fpdf.New("P", "mm", "A4", "")
 
-	regular, err := fontFS.ReadFile(fontRegularPath)
-	if err != nil {
-		return nil, fmt.Errorf("pdf: reading the embedded regular font: %w", err)
-	}
-	bold, err := fontFS.ReadFile(fontBoldPath)
-	if err != nil {
-		return nil, fmt.Errorf("pdf: reading the embedded bold font: %w", err)
-	}
 	// Registered as UTF-8 fonts, which is what makes the text above Latin-1
 	// render rather than vanish. Both styles are needed: fpdf will not
 	// synthesise a bold face, it reports an undefined font instead.
-	out.AddUTF8FontFromBytes(fontFamily, "", regular)
-	out.AddUTF8FontFromBytes(fontFamily, "B", bold)
+	out.AddUTF8FontFromBytes(fontFamily, "", fonts.regular)
+	out.AddUTF8FontFromBytes(fontFamily, "B", fonts.bold)
 
 	out.SetMargins(margin, margin, margin)
 	out.SetAutoPageBreak(true, margin)

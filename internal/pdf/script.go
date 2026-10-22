@@ -12,8 +12,8 @@ import (
 // ErrUnsupportedScript is returned when a document contains text this renderer
 // cannot draw correctly.
 //
-// It exists because the previous behaviour was to drop such text silently: the
-// document rendered with an empty address block and went out addressed to
+// It exists because the behaviour it replaced was to drop such text silently:
+// the document rendered with an empty address block and went out addressed to
 // nobody, while looking correct on every screen. Refusing loudly is worse for
 // the one person who wanted a Japanese invoice and far better for everyone who
 // would otherwise have sent a blank one.
@@ -22,45 +22,46 @@ var ErrUnsupportedScript = errors.New("pdf: the document contains characters thi
 // runeRange is an inclusive range of code points.
 type runeRange struct{ lo, hi rune }
 
-// renderable is what the embedded font can draw and this renderer can lay out
-// correctly. It is an allowlist rather than a list of exclusions, because the
-// set of scripts in the world is open and the set this can handle is not.
+// shapingRequired lists the scripts this renderer cannot lay out, whatever
+// font is loaded.
 //
-// Two separate requirements have to hold for a range to appear here. The font
-// must carry the glyphs, and the script must read left to right without
-// contextual shaping, because the renderer places runs of text and has no
-// concept of either.
+// Two things make a script belong here. It may read right to left, and the
+// renderer places runs of text left to right with no concept of direction. Or
+// each letter's drawn form may depend on its neighbours, which needs a shaping
+// engine this has none of. Arabic needs both.
 //
-// Deliberately absent, and why:
+// This is deliberately separate from whether the font has the glyphs, because
+// the two failures are different. A missing glyph is fixed by supplying a
+// better font. These are not: Liberation Sans carries Hebrew, which makes
+// Hebrew the tempting mistake, since it would draw something and that
+// something would be backwards.
 //
-//   - Arabic, Hebrew, Thaana, Syriac. Right to left, and Arabic additionally
-//     needs each letter's form chosen by its neighbours. Liberation Sans has
-//     no Arabic glyphs at all; it does have Hebrew, which makes Hebrew the
-//     tempting mistake, since it would draw something, in the wrong order.
-//   - CJK and Hangul. No font small enough to embed carries them. A font with
-//     full CJK coverage is tens of megabytes.
-//   - Devanagari, Thai, and the other shaping scripts, for the same reason as
-//     Arabic.
-var renderable = []runeRange{
-	{0x0009, 0x000A}, // tab and newline, which appear in notes and addresses
-	{0x0020, 0x007E}, // Basic Latin
-	{0x00A0, 0x00FF}, // Latin-1 Supplement: accented French, German, Spanish
-	{0x0100, 0x017F}, // Latin Extended-A: Polish, Czech, Turkish, Baltic
-	{0x0180, 0x024F}, // Latin Extended-B
-	{0x02B0, 0x02FF}, // spacing modifiers
-	{0x0300, 0x036F}, // combining diacritics
-	{0x0370, 0x03FF}, // Greek and Coptic
-	{0x0400, 0x04FF}, // Cyrillic
-	{0x0500, 0x052F}, // Cyrillic Supplement
-	{0x1E00, 0x1EFF}, // Latin Extended Additional, including Vietnamese
-	{0x2010, 0x2027}, // dashes, quotation marks, ellipsis
-	{0x20A0, 0x20BF}, // currency symbols
-	{0x2122, 0x2122}, // trade mark sign
+// See issue #40 for the obstacle: doing this properly needs a shaping library,
+// and the mature one is C, which would end CGO_ENABLED=0 and the single static
+// binary with it.
+var shapingRequired = []runeRange{
+	{0x0590, 0x05FF}, // Hebrew
+	{0x0600, 0x06FF}, // Arabic
+	{0x0700, 0x074F}, // Syriac
+	{0x0750, 0x077F}, // Arabic Supplement
+	{0x0780, 0x07BF}, // Thaana
+	{0x07C0, 0x07FF}, // NKo
+	{0x0800, 0x085F}, // Samaritan and Mandaic
+	{0x08A0, 0x08FF}, // Arabic Extended-A
+	{0x0900, 0x0DFF}, // Devanagari through Sinhala: the Indic scripts
+	{0x0E00, 0x0EFF}, // Thai and Lao
+	{0x0F00, 0x0FFF}, // Tibetan
+	{0x1000, 0x109F}, // Myanmar
+	{0x1780, 0x17FF}, // Khmer
+	{0x200E, 0x200F}, // left-to-right and right-to-left marks
+	{0x202A, 0x202E}, // bidirectional embedding controls
+	{0x2066, 0x2069}, // bidirectional isolates
+	{0xFB1D, 0xFDFF}, // Hebrew and Arabic presentation forms
+	{0xFE70, 0xFEFF}, // Arabic presentation forms B
 }
 
-// renderableRune reports whether this renderer can draw a code point.
-func renderableRune(r rune) bool {
-	for _, span := range renderable {
+func inRanges(r rune, ranges []runeRange) bool {
+	for _, span := range ranges {
 		if r >= span.lo && r <= span.hi {
 			return true
 		}
@@ -68,18 +69,38 @@ func renderableRune(r rune) bool {
 	return false
 }
 
-// unsupportedRunes returns the distinct code points in a document that cannot
-// be drawn, in order, so the message names the actual problem rather than
-// saying something went wrong.
-func unsupportedRunes(doc docview.Document) []rune {
+// drawableWhitespace is the whitespace a document legitimately contains.
+// Addresses and notes carry newlines, and tabs occasionally survive a paste.
+func drawableWhitespace(r rune) bool {
+	return r == '\n' || r == '\t'
+}
+
+// isControl matches the C0 and C1 control characters, which have no glyph and
+// would silently draw nothing.
+func isControl(r rune) bool {
+	return r < 0x20 || (r >= 0x7F && r <= 0x9F)
+}
+
+// unsupportedRunes returns the distinct code points in a document that the
+// given fonts and this renderer cannot draw, in order, so the message names
+// the actual problem rather than saying something went wrong.
+func unsupportedRunes(doc docview.Document, fonts Fonts) []rune {
 	var found []rune
+	seen := map[rune]bool{}
+
 	for _, text := range doc.Strings() {
 		for _, r := range text {
-			if !renderableRune(r) && !slices.Contains(found, r) {
+			if seen[r] || drawableWhitespace(r) {
+				continue
+			}
+			seen[r] = true
+
+			if isControl(r) || inRanges(r, shapingRequired) || !fonts.hasGlyph(r) {
 				found = append(found, r)
 			}
 		}
 	}
+
 	slices.Sort(found)
 	return found
 }

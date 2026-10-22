@@ -17,6 +17,7 @@ import (
 
 	"github.com/tounsils/i-CRM/internal/config"
 	"github.com/tounsils/i-CRM/internal/domain"
+	"github.com/tounsils/i-CRM/internal/pdf"
 	"github.com/tounsils/i-CRM/internal/store"
 )
 
@@ -30,6 +31,7 @@ type Server struct {
 	pages            map[string]*template.Template
 	standalone       map[string]*template.Template
 	throttle         *loginThrottle
+	fonts            pdf.Fonts
 	enumerationGuard []byte
 }
 
@@ -44,6 +46,14 @@ func New(cfg config.Settings, st *store.Store) (*Server, error) {
 	if err != nil {
 		return nil, err
 	}
+	// Loaded here rather than on first use, so an unusable font file is a
+	// refusal to start with a message naming the problem, not a broken
+	// download weeks later.
+	fonts, err := pdf.Load(cfg.PDFFontPath, cfg.PDFFontBoldPath)
+	if err != nil {
+		return nil, err
+	}
+
 	guard, err := newEnumerationGuard()
 	if err != nil {
 		return nil, err
@@ -54,6 +64,7 @@ func New(cfg config.Settings, st *store.Store) (*Server, error) {
 		pages:            pages,
 		standalone:       standalone,
 		throttle:         newLoginThrottle(),
+		fonts:            fonts,
 		enumerationGuard: guard,
 	}, nil
 }
