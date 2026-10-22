@@ -75,6 +75,12 @@ docker compose up --build -d
 Open <http://localhost:8080>. The first visit offers to create the
 administrator account, and that page closes permanently once it succeeds.
 
+**It listens on loopback only.** A default bring-up is reachable from this
+machine and nowhere else, because what would otherwise be published is a CRM
+holding customer records whose only protection is a password. To reach it from
+elsewhere, set `ICRM_BIND=0.0.0.0` in `.env`, and put a TLS terminator in front
+before you do. `ICRM_BIND` is read by docker compose rather than by the binary.
+
 ### From source
 
 ```sh

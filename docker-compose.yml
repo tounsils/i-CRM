@@ -13,7 +13,16 @@ services:
   icrm:
     build: .
     ports:
-      - "${ICRM_PORT:-8080}:8080"
+      # Loopback by default. A binding with no address means 0.0.0.0 to Docker,
+      # which would publish a CRM holding customer records and invoices, over
+      # plain HTTP, to every network the host is on. Someone following the quick
+      # start on a laptop in a cafe would be serving their customer list to the
+      # cafe, and nothing would tell them so.
+      #
+      # Set ICRM_BIND=0.0.0.0 to publish it wider, deliberately, and put a TLS
+      # terminator in front before you do. Read by docker compose, not by the
+      # binary.
+      - "${ICRM_BIND:-127.0.0.1}:${ICRM_PORT:-8080}:8080"
     environment:
       ICRM_SESSION_KEY: ${ICRM_SESSION_KEY:?set ICRM_SESSION_KEY to at least 32 characters}
       ICRM_ENV: ${ICRM_ENV:-development}
