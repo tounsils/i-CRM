@@ -1,6 +1,7 @@
 package docview
 
 import (
+	"reflect"
 	"strings"
 	"testing"
 	"time"
@@ -49,6 +50,80 @@ func sampleInput() Input {
 		},
 		CompanyName:    "Harbour Software",
 		CompanyAddress: "12 Harbour Way\nBristol BS1 4TR",
+	}
+}
+
+// stringFieldsInDocument is how many string-typed leaves a Document has,
+// counting through slices to their element types.
+//
+// This is a tripwire, not a fact worth knowing. The PDF renderer calls
+// Strings() to check up front that it can draw everything on the page, so a
+// field this count misses is a field that renders blank with no error, which is
+// exactly the bug that made that check necessary. If you added a field and this
+// test failed, add it to Strings() and then raise this number.
+const stringFieldsInDocument = 20
+
+func TestStringsCoversEveryTextFieldOnADocument(t *testing.T) {
+	if got := countStringLeaves(reflect.TypeOf(Document{})); got != stringFieldsInDocument {
+		t.Fatalf("Document has %d string leaves, this test expects %d. "+
+			"A field was added or removed: make sure Strings() covers it, then update the constant",
+			got, stringFieldsInDocument)
+	}
+
+	// And every one of them actually comes back out, which the count alone
+	// does not prove.
+	populated := Document{
+		Kind:           "sentinel-kind",
+		Number:         "sentinel-number",
+		CompanyName:    "sentinel-company",
+		CompanyAddress: []string{"sentinel-company-address"},
+		CustomerLines:  []string{"sentinel-customer"},
+		Meta:           []Field{{Label: "sentinel-meta-label", Value: "sentinel-meta-value"}},
+		Lines: []Line{{
+			Description: "sentinel-description",
+			Quantity:    "sentinel-quantity",
+			UnitPrice:   "sentinel-unit-price",
+			Tax:         "sentinel-tax",
+			Net:         "sentinel-net",
+			TaxAmount:   "sentinel-tax-amount",
+		}},
+		Totals:   []Field{{Label: "sentinel-total-label", Value: "sentinel-total-value"}},
+		Payments: []Payment{{Date: "sentinel-date", Method: "sentinel-method", Reference: "sentinel-reference", Amount: "sentinel-amount"}},
+		Notes:    "sentinel-notes",
+	}
+
+	got := strings.Join(populated.Strings(), "\x00")
+	for _, want := range []string{
+		"sentinel-kind", "sentinel-number", "sentinel-company", "sentinel-company-address",
+		"sentinel-customer", "sentinel-meta-label", "sentinel-meta-value",
+		"sentinel-description", "sentinel-quantity", "sentinel-unit-price",
+		"sentinel-tax", "sentinel-net", "sentinel-tax-amount",
+		"sentinel-total-label", "sentinel-total-value",
+		"sentinel-date", "sentinel-method", "sentinel-reference", "sentinel-amount",
+		"sentinel-notes",
+	} {
+		if !strings.Contains(got, want) {
+			t.Errorf("Strings() does not include %s", want)
+		}
+	}
+}
+
+// countStringLeaves counts string-typed fields, following slices into their
+// element type so a []Line counts its six strings once.
+func countStringLeaves(t reflect.Type) int {
+	switch t.Kind() {
+	case reflect.String:
+		return 1
+	case reflect.Slice, reflect.Array, reflect.Pointer:
+		return countStringLeaves(t.Elem())
+	case reflect.Struct:
+		total := 0
+		for i := 0; i < t.NumField(); i++ {
+			total += countStringLeaves(t.Field(i).Type)
+		}
+		return total
+	default:
+		return 0
 	}
 }
 

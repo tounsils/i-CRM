@@ -368,6 +368,16 @@ func (s *Server) handleDocumentPDF(w http.ResponseWriter, r *http.Request) {
 	}
 
 	file, err := pdf.Render(view)
+	if errors.Is(err, pdf.ErrUnsupportedScript) {
+		// Not a server fault, and not something to hide behind a 500. The
+		// renderer refused rather than drawing a document with the text
+		// missing, so the operator is told which characters it could not draw
+		// and sent back to the document they were looking at.
+		redirectError(w, r, fmt.Sprintf("/documents/%d", id),
+			"This document cannot be rendered as a PDF yet: "+err.Error()+
+				". The print view shows it correctly in a browser.")
+		return
+	}
 	if err != nil {
 		s.fail(w, r, http.StatusInternalServerError, err)
 		return
