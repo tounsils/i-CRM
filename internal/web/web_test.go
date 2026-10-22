@@ -892,14 +892,22 @@ func TestPDFDownloadCarriesTheSameFiguresAsTheScreen(t *testing.T) {
 		t.Fatalf("the download is %d bytes, too small to be a rendered page", len(file))
 	}
 
-	// The real assertion: the figures in the file are the figures on the
-	// screen. Both render from one docview.Document, and this is what proves
-	// that rather than assuming it.
+	// The embedded font is CID-keyed, so the content stream holds glyph
+	// indices rather than characters and the figures cannot be searched for
+	// here. What is checkable at this layer is that the file is a real PDF
+	// carrying an embedded font and a ToUnicode map, which is what lets a
+	// reader recover the text; the container end-to-end check runs the
+	// downloaded file through poppler and asserts the figures directly.
+	for _, marker := range []string{"FontFile2", "ToUnicode", "Identity-H"} {
+		if !strings.Contains(file, marker) {
+			t.Errorf("the PDF has no %s, so its text may not be recoverable", marker)
+		}
+	}
+
+	// The print view is HTML, so its figures can be asserted, and both
+	// renderings come from one docview.Document.
 	screen := h.body(h.get(path + "/print"))
 	for _, figure := range []string{"15000.00", "3000.00", "18000.00", doc.Number} {
-		if !strings.Contains(file, figure) {
-			t.Errorf("the PDF is missing %q", figure)
-		}
 		if !strings.Contains(screen, figure) {
 			t.Errorf("the print view is missing %q", figure)
 		}
@@ -909,6 +917,58 @@ func TestPDFDownloadCarriesTheSameFiguresAsTheScreen(t *testing.T) {
 	missing.Body.Close()
 	if missing.StatusCode != http.StatusNotFound {
 		t.Errorf("a PDF for a document that does not exist returned %d, want 404", missing.StatusCode)
+	}
+}
+
+func TestPDFRefusalIsShownToTheUserRatherThanServedBroken(t *testing.T) {
+	// The renderer cannot draw Japanese, and used to produce a document with
+	// the name missing and report success. It must now refuse, and the refusal
+	// has to reach the operator rather than a 500 or an empty file.
+	h := newHarness(t)
+	h.signIn()
+
+	res := h.post("/customers", url.Values{
+		"name": {"北風商事株式会社"}, "status": {"active"}, "currency": {"USD"},
+	})
+	res.Body.Close()
+	customers, err := h.store.ListCustomers(t.Context(), "")
+	if err != nil || len(customers) == 0 {
+		t.Fatalf("ListCustomers = %d, %v", len(customers), err)
+	}
+	// The name survived everywhere that is not the PDF.
+	if customers[0].Name != "北風商事株式会社" {
+		t.Fatalf("the customer name was stored as %q", customers[0].Name)
+	}
+
+	id := h.createdDocumentID(h.post("/documents", url.Values{
+		"type":             {"invoice"},
+		"customer_id":      {strconv.FormatInt(customers[0].ID, 10)},
+		"currency":         {"USD"},
+		"issue_date":       {"2026-10-21"},
+		"line_description": {"Consulting"},
+		"line_quantity":    {"1"},
+		"line_unit_price":  {"100.00"},
+	}))
+	path := "/documents/" + strconv.FormatInt(id, 10)
+
+	download := h.get(path + "/pdf")
+	download.Body.Close()
+	if download.StatusCode != http.StatusSeeOther {
+		t.Fatalf("the PDF route returned %d, want a 303 carrying an error", download.StatusCode)
+	}
+	location := download.Header.Get("Location")
+	if !strings.Contains(location, "error=") {
+		t.Errorf("redirected to %q with no error to show", location)
+	}
+	if !strings.Contains(location, "cannot+be+rendered") {
+		t.Errorf("the error does not explain what happened: %q", location)
+	}
+
+	// And the screen still shows the document correctly, which is the whole
+	// reason refusing beats drawing it blank.
+	screen := h.body(h.get(path + "/print"))
+	if !strings.Contains(screen, "北風商事株式会社") {
+		t.Error("the print view does not show the customer name it stored")
 	}
 }
 

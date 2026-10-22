@@ -4,18 +4,38 @@
 // the figures in a downloaded file are the figures on the screen by
 // construction rather than by two layouts being kept in step by hand.
 //
-// The library is pure Go, so CGO stays off and the binary stays self-contained.
-// That constraint is the reason a headless browser was not used here, even
-// though it would have given one layout instead of two.
+// The library is pure Go, so CGO stays off and the binary stays
+// self-contained. That constraint is the reason a headless browser was not used
+// here, even though it would have given one layout instead of two.
 package pdf
 
 import (
 	"bytes"
+	"embed"
 	"fmt"
 
 	"github.com/go-pdf/fpdf"
 
 	"github.com/tounsils/i-CRM/internal/docview"
+)
+
+// Liberation Sans, embedded so the binary carries everything it needs to draw
+// a document. The core PDF fonts every reader already has are Latin-1 only,
+// which silently dropped any name outside it; see script.go.
+//
+// Liberation is metric-compatible with Helvetica, so the column widths and
+// positions below did not change when the font did.
+//
+// The licence is beside the fonts and must stay there: OFL 1.1 requires it to
+// accompany the font software, and the Reserved Font Names in it are the reason
+// these files must not be renamed or modified in place.
+//
+//go:embed fonts/LiberationSans-Regular.ttf fonts/LiberationSans-Bold.ttf
+var fontFS embed.FS
+
+const (
+	fontRegularPath = "fonts/LiberationSans-Regular.ttf"
+	fontBoldPath    = "fonts/LiberationSans-Bold.ttf"
 )
 
 // Page geometry in millimetres, for A4 portrait.
@@ -36,10 +56,9 @@ const (
 	colTaxAmount   = 22.0
 )
 
-// Typography. Helvetica is one of the fonts every PDF reader carries, so
-// nothing has to be embedded and the binary does not grow by a typeface.
+// Typography.
 const (
-	fontFamily = "Helvetica"
+	fontFamily = "Liberation"
 
 	sizeTitle = 20.0
 	sizeName  = 12.0
@@ -51,43 +70,53 @@ const (
 )
 
 // Render returns the document as a PDF file.
+//
+// It returns ErrUnsupportedScript, before drawing anything, if the document
+// contains text this renderer cannot draw correctly. Refusing is deliberate:
+// the alternative, which this replaced, was a document that rendered with the
+// text missing and no indication that anything was wrong.
 func Render(doc docview.Document) ([]byte, error) {
+	if bad := unsupportedRunes(doc); len(bad) > 0 {
+		return nil, fmt.Errorf("%w: %s", ErrUnsupportedScript, describeRunes(bad))
+	}
+
 	out := fpdf.New("P", "mm", "A4", "")
 
-	// Compression off on purpose. An invoice is a few kilobytes either way, and
-	// an uncompressed file can be searched and diffed with ordinary tools,
-	// which is worth more than the saving on a self-hosted install. It is also
-	// what lets the tests assert that a figure really appears in the file.
-	out.SetCompression(false)
+	regular, err := fontFS.ReadFile(fontRegularPath)
+	if err != nil {
+		return nil, fmt.Errorf("pdf: reading the embedded regular font: %w", err)
+	}
+	bold, err := fontFS.ReadFile(fontBoldPath)
+	if err != nil {
+		return nil, fmt.Errorf("pdf: reading the embedded bold font: %w", err)
+	}
+	// Registered as UTF-8 fonts, which is what makes the text above Latin-1
+	// render rather than vanish. Both styles are needed: fpdf will not
+	// synthesise a bold face, it reports an undefined font instead.
+	out.AddUTF8FontFromBytes(fontFamily, "", regular)
+	out.AddUTF8FontFromBytes(fontFamily, "B", bold)
 
 	out.SetMargins(margin, margin, margin)
 	out.SetAutoPageBreak(true, margin)
-
-	// Core PDF fonts are Latin-1, so text is translated into that encoding.
-	// A name outside Latin-1, Arabic or Greek for instance, will not survive
-	// this; carrying it would mean embedding a Unicode font and roughly 300KB
-	// of binary. Worth revisiting when somebody actually needs it.
-	latin1 := out.UnicodeTranslatorFromDescriptor("")
-	text := func(s string) string { return latin1(s) }
 
 	out.SetFooterFunc(func() {
 		out.SetY(-margin + 6)
 		out.SetFont(fontFamily, "", sizeSmall)
 		out.SetTextColor(110, 110, 110)
 		footer := fmt.Sprintf("%s %s", doc.Kind, doc.Number)
-		out.CellFormat(contentWide/2, lineHeight, text(footer), "", 0, "L", false, 0, "")
+		out.CellFormat(contentWide/2, lineHeight, footer, "", 0, "L", false, 0, "")
 		out.CellFormat(contentWide/2, lineHeight,
 			fmt.Sprintf("Page %d", out.PageNo()), "", 0, "R", false, 0, "")
 	})
 
 	out.AddPage()
 
-	renderHeading(out, doc, text)
-	renderParties(out, doc, text)
-	renderLines(out, doc, text)
-	renderTotals(out, doc, text)
-	renderPayments(out, doc, text)
-	renderNotes(out, doc, text)
+	renderHeading(out, doc)
+	renderParties(out, doc)
+	renderLines(out, doc)
+	renderTotals(out, doc)
+	renderPayments(out, doc)
+	renderNotes(out, doc)
 
 	var buf bytes.Buffer
 	if err := out.Output(&buf); err != nil {
@@ -104,28 +133,28 @@ func Render(doc docview.Document) ([]byte, error) {
 
 // renderHeading is the company on the left and what this document is on the
 // right.
-func renderHeading(out *fpdf.Fpdf, doc docview.Document, text func(string) string) {
+func renderHeading(out *fpdf.Fpdf, doc docview.Document) {
 	top := out.GetY()
 
 	out.SetFont(fontFamily, "B", sizeName)
 	out.SetTextColor(0, 0, 0)
-	out.CellFormat(contentWide/2, lineHeight+1, text(doc.CompanyName), "", 1, "L", false, 0, "")
+	out.CellFormat(contentWide/2, lineHeight+1, doc.CompanyName, "", 1, "L", false, 0, "")
 
 	out.SetFont(fontFamily, "", sizeBody)
 	out.SetTextColor(90, 90, 90)
 	for _, line := range doc.CompanyAddress {
-		out.CellFormat(contentWide/2, lineHeight, text(line), "", 1, "L", false, 0, "")
+		out.CellFormat(contentWide/2, lineHeight, line, "", 1, "L", false, 0, "")
 	}
 	leftBottom := out.GetY()
 
 	out.SetXY(margin+contentWide/2, top)
 	out.SetFont(fontFamily, "B", sizeTitle)
 	out.SetTextColor(0, 0, 0)
-	out.CellFormat(contentWide/2, 9, text(doc.Kind), "", 2, "R", false, 0, "")
+	out.CellFormat(contentWide/2, 9, doc.Kind, "", 2, "R", false, 0, "")
 
 	out.SetFont(fontFamily, "", sizeBody)
 	out.SetTextColor(90, 90, 90)
-	out.CellFormat(contentWide/2, lineHeight, text(doc.Number), "", 2, "R", false, 0, "")
+	out.CellFormat(contentWide/2, lineHeight, doc.Number, "", 2, "R", false, 0, "")
 
 	if rightBottom := out.GetY(); rightBottom > leftBottom {
 		leftBottom = rightBottom
@@ -134,12 +163,12 @@ func renderHeading(out *fpdf.Fpdf, doc docview.Document, text func(string) strin
 }
 
 // renderParties is who the document is for, beside its dates.
-func renderParties(out *fpdf.Fpdf, doc docview.Document, text func(string) string) {
+func renderParties(out *fpdf.Fpdf, doc docview.Document) {
 	top := out.GetY()
 
 	out.SetFont(fontFamily, "", sizeSmall)
 	out.SetTextColor(120, 120, 120)
-	out.CellFormat(contentWide/2, lineHeight, text("TO"), "", 1, "L", false, 0, "")
+	out.CellFormat(contentWide/2, lineHeight, "TO", "", 1, "L", false, 0, "")
 
 	out.SetTextColor(0, 0, 0)
 	for i, line := range doc.CustomerLines {
@@ -148,7 +177,7 @@ func renderParties(out *fpdf.Fpdf, doc docview.Document, text func(string) strin
 			style = "B"
 		}
 		out.SetFont(fontFamily, style, sizeBody)
-		out.CellFormat(contentWide/2, lineHeight, text(line), "", 1, "L", false, 0, "")
+		out.CellFormat(contentWide/2, lineHeight, line, "", 1, "L", false, 0, "")
 	}
 	leftBottom := out.GetY()
 
@@ -156,9 +185,9 @@ func renderParties(out *fpdf.Fpdf, doc docview.Document, text func(string) strin
 	out.SetFont(fontFamily, "", sizeBody)
 	for _, field := range doc.Meta {
 		out.SetTextColor(120, 120, 120)
-		out.CellFormat(contentWide/4, lineHeight, text(field.Label), "", 0, "R", false, 0, "")
+		out.CellFormat(contentWide/4, lineHeight, field.Label, "", 0, "R", false, 0, "")
 		out.SetTextColor(0, 0, 0)
-		out.CellFormat(contentWide/4, lineHeight, text(field.Value), "", 2, "R", false, 0, "")
+		out.CellFormat(contentWide/4, lineHeight, field.Value, "", 2, "R", false, 0, "")
 		out.SetX(margin + contentWide/2)
 	}
 
@@ -169,7 +198,7 @@ func renderParties(out *fpdf.Fpdf, doc docview.Document, text func(string) strin
 }
 
 // renderLines is the priced table.
-func renderLines(out *fpdf.Fpdf, doc docview.Document, text func(string) string) {
+func renderLines(out *fpdf.Fpdf, doc docview.Document) {
 	out.SetFont(fontFamily, "", sizeSmall)
 	out.SetTextColor(120, 120, 120)
 	header := []struct {
@@ -185,7 +214,7 @@ func renderLines(out *fpdf.Fpdf, doc docview.Document, text func(string) string)
 		{colTaxAmount, "TAX", "R"},
 	}
 	for _, cell := range header {
-		out.CellFormat(cell.width, lineHeight, text(cell.label), "", 0, cell.align, false, 0, "")
+		out.CellFormat(cell.width, lineHeight, cell.label, "", 0, cell.align, false, 0, "")
 	}
 	out.Ln(lineHeight)
 	rule(out)
@@ -196,7 +225,7 @@ func renderLines(out *fpdf.Fpdf, doc docview.Document, text func(string) string)
 
 		// A long description wraps rather than running under the next column,
 		// and the row grows to fit it.
-		wrapped := out.SplitLines([]byte(text(line.Description)), colDescription-2)
+		wrapped := out.SplitLines([]byte(line.Description), colDescription-2)
 		if len(wrapped) == 0 {
 			wrapped = [][]byte{{}}
 		}
@@ -223,7 +252,7 @@ func renderLines(out *fpdf.Fpdf, doc docview.Document, text func(string) string)
 			if cell.width == colTax {
 				align = "L"
 			}
-			out.CellFormat(cell.width, lineHeight, text(cell.value), "", 0, align, false, 0, "")
+			out.CellFormat(cell.width, lineHeight, cell.value, "", 0, align, false, 0, "")
 		}
 
 		out.SetXY(margin, top+rowHeight)
@@ -232,7 +261,7 @@ func renderLines(out *fpdf.Fpdf, doc docview.Document, text func(string) string)
 }
 
 // renderTotals is the right-aligned footer block.
-func renderTotals(out *fpdf.Fpdf, doc docview.Document, text func(string) string) {
+func renderTotals(out *fpdf.Fpdf, doc docview.Document) {
 	out.SetY(out.GetY() + 4)
 	const labelWidth = 40.0
 	const valueWidth = 44.0
@@ -246,18 +275,18 @@ func renderTotals(out *fpdf.Fpdf, doc docview.Document, text func(string) string
 		out.SetX(indent)
 		out.SetFont(fontFamily, style, sizeBody)
 		out.SetTextColor(90, 90, 90)
-		out.CellFormat(labelWidth, lineHeight+1, text(field.Label), "", 0, "R", false, 0, "")
+		out.CellFormat(labelWidth, lineHeight+1, field.Label, "", 0, "R", false, 0, "")
 		out.SetTextColor(0, 0, 0)
-		out.CellFormat(valueWidth, lineHeight+1, text(field.Value), "", 1, "R", false, 0, "")
+		out.CellFormat(valueWidth, lineHeight+1, field.Value, "", 1, "R", false, 0, "")
 	}
 }
 
 // renderPayments lists what has already been received, if anything has.
-func renderPayments(out *fpdf.Fpdf, doc docview.Document, text func(string) string) {
+func renderPayments(out *fpdf.Fpdf, doc docview.Document) {
 	if len(doc.Payments) == 0 {
 		return
 	}
-	section(out, text("PAYMENTS RECEIVED"))
+	section(out, "PAYMENTS RECEIVED")
 
 	widths := []float64{30, 50, 54, 40}
 	out.SetFont(fontFamily, "", sizeBody)
@@ -269,21 +298,21 @@ func renderPayments(out *fpdf.Fpdf, doc docview.Document, text func(string) stri
 			if i == len(cells)-1 {
 				align = "R"
 			}
-			out.CellFormat(widths[i], lineHeight, text(value), "", 0, align, false, 0, "")
+			out.CellFormat(widths[i], lineHeight, value, "", 0, align, false, 0, "")
 		}
 		out.Ln(lineHeight)
 	}
 }
 
 // renderNotes is whatever the sender wanted the reader to see.
-func renderNotes(out *fpdf.Fpdf, doc docview.Document, text func(string) string) {
+func renderNotes(out *fpdf.Fpdf, doc docview.Document) {
 	if doc.Notes == "" {
 		return
 	}
-	section(out, text("NOTES"))
+	section(out, "NOTES")
 	out.SetFont(fontFamily, "", sizeBody)
 	out.SetTextColor(0, 0, 0)
-	out.MultiCell(contentWide, lineHeight, text(doc.Notes), "", "L", false)
+	out.MultiCell(contentWide, lineHeight, doc.Notes, "", "L", false)
 }
 
 // section writes a small grey caption above a block.

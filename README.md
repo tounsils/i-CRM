@@ -35,7 +35,9 @@ listed as coming that is not tracked.
   into a status by a scheduled job
 - A dashboard showing what is outstanding, what is late, and what moved recently
 - A printable view of any document, and a PDF download rendered from the same
-  view, so the file and the screen cannot disagree about the figures
+  view, so the file and the screen cannot disagree about the figures. Latin,
+  Greek and Cyrillic text renders; anything else is refused with a message
+  naming the characters rather than drawn blank
 
 ### Coming, in roughly this order
 
@@ -45,7 +47,7 @@ date attached, because this is maintained by one person.
 | | What | Why it is not done yet |
 | --- | --- | --- |
 | [#18](https://github.com/tounsils/i-CRM/issues/18) | Sending documents by email | Needs SMTP settings, and delivery failures surfaced rather than swallowed: a silent failure means believing an invoice went out when it did not |
-| [#31](https://github.com/tounsils/i-CRM/issues/31) | PDF text outside Latin-1 | The standard PDF fonts are Latin-1, so a name in Arabic, Greek or Cyrillic renders correctly on screen and wrongly in the file. Fixing it means embedding a Unicode font |
+| [#40](https://github.com/tounsils/i-CRM/issues/40) | PDFs for right-to-left and CJK scripts | Not a font swap. Arabic needs bidirectional layout and contextual shaping, and the library that does both properly is C, which would end the static binary. CJK needs a font an order of magnitude larger than the two embedded faces |
 | [#19](https://github.com/tounsils/i-CRM/issues/19) | More than one user, with roles | `users.role` exists in the schema and nothing reads it. Needs a decision on what the roles actually are |
 | [#20](https://github.com/tounsils/i-CRM/issues/20) | Credit notes | The money arithmetic is already symmetric for this. The open question is what a fully credited invoice's status becomes |
 | [#28](https://github.com/tounsils/i-CRM/issues/28) | Revenue, tax and ageing reports | Must state whether it reports on an accrual or cash basis, and share arithmetic with the documents |
@@ -180,3 +182,18 @@ That file is every customer record and every invoice. Treat it accordingly.
 ## Licence
 
 MIT. See [LICENSE](LICENSE).
+
+### Third-party
+
+**Liberation Sans 2.1.5**, embedded in the binary to render PDFs, under the SIL
+Open Font License 1.1. The licence and the Reserved Font Names are in
+[internal/pdf/fonts/](internal/pdf/fonts/) and must stay alongside the fonts.
+It is used because the standard PDF fonts every reader carries are Latin-1
+only, which silently dropped any name outside that.
+
+**github.com/go-pdf/fpdf**, the PDF writer, BSD-3-Clause. Pure Go, which is
+why it was chosen: a headless browser would have given one layout instead of
+two and cost the self-contained binary.
+
+**modernc.org/sqlite**, a pure-Go SQLite, BSD-3-Clause. The reason this builds
+with `CGO_ENABLED=0`.

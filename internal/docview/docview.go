@@ -70,6 +70,35 @@ type Document struct {
 	Notes          string
 }
 
+// Strings returns every piece of text a rendering will place on the page.
+//
+// It lives here because this package knows the shape of a document view, and a
+// renderer that had to walk these fields itself would silently miss any field
+// added later. That matters because the PDF renderer uses this to check up
+// front that it can draw everything, and a field it forgot to check is a field
+// that goes out blank.
+func (d Document) Strings() []string {
+	out := []string{d.Kind, d.Number, d.CompanyName, d.Notes}
+	out = append(out, d.CompanyAddress...)
+	out = append(out, d.CustomerLines...)
+
+	for _, field := range d.Meta {
+		out = append(out, field.Label, field.Value)
+	}
+	for _, field := range d.Totals {
+		out = append(out, field.Label, field.Value)
+	}
+	for _, line := range d.Lines {
+		out = append(out,
+			line.Description, line.Quantity, line.UnitPrice,
+			line.Tax, line.Net, line.TaxAmount)
+	}
+	for _, payment := range d.Payments {
+		out = append(out, payment.Date, payment.Method, payment.Reference, payment.Amount)
+	}
+	return out
+}
+
 // Input is what Build needs, as a struct rather than five parameters.
 type Input struct {
 	Document       store.Document
